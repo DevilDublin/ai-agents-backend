@@ -43,3 +43,5 @@ if(S){
   draw();
 }
 document.querySelectorAll('#year').forEach(n=> n.textContent = new Date().getFullYear());
+
+try { if (window.BACKEND_URL) fetch(`${window.BACKEND_URL}/health`, { mode: 'no-cors' }); } catch {}
