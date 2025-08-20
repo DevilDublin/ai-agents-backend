@@ -1,3 +1,3 @@
-// Set this to your Render backend URL after deploying it
-// Example: window.BACKEND_URL = "https://ai-agents-backend.onrender.com";
-window.BACKEND_URL = "http://localhost:5000";
+// frontend/js/config.js
+// Render backend (HTTPS, no trailing slash)
+window.BACKEND_URL = "https://ai-agents-backend-pejo.onrender.com";
