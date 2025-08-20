@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Demos — Orbit v4</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css"/>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+  <header class="nav">
+    <div class="brand"><span class="spark"></span> AI Agents</div>
+    <div class="links">
+      <a class="link-chip" href="index.html">Home</a>
+      <a class="link-chip" href="demos.html">Demos</a>
+      <a class="link-chip" href="contact.html">Contact</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" style="min-height:auto; padding-top:28px;">
+      <div class="hero-inner">
+        <h1>Live Demos</h1>
+        <p class="lead">Hover to connect. Click to chat. Pause on a bot to learn what it does.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="orbit-wrap" id="orbit-wrap">
+          <canvas id="orbits"></canvas>
+          <div id="orbit-tooltip"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="overlay" id="overlay">
+    <div class="dialog">
+      <div class="dialog-head">
+        <div class="title" id="dlg-title">Agent</div>
+        <button class="btn ghost" id="dlg-close">Close</button>
+      </div>
+      <div class="dialog-body">
+        <div class="examples" id="dlg-examples"></div>
+        <div class="chat" id="dlg-chat"></div>
+        <div class="input-row">
+          <input id="dlg-input" placeholder="Type your message…"/>
+          <button class="btn" id="dlg-send">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">© <span id="year"></span> AI Agents — Tailoured AI for Business</footer>
+
+  <script src="js/site.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/demos.js"></script>
+</body>
+</html>
