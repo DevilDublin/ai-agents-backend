@@ -8,6 +8,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles/main.css"/>
+  <style>
+    /* Basic chatbox styles */
+    #chatbox { border: 1px solid #ccc; padding: 1rem; height: 300px; overflow-y: auto; margin: 2rem 0; background: #fff; }
+    .user { color: #2b6cb0; margin: 0.5rem 0; }
+    .bot { color: #2f855a; margin: 0.5rem 0; }
+    #chat-input { display: flex; gap: 0.5rem; }
+    #msg { flex: 1; padding: 0.5rem; }
+    #send-btn { padding: 0.5rem 1rem; cursor: pointer; }
+  </style>
 </head>
 <body>
   <canvas id="stars"></canvas>
@@ -38,7 +47,7 @@
         <div class="card">
           <h3>What we deliver</h3>
           <ul>
-            <li>Appointment‑setting agents that book qualified meetings</li>
+            <li>Appointment-setting agents that book qualified meetings</li>
             <li>Support agents that answer from your policies and docs</li>
             <li>Internal knowledge assistants for HR and Sales</li>
             <li>Automation that joins the dots across your tools</li>
@@ -55,7 +64,19 @@
         </div>
         <div class="card">
           <h3>Where we fit</h3>
-          <p>We’re platform‑agnostic: Express/FastAPI, n8n/Make/Zapier and whichever database or vector store fits best. You get robust systems, not experiments.</p>
+          <p>We’re platform-agnostic: Express/FastAPI, n8n/Make/Zapier and whichever database or vector store fits best. You get robust systems, not experiments.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ✅ Chatbot Section -->
+    <section id="chat-demo" class="section">
+      <div class="container">
+        <h2>Try our Insurance Bot</h2>
+        <div id="chatbox"></div>
+        <div id="chat-input">
+          <input id="msg" placeholder="Type your question..." />
+          <button id="send-btn" onclick="sendMessage()">Send</button>
         </div>
       </div>
     </section>
@@ -63,5 +84,31 @@
 
   <footer class="footer">© <span id="year"></span> AI Agents — Tailoured AI for Business</footer>
   <script src="js/site.js"></script>
+  <script>
+    async function sendMessage() {
+      const msgInput = document.getElementById("msg");
+      const chatBox = document.getElementById("chatbox");
+      const message = msgInput.value.trim();
+      if (!message) return;
+
+      // Show user message
+      chatBox.innerHTML += `<div class="user"><b>You:</b> ${message}</div>`;
+
+      try {
+        const res = await fetch("https://ai-agents-backend-pejo.onrender.com/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message, bot: "insurance" })
+        });
+        const data = await res.json();
+        chatBox.innerHTML += `<div class="bot"><b>Bot:</b> ${data.reply}</div>`;
+      } catch (err) {
+        chatBox.innerHTML += `<div class="bot"><b>Bot:</b> Error connecting to server</div>`;
+      }
+
+      chatBox.scrollTop = chatBox.scrollHeight;
+      msgInput.value = "";
+    }
+  </script>
 </body>
 </html>
