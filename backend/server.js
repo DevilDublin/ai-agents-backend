@@ -51,3 +51,8 @@ app.get("/chat", (req, res) => {
   res.send("Chat endpoint is running. Please use POST requests.");
 });
 
+// Health check for root URL
+app.get("/", (req, res) => {
+  res.send("✅ AI Agents backend is running. Use POST /chat to talk to the bot.");
+});
+
