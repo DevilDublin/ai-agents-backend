@@ -24,10 +24,10 @@ function metrics(){
 const center = () => ({x: W/2, y: H/2});
 
 const nodes = [
-  {label:'Appointment Setter', key:'appointment', desc:'Qualifies, proposes times, and books meetings end‑to‑end.', angle: -Math.PI/2},
+  {label:'Appointment Setter', key:'appointment', desc:'Qualifies, proposes times, and books meetings end-to-end.', angle: -Math.PI/2},
   {label:'Support Q&A', key:'support', desc:'Answers from your policies with confidence and escalation.', angle: 0},
   {label:'Automation Planner', key:'automation', desc:'Describe a process → get a runnable workflow blueprint.', angle: Math.PI/2},
-  {label:'Internal Knowledge', key:'internal', desc:'Auto‑routes HR vs Sales and answers from your handbook.', angle: Math.PI},
+  {label:'Internal Knowledge', key:'internal', desc:'Auto-routes HR vs Sales and answers from your handbook.', angle: Math.PI},
 ];
 
 function roundRect(ctx, x, y, w, h, r){
@@ -155,12 +155,12 @@ const dlgExamples = document.getElementById('dlg-examples');
 const intros = {
   appointment: "Hello! 👋 I can help schedule a meeting. What’s your budget or target scope to start with?",
   support: "Hi — ask me about returns, shipping, warranty or support hours and I’ll answer from policy.",
-  automation: "Hello! Tell me what you’d like to automate and I’ll sketch a clear, step‑by‑step workflow.",
+  automation: "Hello! Tell me what you’d like to automate and I’ll sketch a clear, step-by-step workflow.",
   internal: "Hello! Ask me an HR or Sales question; I’ll route it to the right knowledge automatically."
 };
 const examples = {
   appointment: [
-    ["Try: intro + budget","Hello, I’d like a 30‑minute intro next week. Budget is £2k per month."],
+    ["Try: intro + budget","Hello, I’d like a 30-minute intro next week. Budget is £2k per month."],
     ["Try: propose time","Could you do Tuesday 2–4pm?"],
     ["Try: contact","Use alex@example.com for the invite."],
     ["Try: confirm","yes"]
@@ -171,8 +171,8 @@ const examples = {
     ["Try: weekend hours","When is your support team available on weekends?"]
   ],
   automation: [
-    ["Try: lead flow","When a lead completes a form, enrich with Clearbit, score in GHL, push to CRM, then post to Slack and e‑mail."],
-    ["Try: weekly summary","Create a weekly ops summary from Airtable and e‑mail it to the team with KPIs."]
+    ["Try: lead flow","When a lead completes a form, enrich with Clearbit, score in GHL, push to CRM, then post to Slack and e-mail."],
+    ["Try: weekly summary","Create a weekly ops summary from Airtable and e-mail it to the team with KPIs."]
   ],
   internal: [
     ["HR: holiday policy","What is the holiday policy?"],
@@ -210,9 +210,17 @@ function postJSON(url, body){
 function sendMsg(){
   const msg=(dlgInput.value||'').trim(); if(!msg || !current) return;
   bubble(dlgChat, msg, true); dlgInput.value='';
-  if(current==='appointment') return postJSON(`${BACKEND}/appointment`, {message:msg, sessionId}).then(r=> bubble(dlgChat, r.reply||'…')).catch(()=> bubble(dlgChat,'Cannot reach backend.'));
-  if(current==='support') return postJSON(`${BACKEND}/support`, {message:msg}).then(r=> bubble(dlgChat, r.reply||'…')).catch(()=> bubble(dlgChat,'Cannot reach backend.'));
-  if(current==='automation') return postJSON(`${BACKEND}/automation`, {message:msg}).then(r=> bubble(dlgChat, r.reply||'…')).catch(()=> bubble(dlgChat,'Cannot reach backend.'));
-  if(current==='internal') return postJSON(`${BACKEND}/internal`, {message:msg}).then(r=> bubble(dlgChat, r.reply||'…')).catch(()=> bubble(dlgChat,'Cannot reach backend.'));
+
+  // Map frontend keys to backend bot IDs (from config.js)
+  const botMap = {
+    appointment: window.BOTS.appointment,
+    support: window.BOTS.support,
+    automation: window.BOTS.automation,
+    internal: window.BOTS.onprem
+  };
+
+  postJSON(`${BACKEND}/chat`, { message: msg, bot: botMap[current], sessionId })
+    .then(r=> bubble(dlgChat, r.reply||'…'))
+    .catch(()=> bubble(dlgChat,'Cannot reach backend.'));
 }
 dlgSend.addEventListener('click', sendMsg); onEnter(dlgInput, sendMsg);
