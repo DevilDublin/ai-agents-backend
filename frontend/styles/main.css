@@ -99,3 +99,12 @@ p.lead{color:var(--muted); font-size:18px; max-width:840px; margin:0 auto 18px}
 
 /* FOOTER */
 .footer{padding:20px; text-align:center; border-top:1px solid rgba(255,255,255,.06); background:linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,.06))}
+
+/* Fade-in animation for refusal bubbles */
+.bubble.fade-in {
+  animation: fadeIn 0.6s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
