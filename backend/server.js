@@ -36,9 +36,18 @@ app.post("/chat", async (req, res) => {
       })
     });
 
-    const data = await r.json();
-    const reply = data.choices?.[0]?.message?.content || "Sorry, I didn’t catch that.";
-    res.json({ reply, bot });
+const data = await r.json();
+
+// Log full response to Render logs for debugging
+console.log("OpenAI response:", JSON.stringify(data, null, 2));
+
+if (!r.ok) {
+  return res.status(r.status).json({ error: data });
+}
+
+const reply = data.choices?.[0]?.message?.content || "⚠️ No content from OpenAI";
+res.json({ reply, bot });
+
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
