@@ -69,8 +69,31 @@ p.lead{color:var(--muted); font-size:18px; max-width:840px; margin:0 auto 18px}
 .chat{height:380px; overflow:auto; border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:12px; background:linear-gradient(180deg,#0c0c18,#0b0b16)}
 .bubble{background:#151530; padding:10px 12px; border-radius:12px; margin:8px 0; max-width:92%}
 .bubble.me{background:#221a5a; margin-left:auto}
+
+/* NEW: refusal-style bubble */
+.bubble.refusal {
+  background: #1a1825;
+  color: #b9c2ff;
+  font-style: italic;
+  border: 1px dashed rgba(185,138,255,0.4);
+}
+
+/* Example chips */
 .examples{display:flex; flex-wrap:wrap; gap:8px; margin:8px 0}
 .examples .chip{border:1px solid rgba(255,255,255,.12); background:linear-gradient(180deg,#13122a,#111024); padding:6px 10px; border-radius:999px; font-size:13px; cursor:pointer}
+
+/* NEW: Note chips */
+.examples .chip.note {
+  background: rgba(185,138,255,0.05);
+  color: #bdbddd;
+  font-style: italic;
+  cursor: default;
+  opacity: 0.9;
+}
+.examples .chip.note:hover {
+  background: rgba(185,138,255,0.05); /* No hover effect */
+}
+
 .input-row{display:flex; gap:8px; margin-top:10px}
 .input-row input{flex:1; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:#0c0a16; color:#e9ecff}
 
