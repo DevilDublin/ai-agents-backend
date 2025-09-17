@@ -1,169 +1,88 @@
 import express from "express";
+import bodyParser from "body-parser";
 import cors from "cors";
-import fetch from "node-fetch";
+import { chat } from "./openaiClient.js"; // uses your OpenAI wrapper
 
 const app = express();
-app.use(cors({ origin: true }));
-app.use(express.json({ limit: "1mb" }));
+app.use(cors());
+app.use(bodyParser.json());
 
-// --- Conversation memory (simple per IP for demo) ---
-const conversations = {};
-function getSession(id) {
-  if (!conversations[id]) conversations[id] = {};
-  return conversations[id];
-}
+// === System Prompts for Bots ===
+const SYSTEM_PROMPTS = {
+  "appointment-setter-bot": `You are an appointment-setting assistant. 
+Your primary job is to collect three details: budget, meeting time, and email address. 
+Validate them carefully (e.g., if the email is invalid, politely ask again). 
+Once you have all three, confirm a 30-minute introduction call. 
 
-// --- Utility: call OpenAI ---
-async function callOpenAI(messages, fallback = "Sorry, I didn’t catch that.") {
-  try {
-    const r = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages,
-        temperature: 0.3
-      })
-    });
-    const data = await r.json();
-    return data.choices?.[0]?.message?.content || fallback;
-  } catch (err) {
-    console.error("OpenAI error:", err);
-    return fallback;
-  }
-}
+If the user asks unrelated questions, you may answer briefly up to 2 times. 
+After that, do not answer unrelated questions at all. 
+Instead, politely refuse and redirect to your purpose. 
+Vary your refusal wording slightly each time so it feels human, not repetitive. 
+Always follow your refusal by re-asking for one of the missing details. 
 
-// ------------------- SUPPORT QA BOT -------------------
-async function supportBot(message) {
-  const text = (message || "").trim().toLowerCase();
-  if (!text) return "Hello — ask me about returns, shipping, warranty or support hours.";
+Keep responses concise, friendly, and in British English.`,
 
-  // Quick rule-based KB
-  if (text.includes("return") || text.includes("refund") || text.includes("exchange"))
-    return "Our returns policy allows returns within 30 days if unused and in original packaging. Refunds are processed within 5–7 working days.";
-  if (text.includes("shipping") || text.includes("delivery") || text.includes("courier"))
-    return "Expedited shipping: 2–3 working days. Standard shipping: 4–6 working days.";
-  if (text.includes("hours") || text.includes("support"))
-    return "Support is available Mon–Fri, 09:00–18:00 GMT. Weekend coverage is e-mail only for urgent issues.";
-  if (text.includes("warranty") || text.includes("guarantee"))
-    return "We provide a 12-month limited warranty covering manufacturing defects. Please open a ticket with your order details.";
+  "support-qa-bot": `You are a customer support assistant. 
+Your primary job is to answer questions about returns, refunds, shipping, support hours, or warranty policies. 
+If a question falls outside these areas, you may answer briefly up to 2 times. 
 
-  // Otherwise use LLM fallback
-  return await callOpenAI([
-    { role: "system", content: "You are a retail/customer support assistant. If unsure, say you don’t know and offer human handoff." },
-    { role: "user", content: message }
-  ], "I couldn’t find that in our documents. Would you like me to connect you with a human agent?");
-}
+After that, strictly refuse to continue with unrelated topics. 
+Politely explain that you cannot help further with those, vary your refusal wording each time so it doesn’t sound copy-pasted, and guide the user back to your role. 
+Always end by inviting them to ask about returns, shipping, support, or warranty. 
 
-// ------------------- APPOINTMENT BOT -------------------
-const apptSessions = new Map();
-function getApptSession(id) {
-  if (!apptSessions.has(id)) {
-    apptSessions.set(id, { budget: null, time: null, email: null, step: "collect" });
-  }
-  return apptSessions.get(id);
-}
-async function appointmentBot(message, sessionId) {
-  const msg = (message || "").trim();
-  const s = getApptSession(sessionId);
+Keep responses concise, friendly, and in British English.`,
 
-  // Regex helpers
-  const email = msg.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0];
-  const budget = msg.match(/(?:£|\$|€)?\s?\d+(?:k|K)?/)?.[0];
-  const time = msg.match(/\b(today|tomorrow|monday|tuesday|wednesday|thursday|friday|next week|morning|afternoon|evening)\b/i)?.[0];
+  "custom-automation": `You are an automation planner. 
+Your primary job is to design practical step-by-step automation workflows for business processes (e.g., leads, social media, invoicing, support). 
+If the user asks something unrelated, you may answer briefly up to 2 times. 
 
-  if (email && !s.email) s.email = email;
-  if (budget && !s.budget) s.budget = budget;
-  if (time && !s.time) s.time = time;
+After that, you must refuse politely, with slight variation in phrasing each time. 
+Redirect the user firmly to automation planning and ask again what process they would like to automate. 
+Never allow yourself to drift away from automation beyond those first 2 unrelated turns. 
 
-  if (!s.budget) return "What’s your budget or target scope to start with?";
-  if (!s.time) return "When would you like to meet?";
-  if (!s.email) return "What’s the best e-mail for the invite?";
+Keep responses concise, actionable, and in British English.`,
 
-  if (s.step === "collect") {
-    s.step = "confirm";
-    return `Thanks — I’ve got budget ${s.budget}, timing ${s.time}, and e-mail ${s.email}. Shall I book a 30-minute intro call next week? (yes/no)`;
-  }
+  "onprem-chatbot": `You are an internal knowledge assistant for HR and Sales. 
+Your main purpose is to answer HR-related questions (holidays, expenses, promotions, policies) and Sales-related questions (pipeline, quotas, pricing, stages, NDAs). 
+If unsure, politely suggest checking the HR handbook or sales library. 
 
-  if (/^y(es)?|ok|sure/i.test(msg)) {
-    s.step = "done";
-    return `All set! I’ve pencilled a 30-minute introduction and sent a placeholder invite to ${s.email}.`;
-  }
-  if (/^no|later|not now/i.test(msg)) {
-    s.step = "collect";
-    return "No worries — share a preferred day/time and I’ll propose alternatives.";
-  }
+If the user asks unrelated questions, you may answer briefly up to 2 times. 
+After that, stop answering unrelated questions. 
+Politely refuse, vary your refusal wording each time to sound natural, and redirect the user back to HR or Sales queries. 
+Always follow the refusal with an example of relevant topics they can ask about. 
 
-  return await callOpenAI([
-    { role: "system", content: "You are an appointment-setting assistant. Be helpful but always try to move towards budget, time, and e-mail." },
-    { role: "user", content: message }
-  ]);
-}
+Keep responses concise, friendly, and in British English.`
+};
 
-// ------------------- AUTOMATION BOT -------------------
-async function automationBot(message) {
-  const text = (message || "").toLowerCase();
-  if (!message) return "Tell me what you’d like to automate — I’ll propose a workflow.";
-
-  if (text.includes("insurance") || text.includes("policy"))
-    return "Here’s a draft insurance workflow:\n• Trigger: new quote request\n• Collect risk questions\n• Generate quote & email\n• Log to CRM\n• Send renewal reminders";
-
-  if (text.includes("social") || text.includes("instagram") || text.includes("linkedin"))
-    return "Here’s a draft social media workflow:\n• Collect monthly topics\n• Generate content calendar\n• Draft posts with hooks\n• Schedule & approve\n• Weekly engagement report";
-
-  if (text.includes("shopify") || text.includes("cart"))
-    return "Here’s a draft e-commerce workflow:\n• Trigger: cart/checkout events\n• Abandoned cart emails\n• Post-purchase cross-sell\n• Inventory alerts\n• Revenue summary";
-
-  return await callOpenAI([
-    { role: "system", content: "You design practical automation blueprints. Be concise, step-by-step." },
-    { role: "user", content: message }
-  ], "Could you share more detail about the workflow, tools, or triggers?");
-}
-
-// ------------------- ONPREM BOT -------------------
-async function onpremBot(message) {
-  const text = (message || "").toLowerCase();
-  if (!message) return "Hello! Ask me an HR or Sales question; I’ll route it automatically.";
-
-  if (text.includes("holiday") || text.includes("leave"))
-    return "Holiday entitlement: 25 days annual leave plus UK bank holidays.";
-  if (text.includes("benefit") || text.includes("pension"))
-    return "Benefits include private health cover, 5% pension match, and a wellness stipend.";
-  if (text.includes("promotion") || text.includes("review"))
-    return "Promotions align with manager feedback and bi-annual reviews.";
-  if (text.includes("pipeline") || text.includes("quota"))
-    return "Sales pipeline: Prospect → Qualify → Proposal → Negotiation → Closed. Quotas are set quarterly.";
-
-  return await callOpenAI([
-    { role: "system", content: "You are an internal HR & Sales assistant. Answer with company policy if known; otherwise suggest handbook/manager." },
-    { role: "user", content: message }
-  ], "I couldn’t find that in our HR/Sales docs. Please check the handbook or ask your manager.");
-}
-
-// ------------------- MAIN ROUTE -------------------
-app.post("/chat", async (req, res) => {
-  const { message, bot } = req.body;
-  if (!message || !bot) return res.status(400).json({ error: "Missing message or bot" });
-
-  const sessionId = req.ip; // simple demo session key
-  let reply;
-
-  if (bot === "support-qa-bot") reply = await supportBot(message);
-  else if (bot === "appointment-setter-bot") reply = await appointmentBot(message, sessionId);
-  else if (bot === "custom-automation") reply = await automationBot(message);
-  else if (bot === "onprem-chatbot") reply = await onpremBot(message);
-  else reply = "Unknown bot.";
-
-  res.json({ reply, bot });
-});
-
-// Root health check
+// === Health Check ===
 app.get("/", (req, res) => {
-  res.send("✅ AI Agents backend running. Use POST /chat with {message, bot}.");
+  res.send("✅ AI Agents backend is running. Use POST /chat to talk to a bot.");
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("Bot server running on port " + PORT));
+// === Chat Endpoint ===
+app.post("/chat", async (req, res) => {
+  try {
+    const { message, bot } = req.body;
+    if (!message) return res.status(400).json({ error: "Missing message" });
+    if (!bot || !SYSTEM_PROMPTS[bot]) return res.status(400).json({ error: "Unknown bot" });
+
+    const reply = await chat(
+      [
+        { role: "system", content: SYSTEM_PROMPTS[bot] },
+        { role: "user", content: message }
+      ],
+      { model: "gpt-4o-mini", temperature: 0.4 }
+    );
+
+    res.json({ reply, bot });
+  } catch (err) {
+    console.error("Chat error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// === Server Listen (Render will set PORT) ===
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => {
+  console.log(`🤖 Bot server running on ${PORT}`);
+});
