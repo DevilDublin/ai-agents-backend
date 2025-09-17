@@ -46,3 +46,8 @@ app.post("/chat", async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log("Bot server running on port " + PORT));
+
+app.get("/chat", (req, res) => {
+  res.send("Chat endpoint is running. Please use POST requests.");
+});
+
