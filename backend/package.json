@@ -2,10 +2,13 @@
   "name": "render-openai-bot",
   "version": "1.0.0",
   "type": "module",
-  "scripts": { "start": "node server.js" },
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "express": "^4.19.2",
     "cors": "^2.8.5",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "openai": "^4.0.0"
   }
 }
