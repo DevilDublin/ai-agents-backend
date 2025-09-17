@@ -211,12 +211,14 @@ function closeDlg() { overlay.style.display = 'none'; current = null; refusalCou
 dlgClose.addEventListener('click', closeDlg);
 overlay.addEventListener('click', e => { if (e.target === overlay) closeDlg(); });
 
-// Bubble with refusal detection
+// Bubble with refusal detection + fade-in
 function bubble(parent, text, me = false) {
   const div = document.createElement('div');
   const isRefusal = !me && /i cannot help you|let'?s get back on track|sorry, i can/i.test(text);
-  div.className = 'bubble' + (me ? ' me' : '') + (isRefusal ? ' refusal' : '');
+
+  div.className = 'bubble' + (me ? ' me' : '') + (isRefusal ? ' refusal fade-in' : '');
   div.textContent = text;
+
   parent.appendChild(div);
   parent.scrollTop = parent.scrollHeight;
 }
@@ -248,15 +250,14 @@ function sendMsg() {
     .then(r => {
       let reply = r.reply || '…';
 
-      // Check if it's a refusal
       if (/i cannot help you|let'?s get back on track|sorry, i can/i.test(reply)) {
         refusalCount++;
         if (refusalCount >= 2) {
           reply = "I really can’t help with unrelated topics — let’s return to my main task.";
-          refusalCount = 0; // reset so it doesn’t loop endlessly
+          refusalCount = 0;
         }
       } else {
-        refusalCount = 0; // reset if user gets back on track
+        refusalCount = 0;
       }
 
       bubble(dlgChat, reply);
