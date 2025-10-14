@@ -1,219 +1,169 @@
-const orbit = document.getElementById('orbits');
+const API_BASE = (window.AGENT_API_BASE || 'https://ai-agents-backend-pejo.onrender.com').replace(/\/$/,'');
 const wrap = document.getElementById('orbit-wrap');
+const canvas = document.getElementById('orbits');
 const tip = document.getElementById('orbit-tooltip');
+const ctx = canvas.getContext('2d');
 
-const agents = [
-  {key:'setter', label:'Appointment Setter', side:'top', desc:'Qualifies quickly and books the call.'},
-  {key:'internal', label:'Internal Knowledge', side:'left', desc:'Answers HR and Sales questions clearly.'},
-  {key:'support', label:'Support Q&A', side:'right', desc:'Helps with returns, delivery and warranty.'},
-  {key:'planner', label:'Automation Planner', side:'bottom', desc:'Sketches a clean step-by-step workflow.'}
-];
+function layout() {
+  const rect = wrap.getBoundingClientRect();
+  canvas.width = rect.width;
+  canvas.height = rect.height;
 
-function drawOrbit() {
-  const ctx = orbit.getContext('2d');
-  const DPR = Math.min(devicePixelRatio || 1, 2);
-  orbit.width = wrap.clientWidth * DPR;
-  orbit.height = wrap.clientHeight * DPR;
-  ctx.clearRect(0,0,orbit.width,orbit.height);
+  const cx = rect.width/2, cy = rect.height/2;
+  const R1 = Math.min(rect.width, rect.height) * 0.23;
+  const R2 = R1*1.55;
+  const R3 = R1*2.1;
 
-  const cx = orbit.width/2;
-  const cy = orbit.height/2 + 8*DPR;
-  const rings = [120, 220, 320].map(r => r*DPR);
-
-  ctx.strokeStyle = 'rgba(185,138,255,.15)';
-  ctx.lineWidth = 2*DPR;
-  rings.forEach(r => {
-    ctx.beginPath();
-    ctx.setLineDash([8*DPR, 10*DPR]);
-    ctx.arc(cx, cy, r, 0, Math.PI*2);
-    ctx.stroke();
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  [R1,R2,R3].forEach((r,i)=>{
+    ctx.setLineDash([6,10]);
+    ctx.strokeStyle = 'rgba(185,138,255,.25)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.stroke();
+    ctx.setLineDash([]);
   });
 
-  const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, 140*DPR);
-  grad.addColorStop(0, 'rgba(185,138,255,.45)');
-  grad.addColorStop(1, 'rgba(185,138,255,0)');
-  ctx.fillStyle = grad;
-  ctx.beginPath();
-  ctx.arc(cx, cy, 140*DPR, 0, Math.PI*2);
-  ctx.fill();
+  ctx.strokeStyle = 'rgba(185,138,255,.18)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, canvas.height); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(canvas.width, cy); ctx.stroke();
 
-  drawHub(cx, cy, DPR);
-  placeChips(cx/DPR, cy/DPR);
-}
-
-function drawHub(cx, cy, DPR) {
-  const ctx = orbit.getContext('2d');
-  ctx.save();
-  ctx.translate(cx, cy);
-  ctx.strokeStyle = 'rgba(255,255,255,.35)';
-  ctx.lineWidth = 2*DPR;
-  const r = 52*DPR;
-  ctx.beginPath();
-  for (let i=0;i<6;i++){
-    const a = (Math.PI*2/6)*i;
-    ctx.lineTo(Math.cos(a)*r, Math.sin(a)*r);
-  }
-  ctx.closePath(); ctx.stroke(); ctx.restore();
-}
-
-function placeChips(cx, cy) {
-  wrap.querySelectorAll('.chip-node').forEach(n => n.remove());
-  const offsets = {
-    top:    {x:0, y:-250, align:'center'},
-    left:   {x:-310, y:-10, align:'left'},
-    right:  {x:310, y:-10, align:'right'},
-    bottom: {x:0, y:260, align:'center'}
+  const nodes = [...wrap.querySelectorAll('.node')];
+  const ring = R3; // snap to outer ring axis positions
+  const pos = {
+    setter:   { x: cx,       y: cy - ring,  place:'top'    },
+    support:  { x: cx + ring,y: cy,         place:'right'  },
+    internal: { x: cx - ring,y: cy,         place:'left'   },
+    planner:  { x: cx,       y: cy + ring,  place:'bottom' }
   };
-  agents.forEach(a=>{
-    const n = document.createElement('div');
-    n.className = 'chip-node';
-    n.textContent = a.label;
-    n.dataset.key = a.key;
-    n.dataset.side = a.side;
-    n.style.position = 'absolute';
-    n.style.padding = '12px 18px';
-    n.style.borderRadius = '18px';
-    n.style.background = 'rgba(31,28,48,.8)';
-    n.style.border = '1px solid rgba(255,255,255,.12)';
-    n.style.backdropFilter = 'blur(6px)';
-    n.style.userSelect = 'none';
-    n.style.cursor = 'pointer';
 
-    const o = offsets[a.side];
-    n.style.left = `${cx + o.x}px`;
-    n.style.top = `${cy + o.y}px`;
-    n.style.transform = 'translate(-50%,-50%)';
-
-    n.addEventListener('mouseenter', () => showTip(n, a.desc, a.side));
-    n.addEventListener('mouseleave', hideTip);
-    n.addEventListener('click', () => openDialog(a));
-    wrap.appendChild(n);
+  nodes.forEach(n=>{
+    const id = n.dataset.id;
+    const p = pos[id];
+    n.style.left = `${p.x}px`;
+    n.style.top  = `${p.y}px`;
+    n.dataset.place = p.place;
   });
-
-  const centre = document.createElement('div');
-  centre.className = 'chip-centre';
-  centre.textContent = 'Select your demo';
-  centre.style.position = 'absolute';
-  centre.style.left = `${cx}px`;
-  centre.style.top = `${cy}px`;
-  centre.style.transform = 'translate(-50%,-50%)';
-  centre.style.padding = '12px 18px';
-  centre.style.borderRadius = '18px';
-  centre.style.background = 'rgba(31,28,48,.72)';
-  centre.style.border = '1px solid rgba(255,255,255,.12)';
-  centre.style.userSelect = 'none';
-  wrap.appendChild(centre);
 }
-function showTip(node, text, side){
-  tip.className = '';
-  tip.textContent = text;
+window.addEventListener('resize', layout);
+layout();
+
+/* tooltips pinned away from labels */
+function showTip(n) {
+  const place = n.dataset.place;
+  tip.textContent = n.dataset.tip;
   tip.style.display = 'block';
-  const rect = node.getBoundingClientRect();
-  const wr = wrap.getBoundingClientRect();
-  const x = rect.left - wr.left + rect.width/2;
-  const y = rect.top - wr.top + rect.height/2;
-  tip.style.left = `${x}px`;
-  tip.style.top = `${y}px`;
-  const cls = side==='left'?'tt-left':side==='right'?'tt-right':side==='top'?'tt-top':'tt-bottom';
-  tip.classList.add('show', cls);
+  const r = n.getBoundingClientRect();
+  const pr = wrap.getBoundingClientRect();
+  let x = r.left - pr.left, y = r.top - pr.top;
+
+  if (place === 'left')  { x -= tip.offsetWidth + 16; y += r.height/2; tip.className = 'tip-left'; }
+  if (place === 'right') { x += r.width + 16;         y += r.height/2; tip.className = 'tip-right'; }
+  if (place === 'top')   { x += r.width/2;           y -= tip.offsetHeight + 16; tip.className = 'tip-top'; }
+  if (place === 'bottom'){ x += r.width/2;           y += r.height + 16; tip.className = 'tip-bottom'; }
+
+  tip.style.left = `${x}px`; tip.style.top = `${y}px`;
 }
-function hideTip(){ tip.className=''; tip.style.display='none'; }
+function hideTip(){ tip.style.display = 'none'; }
+wrap.querySelectorAll('.node').forEach(n=>{
+  n.addEventListener('mouseenter', ()=>showTip(n));
+  n.addEventListener('mouseleave', hideTip);
+  n.addEventListener('click', ()=>openDialog(n.dataset.id, n.textContent.trim()));
+});
 
-addEventListener('resize', drawOrbit);
-if (orbit) drawOrbit();
-
-/* Dialog + voice */
+/* dialog + chat */
 const overlay = document.getElementById('overlay');
-const closeBtn = document.getElementById('dlg-close');
-const sendBtn = document.getElementById('dlg-send');
-const micBtn = document.getElementById('dlg-mic');
-const input = document.getElementById('dlg-input');
-const ghost = document.getElementById('dlg-ghost');
-const chat = document.getElementById('dlg-chat');
-const title = document.getElementById('dlg-title');
-const examples = document.getElementById('dlg-examples');
+const dlgTitle = document.getElementById('dlg-title');
+const dlgChat  = document.getElementById('dlg-chat');
+const dlgInp   = document.getElementById('dlg-input');
+const dlgGhost = document.getElementById('dlg-ghost');
+const dlgSend  = document.getElementById('dlg-send');
+const dlgMic   = document.getElementById('dlg-mic');
+document.getElementById('dlg-close').onclick=()=>overlay.style.display='none';
 
-let currentAgent = null;
+const EXAMPLES = {
+  setter: [
+    'Hello, I’d like a 30-minute intro next week. Budget is £2k per month.',
+    'Could you do Tuesday 2–4pm?',
+    'Use alex@example.com for the invite.'
+  ],
+  support: ['Try: nuanced returns','Try: shipping speed','Try: weekend hours'],
+  internal:['What’s our holiday policy?','Who approves £5k spend?','How do I request a laptop?'],
+  planner: ['Draft a weekly ops summary from Airtable with KPIs',
+            'Build a handover flow from chat to HubSpot',
+            'Escalate VIP tickets and notify Slack']
+};
+const exWrap = document.getElementById('dlg-examples');
 
-function openDialog(a){
-  currentAgent = a;
-  title.textContent = a.label;
-  examples.innerHTML = '';
-  const presets = a.key==='support'
-    ? ['Nuanced returns','Shipping speed','Weekend cover']
-    : a.key==='internal'
-    ? ['Holiday policy','Sales deck link','New starter steps']
-    : a.key==='planner'
-    ? ['Try: lead flow','Try: weekly summary']
-    : ['Quick budget check','Pick a slot','Share brief'];
-  presets.forEach(p=>{
-    const c = document.createElement('div');
-    c.className = 'chip'; c.textContent = p;
-    c.addEventListener('click', ()=>addBubble('me', p));
-    examples.appendChild(c);
+function openDialog(id, title){
+  dlgTitle.textContent = title;
+  exWrap.innerHTML = '';
+  (EXAMPLES[id]||[]).forEach(t=>{
+    const b = document.createElement('span'); b.className='chip'; b.textContent=t;
+    b.onclick=()=>{ dlgInp.value=t; dlgInp.focus(); };
+    exWrap.appendChild(b);
   });
-  chat.innerHTML = '';
-  addBubble('bot', greeting(a.key));
-  overlay.style.display = 'flex';
+  dlgChat.innerHTML = '';
+  addBubble(`Hi — ask me about ${title.toLowerCase()}.`, false, true);
+  overlay.style.display='flex';
+  dlgInp.value=''; dlgGhost.textContent='';
 }
 
-function greeting(key){
-  if (key==='support') return 'Hi — ask me about returns, shipping, warranty or support hours and I’ll answer from policy.';
-  if (key==='internal') return 'Hi — ask me anything from HR and Sales docs. I’ll point you to the source when useful.';
-  if (key==='planner') return 'Hello! Tell me what you’d like to automate and I’ll sketch a clear, step-by-step workflow.';
-  return 'Hello! I can help schedule a meeting. What’s your budget or target scope to start with?';
+function addBubble(text, me=false, intro=false){
+  const div = document.createElement('div');
+  div.className = 'bubble' + (me?' me':'') + (intro?' intro':'');
+  div.textContent = text;
+  dlgChat.appendChild(div);
+  dlgChat.scrollTop = dlgChat.scrollHeight;
 }
 
-function addBubble(who, text){
-  const b = document.createElement('div');
-  b.className = 'bubble' + (who==='me'?' me':'');
-  b.textContent = text;
-  chat.appendChild(b);
-  chat.scrollTop = chat.scrollHeight;
-}
-
-closeBtn.addEventListener('click', ()=> overlay.style.display='none');
-sendBtn.addEventListener('click', ()=>{
-  if (!input.value.trim()) return;
-  stopVoice();
-  addBubble('me', input.value.trim());
-  input.value=''; ghost.textContent='';
-  // Your fetch to backend goes here if needed
-});
-
-input.addEventListener('keydown', e=>{
-  if (e.key==='Enter'){ e.preventDefault(); sendBtn.click(); }
-});
-
-/* Voice capture (Web Speech) */
-let rec = null, listening = false;
-function startVoice(){
-  if (listening) return;
+/* Voice input with “ink-flow” ghost */
+let rec=null, active=false;
+function startRec(){
+  if (active) return;
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) return;
-  rec = new SR();
-  rec.continuous = true;
-  rec.interimResults = true;
-  rec.lang = 'en-GB';
-  listening = true;
-  micBtn.classList.add('live');
-  rec.onresult = (ev)=>{
-    let final = '', interim = '';
-    for (let i=ev.resultIndex;i<ev.results.length;i++){
-      const t = ev.results[i][0].transcript;
-      if (ev.results[i].isFinal) final += t; else interim += t;
+  if (!SR) { alert('Speech recognition not supported in this browser.'); return; }
+  rec = new SR(); rec.lang='en-GB'; rec.interimResults=true; rec.continuous=true;
+  dlgMic.setAttribute('aria-pressed','true'); active=true;
+
+  let latest = '';
+  rec.onresult = e=>{
+    let interim='', final='';
+    for (const r of e.results){
+      if (r.isFinal) final += r[0].transcript;
+      else interim += r[0].transcript;
     }
-    if (final) input.value = (input.value + ' ' + final).trim();
-    ghost.textContent = interim;
+    const text = (latest + final + interim).trimStart();
+    dlgInp.value = (latest + final).trimStart();
+    dlgGhost.textContent = interim;
   };
-  rec.onend = ()=>{ if (listening) rec.start(); };
+  rec.onend = ()=>{ stopRec(); };
   rec.start();
 }
-function stopVoice(){
-  if (!listening) return;
-  listening = false;
-  micBtn.classList.remove('live');
-  ghost.textContent = '';
-  try{ rec.onend=null; rec.stop(); }catch(e){}
+function stopRec(){
+  if (!active) return;
+  try{ rec && rec.stop(); }catch{}
+  dlgMic.setAttribute('aria-pressed','false'); active=false;
+  dlgGhost.textContent='';
 }
-micBtn.addEventListener('click', ()=> listening ? stopVoice() : startVoice());
+dlgMic.onclick=()=> active ? stopRec() : startRec();
+
+dlgSend.onclick = async ()=>{
+  stopRec();
+  const text = dlgInp.value.trim();
+  if (!text) return;
+  addBubble(text, true);
+  dlgInp.value=''; dlgGhost.textContent='';
+
+  // basic echo to keep the demo snappy; wire to your backend if needed
+  try{
+    const r = await fetch(`${API_BASE}/echo`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({text})});
+    const j = await r.json().catch(()=>({text:""}));
+    addBubble(j.text || "Thanks — noted. How else can I help?");
+  }catch{
+    addBubble("Thanks — noted. How else can I help?");
+  }
+};
+
+/* keep tooltips correct after fonts render */
+setTimeout(layout, 100);
