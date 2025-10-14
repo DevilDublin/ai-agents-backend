@@ -16,7 +16,7 @@ body{
 a{color:#ecefff; text-decoration:none; transition:.2s opacity}
 a:hover{opacity:.9}
 
-/* NAV */
+/* nav */
 .nav{
   position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between;
   padding:14px 22px; background:linear-gradient(180deg, rgba(10,10,20,.85), rgba(10,10,20,0));
@@ -28,24 +28,37 @@ a:hover{opacity:.9}
 .link-chip{padding:8px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.08); background:rgba(20,20,32,.45); color:var(--fg); display:inline-block}
 .link-chip.primary{border-color:transparent; background-image:linear-gradient(90deg,var(--p1),var(--p2)); color:#0b0816; font-weight:700}
 
-/* BUTTONS */
+/* buttons */
 .btn{border:1px solid var(--panel-border); background:linear-gradient(180deg,#121228,#0f0f22); color:var(--fg);
   padding:10px 14px; border-radius:12px; cursor:pointer; transition:.2s transform,.25s box-shadow}
 .btn:hover{transform:translateY(-3px); box-shadow:0 12px 28px rgba(138,92,255,.22)}
+.btn.primary{border-color:transparent; background-image:linear-gradient(90deg,var(--p1),var(--p2)); color:#0b0816; font-weight:700}
 .btn.ghost{background:transparent}
+.btn.lg{padding:12px 18px; border-radius:14px}
 
-/* HERO */
+/* hero */
 .hero{position:relative; min-height:56vh; display:grid; place-items:center; text-align:center; padding:68px 16px 28px}
 .hero-inner{max-width:980px; z-index:2}
-h1{font-family:"Space Grotesk",sans-serif; font-size: clamp(34px, 6vw, 76px); line-height:1.04; margin:0 0 12px; color:var(--fg)}
+h1{font-family:"Space Grotesk",sans-serif; font-size: clamp(34px, 6vw, 76px); line-height:1.04; margin:0 0 14px; color:var(--fg)}
+.headline-glow .glow{
+  color:#efeaff;
+  text-shadow:
+    0 0 10px rgba(185,138,255,.45),
+    0 0 22px rgba(138,92,255,.35),
+    0 2px 0 rgba(12,10,22,.9);
+}
 p.lead{color:var(--muted); font-size:18px; max-width:840px; margin:0 auto 18px}
+.cta{margin-top:18px; display:flex; gap:10px; justify-content:center}
+
 #stars{position:fixed; inset:0; z-index:0; pointer-events:none}
 
-/* DEMOS HERO COMPACT */
-.page-demos .hero{min-height:22vh; padding:24px 16px 6px}
-.page-demos .orbit-wrap{height:680px; margin-top:0}
+/* demos hero compact + tighter section */
+.page-demos .hero{min-height:12vh; padding:16px 16px 2px}
+.page-demos .hero .lead{margin-bottom:6px}
+.section.section-tight{padding-top:10px}
+.page-demos .orbit-wrap{height:620px; margin-top:0}
 
-/* SECTIONS */
+/* sections */
 .section{position:relative; z-index:1; padding:36px 16px 80px}
 .container{max-width:1200px; margin:0 auto}
 .grid{display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:16px}
@@ -53,7 +66,7 @@ p.lead{color:var(--muted); font-size:18px; max-width:840px; margin:0 auto 18px}
 .card h3{margin:8px 0; color:var(--fg)}
 .card .meta{color:var(--muted); font-size:13px}
 
-/* ORBIT */
+/* orbit */
 .orbit-wrap{position:relative; height:720px; display:grid; place-items:center; margin-top:10px}
 #orbits{position:absolute; inset:0; z-index:2}
 #orbit-tooltip{
@@ -61,7 +74,7 @@ p.lead{color:var(--muted); font-size:18px; max-width:840px; margin:0 auto 18px}
   background:rgba(18,18,28,.9); font-size:12px; color:#fff; display:none; max-width:260px; pointer-events:none;
 }
 
-/* MODAL */
+/* modal */
 .overlay{position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:80; display:none; align-items:center; justify-content:center; padding:20px}
 .dialog{width:min(900px, 92vw); background:var(--glass); border:1px solid var(--panel-border); border-radius:18px; backdrop-filter: blur(10px) saturate(160%); box-shadow:0 20px 80px rgba(0,0,0,.55)}
 .dialog-head{display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.08); background:linear-gradient(180deg,#13122a,#0f0f22)}
@@ -75,7 +88,7 @@ p.lead{color:var(--muted); font-size:18px; max-width:840px; margin:0 auto 18px}
 .examples .chip{border:1px solid rgba(255,255,255,.12); background:linear-gradient(180deg,#13122a,#111024); padding:6px 10px; border-radius:999px; font-size:13px; cursor:pointer; transition:.2s background}
 .examples .chip:hover{background:linear-gradient(90deg,var(--p1),var(--p2)); color:#0b0816}
 
-/* COMPOSER (INPUT + MIC + SEND) */
+/* composer */
 .input-row{margin-top:12px}
 .composer{
   display:flex; align-items:center; gap:10px;
@@ -93,7 +106,6 @@ p.lead{color:var(--muted); font-size:18px; max-width:840px; margin:0 auto 18px}
   padding:0 12px; border:0; outline:0; background:transparent; color:#e9ecff; font-size:15px;
 }
 .input-shell input::placeholder{color:rgba(233,236,255,.45)}
-/* the animated overlay lives INSIDE input-shell, perfectly aligned */
 .input-ghost{
   position:absolute; inset:0; padding:0 12px; line-height:44px;
   pointer-events:none; font:inherit;
@@ -102,36 +114,21 @@ p.lead{color:var(--muted); font-size:18px; max-width:840px; margin:0 auto 18px}
   animation:wave-ink 2.2s linear infinite;
 }
 @keyframes wave-ink{from{background-position:0% 0} to{background-position:200% 0}}
-/* hide raw text while dictating, keep caret visible */
 input.asr-mode{ color:transparent; text-shadow:none; caret-color:#d9d2ff }
 
-/* MIC BUTTON */
+/* mic */
 .btn.mic{
   width:44px; height:44px; border-radius:12px; border:1px solid rgba(255,255,255,.14);
   background:radial-gradient(circle at 30% 30%, #181636, #111026);
   display:grid; place-items:center; transition:.18s transform,.18s box-shadow;
 }
 .btn.mic:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(138,92,255,.25) }
-.mic-icon{
-  width:16px; height:22px; position:relative; display:block;
-  background:linear-gradient(180deg,#eee,#c9c3ff); border-radius:8px;
-}
-.mic-icon:before{
-  content:""; position:absolute; left:50%; transform:translateX(-50%);
-  bottom:-6px; width:22px; height:10px; border:2px solid #c9c3ff; border-top:0; border-radius:0 0 14px 14px; opacity:.9;
-}
-.btn.mic.recording{
-  border-color:transparent; background:radial-gradient(circle at 30% 30%, #2a1230, #201026);
-  box-shadow:0 0 0 0 rgba(255,90,103,.55);
-  animation:mic-pulse 1.2s ease-out infinite;
-}
-@keyframes mic-pulse{
-  0%{box-shadow:0 0 0 0 rgba(255,90,103,.55)}
-  70%{box-shadow:0 0 0 16px rgba(255,90,103,0)}
-  100%{box-shadow:0 0 0 0 rgba(255,90,103,0)}
-}
+.mic-icon{ width:16px; height:22px; position:relative; display:block; background:linear-gradient(180deg,#eee,#c9c3ff); border-radius:8px; }
+.mic-icon:before{ content:""; position:absolute; left:50%; transform:translateX(-50%); bottom:-6px; width:22px; height:10px; border:2px solid #c9c3ff; border-top:0; border-radius:0 0 14px 14px; opacity:.9; }
+.btn.mic.recording{ border-color:transparent; background:radial-gradient(circle at 30% 30%, #2a1230, #201026); box-shadow:0 0 0 0 rgba(255,90,103,.55); animation:mic-pulse 1.2s ease-out infinite; }
+@keyframes mic-pulse{ 0%{box-shadow:0 0 0 0 rgba(255,90,103,.55)} 70%{box-shadow:0 0 0 16px rgba(255,90,103,0)} 100%{box-shadow:0 0 0 0 rgba(255,90,103,0)} }
 
-/* SEND BUTTON */
+/* send */
 .btn.send{
   min-width:72px; height:44px; border-radius:12px; border:1px solid transparent;
   background-image:linear-gradient(90deg,var(--p1),var(--p2));
@@ -140,7 +137,7 @@ input.asr-mode{ color:transparent; text-shadow:none; caret-color:#d9d2ff }
 }
 .btn.send:hover{ transform:translateY(-2px) }
 
-/* THINKING INDICATOR */
+/* thinking indicator */
 .orbit-thinking{
   width:40px; height:16px; margin:8px 0;
   background: radial-gradient(circle at 4px 8px, var(--p2) 2px, transparent 3px),
@@ -150,5 +147,5 @@ input.asr-mode{ color:transparent; text-shadow:none; caret-color:#d9d2ff }
 }
 @keyframes orbit-dots{0%,80%,100%{background-size:3px 3px,3px 3px,3px 3px; opacity:.4} 40%{background-size:6px 6px,6px 6px,6px 6px; opacity:1}}
 
-/* FOOTER */
+/* footer */
 .footer{padding:20px; text-align:center; border-top:1px solid rgba(255,255,255,.06); background:linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,.06))}
