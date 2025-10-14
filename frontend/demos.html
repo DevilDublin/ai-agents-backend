@@ -1,88 +1,88 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>AI Agents — Demos</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css"/>
+  <link rel="stylesheet" href="/assets/main.css" />
 </head>
 <body>
   <canvas id="stars"></canvas>
 
-  <header class="nav">
+  <nav class="nav">
     <div class="brand"><span class="spark"></span> AI Agents</div>
     <div class="links">
-      <a class="link-chip" href="index.html">Home</a>
-      <a class="link-chip" href="demos.html">Demos</a>
-      <a class="link-chip" href="contact.html">Contact</a>
+      <a class="link-chip" href="/">Home</a>
+      <a class="link-chip" href="/demos">Demos</a>
+      <a class="link-chip" href="/contact">Contact</a>
     </div>
+  </nav>
+
+  <header class="page-head">
+    <h1 class="page-title">Live Demos</h1>
+    <p class="page-subtitle">Hover to connect. Click to chat. Pause on a bot to see what it does.</p>
   </header>
 
-  <main>
-    <section class="hero hero-compact">
-      <h1>Live Demos</h1>
-      <p class="lead">Hover to connect. Click to chat. Pause on a bot to see what it does.</p>
-    </section>
+  <section class="section section--orbit">
+    <div class="orbit-wrap">
+      <svg id="orbits" viewBox="0 0 800 800" aria-hidden="true"></svg>
 
-    <section class="section section-tight">
-      <div class="container">
-        <div class="orbit-wrap" id="orbit-wrap">
-          <canvas id="orbits"></canvas>
+      <!-- Spokes -->
+      <div class="crosshair y"></div>
+      <div class="crosshair x"></div>
 
-          <div class="hub">
-            <div class="hex glow"></div>
-            <div class="hub-label">Select your demo</div>
-          </div>
-
-          <button class="node" data-id="setter"   data-tip="Books qualified consults and sends calendar invites."    style="--place:top">
-            <span class="ray"></span>Appointment Setter
-          </button>
-          <button class="node" data-id="support"  data-tip="Helps with returns, delivery and warranty."               style="--place:right">
-            <span class="ray"></span>Support Q&amp;A
-          </button>
-          <button class="node" data-id="internal" data-tip="Answers HR and Sales questions clearly."                   style="--place:left">
-            <span class="ray"></span>Internal Knowledge
-          </button>
-          <button class="node" data-id="planner"  data-tip="Drafts step-by-step automations and next actions."         style="--place:bottom">
-            <span class="ray"></span>Automation Planner
-          </button>
-
-          <div id="orbit-tooltip"></div>
-        </div>
+      <!-- Centre / hexagon + label -->
+      <div id="hex-centre" class="hex-centre">
+        <div class="hex"></div>
+        <div class="hex-glow"></div>
+        <div class="centre-label">Select your demo</div>
       </div>
-    </section>
-  </main>
 
-  <div class="overlay" id="overlay">
-    <div class="dialog">
+      <!-- Bots -->
+      <button class="bot-pill top" data-bot="appt" data-tip-pos="bottom">Appointment Setter</button>
+      <button class="bot-pill left" data-bot="internal" data-tip-pos="left">Internal Knowledge</button>
+      <button class="bot-pill right" data-bot="support" data-tip-pos="right">Support Q&A</button>
+      <button class="bot-pill bottom" data-bot="planner" data-tip-pos="top">Automation Planner</button>
+
+      <div id="orbit-tooltip" role="status" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- Chat overlay -->
+  <div id="overlay" class="overlay" aria-hidden="true">
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
       <div class="dialog-head">
-        <div class="title" id="dlg-title">Agent</div>
-        <button class="btn ghost" id="dlg-close">Close</button>
+        <div>
+          <div id="dlg-title" class="title">Title</div>
+          <div class="subtitle">Try these prompts</div>
+        </div>
+        <button id="dlg-close" class="close-btn">Close</button>
       </div>
-      <div class="dialog-body">
-        <div class="examples" id="dlg-examples"></div>
-        <div class="chat" id="dlg-chat"></div>
 
-        <div class="input-row">
-          <div class="input-shell">
-            <input id="dlg-input" placeholder="Type your message…"/>
-            <span id="dlg-ghost" aria-hidden="true"></span>
-          </div>
-          <button id="dlg-mic" class="mic-btn" aria-pressed="false" title="Voice input">
-            <span class="mic-dot"></span>
+      <div class="dialog-body">
+        <div id="chips" class="examples"></div>
+
+        <div id="chat" class="chat" aria-live="polite"></div>
+
+        <div class="input-wrap">
+          <input id="dlg-input" type="text" placeholder="Type your message…" autocomplete="off" />
+          <button id="mic" class="mic" aria-pressed="false" title="Speak">
+            <!-- mic svg -->
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+              <path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93V21H9v2h6v-2h-2v-2.07A7 7 0 0 0 19 12h-2Z" fill="currentColor"/>
+            </svg>
           </button>
-          <button class="btn primary" id="dlg-send">Send</button>
+          <button id="dlg-send" class="btn primary">Send</button>
+          <div id="dlg-ghost" class="ghost"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <footer class="footer">© <span id="year"></span> AI Agents — Tailoured AI for Business</footer>
+  <footer class="footer">© 2025 AI Agents — Tailoured AI for Business</footer>
 
-  <script src="js/site.js"></script>
-  <script src="js/demos.js"></script>
+  <script src="/assets/stars.js"></script>
+  <script src="/assets/demos.js"></script>
+  <script src="/assets/speech.js"></script>
 </body>
 </html>
