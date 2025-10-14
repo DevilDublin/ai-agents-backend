@@ -121,23 +121,24 @@ main {
 
 .hero {
   position: relative;
-  min-height: 50vh;
+  min-height: 40vh;
   display: grid;
   place-items: center;
   text-align: center;
   padding-top: 40px;
+  padding-bottom: 0;
 }
 
 .hero-inner {
   max-width: 980px;
   z-index: 2;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 h1 {
   font-family: "Space Grotesk", sans-serif;
-  font-size: clamp(34px, 6vw, 76px);
-  line-height: 1.04;
+  font-size: clamp(38px, 6vw, 78px);
+  line-height: 1.06;
   margin: 0 0 12px;
   color: var(--fg);
 }
@@ -159,7 +160,7 @@ p.lead {
 .section {
   position: relative;
   z-index: 1;
-  padding: 36px 16px 80px;
+  padding: 0 16px 80px;
 }
 
 .container {
@@ -193,10 +194,10 @@ p.lead {
 
 .orbit-wrap {
   position: relative;
-  height: 620px;
+  height: 520px;
   display: grid;
   place-items: center;
-  margin-top: -60px;
+  margin-top: -20px;
 }
 
 #orbits {
@@ -319,7 +320,7 @@ p.lead {
 
 @media (max-width: 900px) {
   .orbit-wrap {
-    height: 500px;
-    margin-top: -30px;
+    height: 440px;
+    margin-top: -10px;
   }
 }
