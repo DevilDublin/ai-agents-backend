@@ -152,35 +152,46 @@ draw();
 orbits.addEventListener("mousemove", e => {
   const rect = orbits.getBoundingClientRect();
   const mx = e.clientX - rect.left, my = e.clientY - rect.top;
-  let idx = -1;
-  nodes.forEach((n, i) => { if (Math.abs(mx - n.x) < 130 && Math.abs(my - n.y) < 34) idx = i; });
+
+  const R_HIT = 150;
+  const R_STICKY = 170;
+
+  let idx = -1, bestD = Infinity;
+  nodes.forEach((n, i) => {
+    const dx = mx - n.x, dy = my - n.y;
+    const d = Math.hypot(dx, dy);
+    const limit = (i === hoverIdx ? R_STICKY : R_HIT);
+    if (d < limit && d < bestD) { bestD = d; idx = i; }
+  });
 
   if (idx !== hoverCandidate) {
     if (hoverTimer) clearTimeout(hoverTimer);
     hoverCandidate = idx;
     if (idx > -1) {
-      hoverTimer = setTimeout(() => { hoverIdx = hoverCandidate; showTip(); }, 180);
+      hoverTimer = setTimeout(() => {
+        hoverIdx = hoverCandidate;
+        const n = nodes[hoverIdx];
+        tooltip.textContent = n.desc;
+        tooltip.style.left = (n.x + 16) + "px";
+        tooltip.style.top  = (n.y - 16) + "px";
+        tooltip.style.display = "block";
+      }, 140);
     } else {
-      hoverIdx = -1; hideTip();
+      hoverIdx = -1;
+      tooltip.style.display = "none";
     }
-  } else {
-    if (idx > -1) showTip();
-  }
-
-  function showTip() {
-    if (hoverIdx < 0) return;
-    const n = nodes[hoverIdx];
-    tooltip.textContent = n.desc;
+  } else if (idx > -1) {
+    const n = nodes[idx];
     tooltip.style.left = (n.x + 16) + "px";
-    tooltip.style.top = (n.y - 16) + "px";
-    tooltip.style.display = "block";
+    tooltip.style.top  = (n.y - 16) + "px";
   }
-  function hideTip(){ tooltip.style.display = "none"; }
 });
+
 orbits.addEventListener("mouseleave", () => {
   if (hoverTimer) clearTimeout(hoverTimer);
   hoverCandidate = -1; hoverIdx = -1; tooltip.style.display = "none";
 });
+
 orbits.addEventListener("click", () => { if (hoverIdx > -1) openAgent(nodes[hoverIdx].key); });
 
 const overlay = document.getElementById("overlay");
@@ -190,6 +201,7 @@ const dlgChat = document.getElementById("dlg-chat");
 const dlgInput = document.getElementById("dlg-input");
 const dlgSend = document.getElementById("dlg-send");
 const dlgExamples = document.getElementById("dlg-examples");
+const micBtn = document.getElementById("mic-btn");
 
 const intros = {
   appointment: "Hello there 👋 I can get a meeting in the diary. Share a budget, a time, or your e-mail and I’ll take it from there.",
@@ -227,13 +239,11 @@ function openAgent(key) {
   sessionId = "web-" + Math.random().toString(36).slice(2, 8);
   dlgTitle.textContent = ({ appointment: "Appointment Setter", support: "Support Q&A", automation: "Automation Planner", internal: "Internal Knowledge" })[key] || "Agent";
   dlgChat.innerHTML = "";
-
   const title = document.createElement("div");
   title.className = "examples-title";
   title.textContent = "Try these prompts";
   dlgExamples.innerHTML = "";
   dlgExamples.appendChild(title);
-
   (examples[key] || []).forEach(([label, fill]) => {
     const sp = document.createElement("span");
     sp.className = "chip";
@@ -242,7 +252,6 @@ function openAgent(key) {
     sp.addEventListener("click", () => { dlgInput.value = fill; dlgInput.focus(); });
     dlgExamples.appendChild(sp);
   });
-
   bubble(intros[key] || "Hello!");
   overlay.style.display = "flex";
   dlgInput.focus();
@@ -303,7 +312,6 @@ dlgSend.addEventListener("click", sendMsg);
 dlgInput.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); sendMsg(); } });
 
 let rec = null, listening = false, micAccum = "";
-const micBtn = document.getElementById("mic-btn");
 function setupASR() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) return null;
@@ -311,7 +319,6 @@ function setupASR() {
   rec.lang = "en-GB";
   rec.interimResults = true;
   rec.continuous = true;
-
   rec.onstart = () => { listening = true; micAccum = ""; setMicUI(true); };
   rec.onresult = e => {
     let interim = "";
@@ -327,12 +334,15 @@ function setupASR() {
   return rec;
 }
 function setMicUI(on) {
-  micBtn.setAttribute("aria-pressed", on ? "true" : "false");
-  micBtn.textContent = on ? "■ Stop" : "🎤";
-  micBtn.classList.toggle("recording", !!on);
+  micBtn?.setAttribute("aria-pressed", on ? "true" : "false");
+  if (micBtn) {
+    micBtn.textContent = on ? "■ Stop" : "🎤";
+    micBtn.classList.toggle("recording", !!on);
+  }
 }
 function toggleMic() {
+  if (!micBtn) return;
   if (!rec && !setupASR()) { alert("Speech recognition isn’t available in this browser."); return; }
   try { if (!listening) rec.start(); else rec.stop(); } catch {}
 }
-if (micBtn) micBtn.addEventListener("click", toggleMic);
+micBtn?.addEventListener("click", toggleMic);
