@@ -7,7 +7,9 @@ const orbits = document.getElementById("orbits");
 const ctx = orbits.getContext("2d");
 const tooltip = document.getElementById("orbit-tooltip");
 
-let W, H, t = 0, hoverIdx = -1, beamStart = 0, beamActive = false;
+let W, H, t = 0;
+let hoverIdx = -1, hoverCandidate = -1, hoverTimer = null;
+let beamStart = 0, beamActive = false;
 
 function size() {
   orbits.width = wrap.clientWidth;
@@ -97,10 +99,21 @@ function draw() {
     n.y = c.y + Math.sin(n.angle) * n.r;
   });
 
+  ctx.save();
+  ctx.strokeStyle = "rgba(185,138,255,0.10)";
+  ctx.lineWidth = 1;
+  nodes.forEach(n => {
+    ctx.beginPath();
+    ctx.moveTo(c.x, c.y);
+    ctx.lineTo(n.x, n.y);
+    ctx.stroke();
+  });
+  ctx.restore();
+
   if (hoverIdx > -1) {
     if (!beamActive) { beamActive = true; beamStart = performance.now(); }
     const n = nodes[hoverIdx];
-    const elapsed = (performance.now() - beamStart) / 600;
+    const elapsed = (performance.now() - beamStart) / 500;
     const len = Math.min(1, elapsed);
     const bx = c.x + (n.x - c.x) * len;
     const by = c.y + (n.y - c.y) * len;
@@ -141,18 +154,33 @@ orbits.addEventListener("mousemove", e => {
   const mx = e.clientX - rect.left, my = e.clientY - rect.top;
   let idx = -1;
   nodes.forEach((n, i) => { if (Math.abs(mx - n.x) < 130 && Math.abs(my - n.y) < 34) idx = i; });
-  hoverIdx = idx;
-  if (hoverIdx > -1) {
+
+  if (idx !== hoverCandidate) {
+    if (hoverTimer) clearTimeout(hoverTimer);
+    hoverCandidate = idx;
+    if (idx > -1) {
+      hoverTimer = setTimeout(() => { hoverIdx = hoverCandidate; showTip(); }, 180);
+    } else {
+      hoverIdx = -1; hideTip();
+    }
+  } else {
+    if (idx > -1) showTip();
+  }
+
+  function showTip() {
+    if (hoverIdx < 0) return;
     const n = nodes[hoverIdx];
     tooltip.textContent = n.desc;
     tooltip.style.left = (n.x + 16) + "px";
     tooltip.style.top = (n.y - 16) + "px";
     tooltip.style.display = "block";
-  } else {
-    tooltip.style.display = "none";
   }
+  function hideTip(){ tooltip.style.display = "none"; }
 });
-orbits.addEventListener("mouseleave", () => { hoverIdx = -1; tooltip.style.display = "none"; });
+orbits.addEventListener("mouseleave", () => {
+  if (hoverTimer) clearTimeout(hoverTimer);
+  hoverCandidate = -1; hoverIdx = -1; tooltip.style.display = "none";
+});
 orbits.addEventListener("click", () => { if (hoverIdx > -1) openAgent(nodes[hoverIdx].key); });
 
 const overlay = document.getElementById("overlay");
@@ -162,7 +190,6 @@ const dlgChat = document.getElementById("dlg-chat");
 const dlgInput = document.getElementById("dlg-input");
 const dlgSend = document.getElementById("dlg-send");
 const dlgExamples = document.getElementById("dlg-examples");
-const micBtn = document.getElementById("mic-btn");
 
 const intros = {
   appointment: "Hello there 👋 I can get a meeting in the diary. Share a budget, a time, or your e-mail and I’ll take it from there.",
@@ -200,7 +227,13 @@ function openAgent(key) {
   sessionId = "web-" + Math.random().toString(36).slice(2, 8);
   dlgTitle.textContent = ({ appointment: "Appointment Setter", support: "Support Q&A", automation: "Automation Planner", internal: "Internal Knowledge" })[key] || "Agent";
   dlgChat.innerHTML = "";
+
+  const title = document.createElement("div");
+  title.className = "examples-title";
+  title.textContent = "Try these prompts";
   dlgExamples.innerHTML = "";
+  dlgExamples.appendChild(title);
+
   (examples[key] || []).forEach(([label, fill]) => {
     const sp = document.createElement("span");
     sp.className = "chip";
@@ -209,6 +242,7 @@ function openAgent(key) {
     sp.addEventListener("click", () => { dlgInput.value = fill; dlgInput.focus(); });
     dlgExamples.appendChild(sp);
   });
+
   bubble(intros[key] || "Hello!");
   overlay.style.display = "flex";
   dlgInput.focus();
@@ -269,6 +303,7 @@ dlgSend.addEventListener("click", sendMsg);
 dlgInput.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); sendMsg(); } });
 
 let rec = null, listening = false, micAccum = "";
+const micBtn = document.getElementById("mic-btn");
 function setupASR() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) return null;
@@ -277,11 +312,7 @@ function setupASR() {
   rec.interimResults = true;
   rec.continuous = true;
 
-  rec.onstart = () => {
-    listening = true;
-    micAccum = "";
-    setMicUI(true);
-  };
+  rec.onstart = () => { listening = true; micAccum = ""; setMicUI(true); };
   rec.onresult = e => {
     let interim = "";
     for (let i = e.resultIndex; i < e.results.length; i++) {
@@ -291,14 +322,8 @@ function setupASR() {
     }
     dlgInput.value = (micAccum + interim).trim();
   };
-  rec.onerror = () => {
-    listening = false;
-    setMicUI(false);
-  };
-  rec.onend = () => {
-    listening = false;
-    setMicUI(false);
-  };
+  rec.onerror = () => { listening = false; setMicUI(false); };
+  rec.onend = () => { listening = false; setMicUI(false); };
   return rec;
 }
 function setMicUI(on) {
@@ -307,13 +332,7 @@ function setMicUI(on) {
   micBtn.classList.toggle("recording", !!on);
 }
 function toggleMic() {
-  if (!rec && !setupASR()) {
-    alert("Speech recognition isn’t available in this browser.");
-    return;
-  }
-  try {
-    if (!listening) rec.start();
-    else rec.stop();
-  } catch {}
+  if (!rec && !setupASR()) { alert("Speech recognition isn’t available in this browser."); return; }
+  try { if (!listening) rec.start(); else rec.stop(); } catch {}
 }
-micBtn.addEventListener("click", toggleMic);
+if (micBtn) micBtn.addEventListener("click", toggleMic);
