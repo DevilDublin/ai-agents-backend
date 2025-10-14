@@ -18,7 +18,7 @@ addEventListener("resize", size); size();
 
 function metrics() {
   const base = Math.min(W, H);
-  const outer = Math.max(280, base / 2 - 90); // smaller orbit
+  const outer = Math.max(280, base / 2 - 90);
   const mid = outer - 70;
   const inner = outer - 140;
   return { outer, mid, inner };
@@ -26,10 +26,10 @@ function metrics() {
 const centre = () => ({ x: W / 2, y: H / 2 });
 
 const nodes = [
-  { label: "Appointment Setter", key: "appointment", desc: "Arranges meetings and keeps things on track.", angle: -Math.PI / 2 },
-  { label: "Support Q&A", key: "support", desc: "Helps with returns, delivery and warranty.", angle: 0 },
-  { label: "Automation Planner", key: "automation", desc: "Designs practical workflow blueprints.", angle: Math.PI / 2 },
-  { label: "Internal Knowledge", key: "internal", desc: "Answers HR and Sales questions clearly.", angle: Math.PI }
+  { label: "Appointment Setter", key: "appointment", desc: "Arranges meetings and keeps things on track.", angle: -Math.PI / 2, factor: 0.92 },
+  { label: "Support Q&A",        key: "support",     desc: "Helps with returns, delivery and warranty.",  angle: 0,                 factor: 1.00 },
+  { label: "Automation Planner", key: "automation",  desc: "Designs practical workflow blueprints.",     angle:  Math.PI / 2,      factor: 0.92 },
+  { label: "Internal Knowledge", key: "internal",    desc: "Answers HR and Sales questions clearly.",    angle:  Math.PI,          factor: 1.00 }
 ];
 
 function roundRect(ctx, x, y, w, h, r) {
@@ -92,7 +92,7 @@ function draw() {
   });
 
   nodes.forEach(n => {
-    n.r = M.outer;
+    n.r = M.outer * (n.factor || 1);
     n.x = c.x + Math.cos(n.angle) * n.r;
     n.y = c.y + Math.sin(n.angle) * n.r;
   });
@@ -268,39 +268,52 @@ function sendMsg() {
 dlgSend.addEventListener("click", sendMsg);
 dlgInput.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); sendMsg(); } });
 
-let rec = null, listening = false;
+let rec = null, listening = false, micAccum = "";
 function setupASR() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) return null;
   rec = new SR();
   rec.lang = "en-GB";
   rec.interimResults = true;
-  rec.continuous = false;
+  rec.continuous = true;
 
-  rec.onresult = e => {
-    let finalText = "";
-    for (let i = 0; i < e.results.length; i++) {
-      const res = e.results[i];
-      if (res.isFinal) finalText += res[0].transcript;
-      else dlgInput.value = (finalText || res[0].transcript).trim();
-    }
-    if (finalText) dlgInput.value = finalText.trim();
+  rec.onstart = () => {
+    listening = true;
+    micAccum = "";
+    setMicUI(true);
   };
-  rec.onstart = () => setMicUI(true);
-  rec.onend = () => { setMicUI(false); listening = false; };
-  rec.onerror = () => { setMicUI(false); listening = false; };
+  rec.onresult = e => {
+    let interim = "";
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const res = e.results[i];
+      if (res.isFinal) micAccum += res[0].transcript + " ";
+      else interim += res[0].transcript;
+    }
+    dlgInput.value = (micAccum + interim).trim();
+  };
+  rec.onerror = () => {
+    listening = false;
+    setMicUI(false);
+  };
+  rec.onend = () => {
+    listening = false;
+    setMicUI(false);
+  };
   return rec;
 }
 function setMicUI(on) {
   micBtn.setAttribute("aria-pressed", on ? "true" : "false");
+  micBtn.textContent = on ? "■ Stop" : "🎤";
+  micBtn.classList.toggle("recording", !!on);
 }
 function toggleMic() {
-  if (!rec) {
-    if (!setupASR()) { alert("Speech recognition isn’t available in this browser."); return; }
+  if (!rec && !setupASR()) {
+    alert("Speech recognition isn’t available in this browser.");
+    return;
   }
   try {
-    if (!listening) { rec.start(); listening = true; }
-    else { rec.stop(); }
+    if (!listening) rec.start();
+    else rec.stop();
   } catch {}
 }
 micBtn.addEventListener("click", toggleMic);
