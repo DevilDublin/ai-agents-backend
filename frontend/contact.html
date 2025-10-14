@@ -22,21 +22,21 @@
   </header>
 
   <main>
-    <section class="hero hero-small">
+    <section class="hero" style="min-height:auto;padding-top:86px;padding-bottom:8px;">
       <h1>Contact</h1>
       <p class="lead">Tell us about your business and the agent you’d like to build. We’ll reply promptly.</p>
     </section>
 
-    <section class="section">
+    <section class="section" style="padding-top:18px;">
       <div class="container contact-grid">
         <div class="card">
           <h3>Start a project</h3>
-          <form>
-            <input type="text" placeholder="Your name"/>
-            <input type="email" placeholder="Your e-mail"/>
-            <input type="text" placeholder="Company / Website"/>
-            <input type="text" placeholder="Which agent? (Appointment, Support, Internal, Automation)"/>
-            <button type="submit" class="btn">Send</button>
+          <form action="#" onsubmit="event.preventDefault(); alert('Thanks — we’ll be in touch.');">
+            <input type="text" placeholder="Your name" required>
+            <input type="email" placeholder="Your e-mail" required>
+            <input type="text" placeholder="Company / Website">
+            <input type="text" placeholder="Which agent? (Appointment, Support, Internal, Automation)">
+            <button type="submit">Send</button>
           </form>
         </div>
 
