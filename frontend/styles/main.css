@@ -42,10 +42,8 @@ main{flex:1; display:block}
 .btn.primary{border-color:transparent; background-image:linear-gradient(90deg,var(--p1),var(--p2)); color:#0b0816; font-weight:700}
 .btn.ghost{background:transparent}
 
-.hero{
-  position:relative; min-height:52vh; display:grid; place-items:center; text-align:center; padding-top:54px;
-}
-.hero-compact{min-height:auto; padding-top:28px; padding-bottom:8px}
+.hero{position:relative; min-height:46vh; display:grid; place-items:center; text-align:center; padding-top:46px}
+.hero-compact{min-height:auto; padding-top:26px; padding-bottom:6px}
 .hero-inner{max-width:980px; z-index:2}
 h1{font-family:"Space Grotesk",sans-serif; font-size: clamp(38px, 6vw, 78px); line-height:1.06; margin:0 0 12px}
 .glow-1{text-shadow:0 0 26px rgba(138,92,255,.6)}
@@ -54,13 +52,13 @@ p.lead{color:var(--muted); font-size:18px; max-width:840px; margin:0 auto 18px}
 
 #stars{position:fixed; inset:0; z-index:0; pointer-events:none}
 
-.section{position:relative; z-index:1; padding:34px 16px 80px}
+.section{position:relative; z-index:1; padding:28px 16px 80px}
 .container{max-width:1200px; margin:0 auto}
 .grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:16px}
 .card{background:var(--panel); border:1px solid var(--panel-border); border-radius:16px; padding:18px; box-shadow:0 12px 40px rgba(0,0,0,.35)}
 
 .orbit-wrap{
-  position:relative; height:680px; display:grid; place-items:center; margin-top:-10px;
+  position:relative; height:600px; display:grid; place-items:center; margin-top:4px;
 }
 #orbits{position:absolute; inset:0; z-index:2}
 #orbit-tooltip{
@@ -76,44 +74,43 @@ p.lead{color:var(--muted); font-size:18px; max-width:840px; margin:0 auto 18px}
 .dialog-head{display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.08); background:linear-gradient(180deg,#13122a,#0f0f22)}
 .title{font-weight:700}
 .controls{display:flex; gap:10px; align-items:center}
-.toggle{
-  border:1px solid rgba(255,255,255,.15); background:linear-gradient(180deg,#151533,#111028);
-  color:#eaeaff; padding:8px 10px; border-radius:10px; cursor:pointer
-}
-.toggle[aria-pressed="true"]{background-image:linear-gradient(90deg,var(--p1),var(--p2)); color:#0b0816; border-color:transparent; font-weight:700}
 
 .dialog-body{padding:14px}
 .chat{
   height:380px; overflow:auto; border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:12px;
   background:linear-gradient(180deg,#0c0c18,#0b0b16)
 }
-.bubble{background:#151530; padding:10px 12px; border-radius:12px; margin:8px 0; max-width:92%; word-wrap:break-word; white-space:pre-wrap; position:relative}
+.bubble{background:#151530; padding:10px 12px; border-radius:12px; margin:8px 0; max-width:92%; word-wrap:break-word; white-space:pre-wrap}
 .bubble.me{background:#221a5a; margin-left:auto}
-.bubble .speak{position:absolute; right:8px; bottom:8px; border:none; background:transparent; color:#b98aff; cursor:pointer; font-size:16px}
-.bubble .speak:hover{color:#fff; transform:scale(1.1)}
 .examples{display:flex; flex-wrap:wrap; gap:8px; margin:8px 0}
 .examples .chip{border:1px solid rgba(255,255,255,.12); background:linear-gradient(180deg,#13122a,#111024); padding:6px 10px; border-radius:999px; font-size:13px; cursor:pointer}
 .input-row{display:flex; gap:8px; margin-top:10px}
 .input-row input{flex:1; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:#0c0a16; color:#e9ecff}
 
+.mic{
+  width:42px; height:42px; border-radius:50%; border:1px solid rgba(255,255,255,.15);
+  background:linear-gradient(180deg,#151533,#111028); color:#eaeaff; cursor:pointer
+}
+.mic[aria-pressed="true"]{background-image:linear-gradient(90deg,var(--p1),var(--p2)); color:#0b0816; border-color:transparent; box-shadow:0 0 0 6px rgba(185,138,255,.18), 0 8px 24px rgba(138,92,255,.25)}
+
 .footer{padding:20px; text-align:center; border-top:1px solid rgba(255,255,255,.06); background:linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,.06))}
 
 .orbit-thinking{
-  width:44px; height:44px; margin:12px auto; position:relative
+  width:36px; height:36px; margin:10px auto; position:relative
 }
 .orbit-thinking::before{
   content:""; position:absolute; inset:0; border-radius:50%; border:2px solid rgba(185,138,255,.4); animation:pulse 1.6s infinite ease-out
 }
 .orbit-thinking::after{
   content:""; position:absolute; width:8px; height:8px; background:radial-gradient(circle at 40% 40%, #b98aff, #8a5cff);
-  border-radius:50%; top:50%; left:50%; transform-origin:-14px center; animation:orbit 1.2s linear infinite
+  border-radius:50%; top:50%; left:50%; transform-origin:-12px center; animation:orbit 1.2s linear infinite
 }
-@keyframes orbit{from{transform:rotate(0deg) translateX(14px) rotate(0)} to{transform:rotate(360deg) translateX(14px) rotate(-360deg)}}
+@keyframes orbit{from{transform:rotate(0deg) translateX(12px) rotate(0)} to{transform:rotate(360deg) translateX(12px) rotate(-360deg)}}
 @keyframes pulse{0%{transform:scale(.9); opacity:.7} 50%{transform:scale(1.1); opacity:.3} 100%{transform:scale(.9); opacity:.7}}
 
 @media (max-width: 1000px){
-  .orbit-wrap{height:620px}
+  .orbit-wrap{height:560px}
 }
 @media (max-width: 700px){
-  .orbit-wrap{height:520px}
+  .orbit-wrap{height:500px}
 }
