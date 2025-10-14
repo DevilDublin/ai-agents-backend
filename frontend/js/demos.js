@@ -2,39 +2,31 @@ const DEFAULT_BACKEND = "https://ai-agents-backend-pejo.onrender.com";
 let BACKEND = DEFAULT_BACKEND;
 setTimeout(() => { BACKEND = window.BACKEND_URL || DEFAULT_BACKEND; }, 0);
 
-const wrap = document.getElementById("orbit-wrap");
+// ===== Canvas + layout =====
+const wrap   = document.getElementById("orbit-wrap");
 const orbits = document.getElementById("orbits");
-const ctx = orbits.getContext("2d");
+const ctx    = orbits.getContext("2d");
+const tooltip = document.getElementById("orbit-tooltip");
 
-let W=0, H=0;
-
-function sizeOnce(){
-  if(!wrap) return;
-  const w = wrap.clientWidth;
-  const h = wrap.clientHeight;
-  if(w === 0 || h === 0){
-    requestAnimationFrame(sizeOnce);
-    return;
-  }
-  orbits.width  = w;
-  orbits.height = h;
-  W = w; H = h;
-}
-function size(){ sizeOnce(); }
-addEventListener("resize", size);
-
-if (document.readyState === "complete") size();
-else window.addEventListener("load", size);
-
-let W, H, t = 0;
+let W=0, H=0, t=0;
 let hoverIdx = -1, hoverCandidate = -1, hoverTimer = null;
 let beamStart = 0, beamActive = false;
 
-function size(){ orbits.width = wrap.clientWidth; orbits.height = wrap.clientHeight; W=orbits.width; H=orbits.height; }
-addEventListener("resize", size); size();
+function sizeOnce(){
+  if(!wrap) return;
+  const w = wrap.clientWidth  || window.innerWidth;
+  const h = wrap.clientHeight || Math.min(640, window.innerHeight - 160);
+  orbits.width  = w;
+  orbits.height = h;
+  W=w; H=h;
+}
+function size(){ sizeOnce(); }
+addEventListener("resize", size);
+if (document.readyState === "complete") size();
+else window.addEventListener("load", size);
 
-function metrics(){ const base=Math.min(W,H); const outer=Math.max(280, base/2 - 90); const mid=outer-70; const inner=outer-140; return{outer,mid,inner}; }
-const centre = () => ({x: W/2, y: H/2});
+function metrics(){ const base=Math.min(W,H); const outer=Math.max(280, base/2 - 90); return{ outer, mid: outer-70, inner: outer-140 }; }
+const centre = () => ({ x: W/2, y: H/2 });
 
 const NODE_W = 240, NODE_H = 48, NODE_R = 14;
 
@@ -74,6 +66,7 @@ function drawHoloCore(c, outer){
 }
 
 function draw(){
+  if(!W || !H) { requestAnimationFrame(draw); return; }
   t+=0.016; ctx.clearRect(0,0,W,H);
   const c=centre(); const M=metrics();
 
@@ -92,14 +85,12 @@ function draw(){
   if(hoverIdx>-1){
     if(!beamActive){ beamActive=true; beamStart=performance.now(); }
     const n=nodes[hoverIdx];
-    const elapsed=(performance.now()-beamStart)/500; const len=Math.min(1,elapsed);
+    const len=Math.min(1,(performance.now()-beamStart)/500);
     const bx=c.x+(n.x-c.x)*len, by=c.y+(n.y-c.y)*len;
     const grad=ctx.createLinearGradient(c.x,c.y,bx,by);
-    grad.addColorStop(0,'rgba(185,138,255,0)');
-    grad.addColorStop(1,'rgba(185,138,255,0.85)');
-    ctx.strokeStyle=grad; ctx.lineWidth=2;
-    ctx.beginPath(); ctx.moveTo(c.x,c.y); ctx.lineTo(bx,by); ctx.stroke();
-  } else { beamActive=false; }
+    grad.addColorStop(0,'rgba(185,138,255,0)'); grad.addColorStop(1,'rgba(185,138,255,0.85)');
+    ctx.strokeStyle=grad; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(c.x,c.y); ctx.lineTo(bx,by); ctx.stroke();
+  } else beamActive=false;
 
   nodes.forEach((n,i)=>{
     const dim=(hoverIdx>-1 && hoverIdx!==i);
@@ -118,61 +109,39 @@ function draw(){
   drawHoloCore(c, M.outer);
   requestAnimationFrame(draw);
 }
-draw();
+requestAnimationFrame(draw);
 
-/* tooltip placement: never cover labels */
+// ===== Tooltip logic =====
 function placeTooltipForNode(n){
   tooltip.style.display='block';
   const pad = 16;
-  const w = tooltip.offsetWidth || 200;
+  const w = tooltip.offsetWidth || 220;
   const h = tooltip.offsetHeight || 36;
-  const leftEdge = n.x - NODE_W/2;
+  const leftEdge  = n.x - NODE_W/2;
   const rightEdge = n.x + NODE_W/2;
 
-  if(n.key==='appointment'){
-    tooltip.style.left = (n.x - w/2) + 'px';
-    tooltip.style.top  = (n.y + NODE_H/2 + pad) + 'px';
-    return;
-  }
-  if(n.key==='automation'){
-    tooltip.style.left = (n.x - w/2) + 'px';
-    tooltip.style.top  = (n.y - NODE_H/2 - h - pad) + 'px';
-    return;
-  }
-  if(n.key==='internal'){
-    tooltip.style.left = (leftEdge - w - pad) + 'px';
-    tooltip.style.top  = (n.y - h/2) + 'px';
-    return;
-  }
-  if(n.key==='support'){
-    tooltip.style.left = (rightEdge + pad) + 'px';
-    tooltip.style.top  = (n.y - h/2) + 'px';
-    return;
-  }
+  if(n.key==='appointment'){ tooltip.style.left=(n.x - w/2)+'px'; tooltip.style.top =(n.y + NODE_H/2 + pad)+'px'; return; }
+  if(n.key==='automation'){  tooltip.style.left=(n.x - w/2)+'px'; tooltip.style.top =(n.y - NODE_H/2 - h - pad)+'px'; return; }
+  if(n.key==='internal'){    tooltip.style.left=(leftEdge - w - pad)+'px'; tooltip.style.top=(n.y - h/2)+'px'; return; }
+  if(n.key==='support'){     tooltip.style.left=(rightEdge + pad)+'px'; tooltip.style.top=(n.y - h/2)+'px'; return; }
 }
+function clearTooltip(){ tooltip.style.display='none'; tooltip.textContent=''; }
 
-function clearTooltip(){
-  tooltip.style.display='none';
-  tooltip.textContent='';
-}
-
-/* anti-flicker hover with short debounce, and reset on move */
 orbits.addEventListener('mousemove', e=>{
   const rect=orbits.getBoundingClientRect();
   const mx=e.clientX-rect.left, my=e.clientY-rect.top;
   const R_HIT=150, R_STICKY=170;
 
-  let idx=-1, bestD=Infinity;
+  let idx=-1, best=Infinity;
   nodes.forEach((n,i)=>{
-    const dx=mx-n.x, dy=my-n.y; const d=Math.hypot(dx,dy);
-    const limit=(i===hoverIdx?R_STICKY:R_HIT);
-    if(d<limit && d<bestD){ bestD=d; idx=i; }
+    const d=Math.hypot(mx-n.x, my-n.y);
+    const lim=(i===hoverIdx?R_STICKY:R_HIT);
+    if(d<lim && d<best){ best=d; idx=i; }
   });
 
   if(idx!==hoverCandidate){
     if(hoverTimer) clearTimeout(hoverTimer);
-    hoverCandidate=idx;
-    clearTooltip();
+    hoverCandidate=idx; clearTooltip();
     if(idx>-1){
       hoverTimer=setTimeout(()=>{
         hoverIdx=hoverCandidate;
@@ -180,20 +149,13 @@ orbits.addEventListener('mousemove', e=>{
         tooltip.textContent=n.desc;
         placeTooltipForNode(n);
       },110);
-    }else{
-      hoverIdx=-1;
-    }
-  }else if(idx>-1){
-    placeTooltipForNode(nodes[idx]);
-  }
+    } else hoverIdx=-1;
+  } else if(idx>-1) placeTooltipForNode(nodes[idx]);
 });
-orbits.addEventListener('mouseleave', ()=>{
-  if(hoverTimer) clearTimeout(hoverTimer);
-  hoverCandidate=-1; hoverIdx=-1; clearTooltip();
-});
+orbits.addEventListener('mouseleave', ()=>{ if(hoverTimer) clearTimeout(hoverTimer); hoverCandidate=-1; hoverIdx=-1; clearTooltip(); });
 orbits.addEventListener('click', ()=>{ if(hoverIdx>-1) openAgent(nodes[hoverIdx].key); });
 
-/* modal + chat */
+// ===== Modal chat, examples, speech etc. (unchanged UI IDs) =====
 const overlay=document.getElementById('overlay');
 const dlgClose=document.getElementById('dlg-close');
 const dlgTitle=document.getElementById('dlg-title');
@@ -201,8 +163,8 @@ const dlgChat=document.getElementById('dlg-chat');
 const dlgInput=document.getElementById('dlg-input');
 const dlgSend=document.getElementById('dlg-send');
 const dlgExamples=document.getElementById('dlg-examples');
-const micBtn=document.getElementById('mic-btn');
-const ghost=document.getElementById('dlg-ghost');
+const micBtn=document.getElementById('mic-btn');       // <— single declaration
+const ghost=document.getElementById('dlg-ghost');      // <— single declaration
 
 const intros={
   appointment:"Hello there 👋 I can get a meeting in the diary. Share a budget, a time, or your e-mail and I’ll take it from there.",
@@ -216,7 +178,6 @@ const examples={
   automation:[["Lead flow","When a lead completes a form, enrich, score, push to CRM, then post to Slack and e-mail sales."],["Ops summary","Create a weekly ops summary from Airtable and e-mail it to the team with KPIs."]],
   internal:[["HR: holiday","What’s the holiday policy?"],["Sales: stages","What are the sales stages?"]]
 };
-let current=null, sessionId=null;
 
 function md(html){
   return html.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
@@ -233,17 +194,15 @@ function bubble(text, me=false){
   dlgChat.appendChild(div); dlgChat.scrollTop=dlgChat.scrollHeight;
 }
 function showThinking(){
-  const think=document.createElement('div');
-  think.className='orbit-thinking';
-  dlgChat.appendChild(think); dlgChat.scrollTop=dlgChat.scrollHeight;
-  return think;
+  const think=document.createElement('div'); think.className='orbit-thinking';
+  dlgChat.appendChild(think); dlgChat.scrollTop=dlgChat.scrollHeight; return think;
 }
 
+let current=null, sessionId=null;
 function openAgent(key){
   current=key; sessionId='web-'+Math.random().toString(36).slice(2,8);
   dlgTitle.textContent=({appointment:'Appointment Setter',support:'Support Q&A',automation:'Automation Planner',internal:'Internal Knowledge'})[key]||'Agent';
   dlgChat.innerHTML='';
-
   dlgExamples.innerHTML='';
   const title=document.createElement('div'); title.className='examples-title'; title.textContent='Try these prompts';
   dlgExamples.appendChild(title);
@@ -252,7 +211,6 @@ function openAgent(key){
     sp.addEventListener('click',()=>{ dlgInput.value=fill; dlgInput.focus(); });
     dlgExamples.appendChild(sp);
   });
-
   bubble(intros[key]||'Hello!');
   overlay.style.display='flex'; dlgInput.focus();
 }
@@ -265,12 +223,10 @@ function postJSON(url, body){
   return fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:ctl.signal})
     .then(async r=>{ clearTimeout(t); if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); });
 }
-
 function sendMsg(){
   const msg=dlgInput.value.trim(); if(!msg || !current) return;
   if(listening && rec) rec.stop();
   bubble(msg,true); dlgInput.value=''; ghost.style.display='none'; dlgInput.classList.remove('asr-mode');
-
   const think=showThinking();
   const endpoints={appointment:'/appointment',support:'/support',automation:'/automation',internal:'/internal'};
   setTimeout(()=>{ postJSON(`${BACKEND}${endpoints[current]}`,{message:msg, sessionId})
@@ -278,33 +234,28 @@ function sendMsg(){
     .catch(()=>{ think.remove(); bubble("Sorry, I’m having a little trouble connecting. Let’s try that again in a moment."); });
   },600);
 }
-document.getElementById('dlg-send').addEventListener('click', sendMsg);
-document.getElementById('dlg-input').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); sendMsg(); } });
+dlgSend.addEventListener('click', sendMsg);
+dlgInput.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); sendMsg(); } });
 
-/* speech recognition with centred glow-type ink */
+// ===== Speech recognition (single declarations) =====
 let rec=null, listening=false, micAccum="";
-const micBtn=document.getElementById('mic-btn');
-const ghost=document.getElementById('dlg-ghost');
-
 function setupASR(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR) return null;
   rec=new SR(); rec.lang='en-GB'; rec.interimResults=true; rec.continuous=true;
-
   rec.onstart=()=>{ listening=true; micAccum=''; setMicUI(true); ghost.textContent=''; ghost.style.display='block'; dlgInput.classList.add('asr-mode'); };
   rec.onresult=e=>{
     let interim=''; for(let i=e.resultIndex;i<e.results.length;i++){
       const r=e.results[i]; if(r.isFinal) micAccum+=r[0].transcript+' '; else interim+=r[0].transcript;
     }
     const text=(micAccum+interim).trim();
-    ghost.textContent=text;
-    dlgInput.value=text;
+    ghost.textContent=text; dlgInput.value=text;
   };
   rec.onerror=()=>{ listening=false; setMicUI(false); ghost.style.display='none'; dlgInput.classList.remove('asr-mode'); };
   rec.onend=()=>{ listening=false; setMicUI(false); ghost.style.display='none'; dlgInput.classList.remove('asr-mode'); };
   return rec;
 }
-function setMicUI(on){ micBtn?.setAttribute('aria-pressed', on?'true':'false'); micBtn?.classList.toggle('recording', !!on); }
+function setMicUI(on){ if(!micBtn) return; micBtn.setAttribute('aria-pressed', on?'true':'false'); micBtn.classList.toggle('recording', !!on); }
 function toggleMic(){
   if(!rec && !setupASR()){ alert('Speech recognition isn’t available in this browser.'); return; }
   try{ if(!listening) rec.start(); else rec.stop(); }catch{}
