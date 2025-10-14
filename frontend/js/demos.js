@@ -202,6 +202,13 @@ const dlgInput = document.getElementById("dlg-input");
 const dlgSend = document.getElementById("dlg-send");
 const dlgExamples = document.getElementById("dlg-examples");
 const micBtn = document.getElementById("mic-btn");
+const inputRow = document.querySelector(".input-row");
+
+// ghost overlay for wavy ink while dictating
+const ghost = document.createElement("div");
+ghost.id = "dlg-ghost";
+ghost.className = "input-ghost";
+inputRow.appendChild(ghost);
 
 const intros = {
   appointment: "Hello there 👋 I can get a meeting in the diary. Share a budget, a time, or your e-mail and I’ll take it from there.",
@@ -298,8 +305,15 @@ function postJSON(url, body) {
 function sendMsg() {
   const msg = dlgInput.value.trim();
   if (!msg || !current) return;
+
+  // stop the mic if it’s running
+  if (listening && rec) rec.stop();
+
   bubble(msg, true);
   dlgInput.value = "";
+  ghost.style.display = "none";
+  dlgInput.classList.remove("asr-mode");
+
   const think = showThinking();
   const endpoints = { appointment: "/appointment", support: "/support", automation: "/automation", internal: "/internal" };
   setTimeout(() => {
@@ -310,6 +324,8 @@ function sendMsg() {
 }
 dlgSend.addEventListener("click", sendMsg);
 dlgInput.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); sendMsg(); } });
+// if user types manually, hide the fancy ghost
+dlgInput.addEventListener("input", () => { if (!listening) ghost.style.display = "none"; });
 
 let rec = null, listening = false, micAccum = "";
 function setupASR() {
@@ -319,7 +335,14 @@ function setupASR() {
   rec.lang = "en-GB";
   rec.interimResults = true;
   rec.continuous = true;
-  rec.onstart = () => { listening = true; micAccum = ""; setMicUI(true); };
+
+  rec.onstart = () => {
+    listening = true; micAccum = "";
+    setMicUI(true);
+    ghost.textContent = "";
+    ghost.style.display = "block";
+    dlgInput.classList.add("asr-mode");
+  };
   rec.onresult = e => {
     let interim = "";
     for (let i = e.resultIndex; i < e.results.length; i++) {
@@ -327,10 +350,22 @@ function setupASR() {
       if (res.isFinal) micAccum += res[0].transcript + " ";
       else interim += res[0].transcript;
     }
-    dlgInput.value = (micAccum + interim).trim();
+    const text = (micAccum + interim).trim();
+    ghost.textContent = text;        // wavy ghost rendering
+    dlgInput.value = text;           // keep the real value in sync
   };
-  rec.onerror = () => { listening = false; setMicUI(false); };
-  rec.onend = () => { listening = false; setMicUI(false); };
+  rec.onerror = () => {
+    listening = false;
+    setMicUI(false);
+    ghost.style.display = "none";
+    dlgInput.classList.remove("asr-mode");
+  };
+  rec.onend = () => {
+    listening = false;
+    setMicUI(false);
+    ghost.style.display = "none";
+    dlgInput.classList.remove("asr-mode");
+  };
   return rec;
 }
 function setMicUI(on) {
