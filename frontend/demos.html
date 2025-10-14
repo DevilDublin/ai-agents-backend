@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>AI Agents — Demos</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -10,59 +10,57 @@
   <link rel="stylesheet" href="styles/main.css"/>
 </head>
 <body>
-  <canvas id="stars"></canvas>
+<canvas id="stars"></canvas>
 
-  <header class="nav">
-    <div class="brand"><span class="spark"></span> AI Agents</div>
-    <nav class="links">
-      <a class="link-chip" href="index.html">Home</a>
-      <a class="link-chip" href="demos.html">Demos</a>
-      <a class="link-chip" href="contact.html">Contact</a>
-    </nav>
-  </header>
+<header class="nav">
+  <div class="brand"><span class="spark"></span> AI Agents</div>
+  <nav class="links">
+    <a class="link-chip" href="index.html">Home</a>
+    <a class="link-chip" href="demos.html">Demos</a>
+    <a class="link-chip" href="contact.html">Contact</a>
+  </nav>
+</header>
 
-  <main>
-    <section class="hero hero-compact">
-      <h1 class="glow">Live Demos</h1>
-      <p class="lead small">Hover to connect. Click to chat. Pause on a bot to see what it does.</p>
-    </section>
+<main>
+  <section class="hero hero-compact">
+    <h1>Live Demos</h1>
+    <p class="lead small">Hover to connect. Click to chat. Pause on a bot to see what it does.</p>
+  </section>
 
-    <section class="section">
-      <div class="container">
-        <div class="orbit-wrap" id="orbit-wrap">
-          <canvas id="orbits"></canvas>
-          <div id="orbit-tooltip"></div>
-        </div>
+  <section class="section section-tight">
+    <div class="container">
+      <div class="orbit-wrap" id="orbit-wrap">
+        <canvas id="orbits"></canvas>
+        <div id="orbit-tooltip"></div>
       </div>
-    </section>
-  </main>
+    </div>
+  </section>
+</main>
 
-  <div class="overlay" id="overlay">
-    <div class="dialog">
-      <div class="dialog-head">
-        <div class="title" id="dlg-title">Agent</div>
-        <div class="voice-row">
-          <button class="btn mic" id="dlg-mic" title="Start/Stop voice">🎤</button>
-          <button class="btn ghost" id="dlg-close">Close</button>
+<div class="overlay" id="overlay">
+  <div class="dialog">
+    <div class="dialog-head">
+      <div class="title" id="dlg-title">Agent</div>
+      <button class="btn ghost" id="dlg-close">Close</button>
+    </div>
+    <div class="dialog-body">
+      <div class="examples" id="dlg-examples"></div>
+      <div class="chat" id="dlg-chat"></div>
+      <div class="input-row">
+        <div class="input-shell">
+          <input id="dlg-input" placeholder="Type your message…" />
+          <span id="dlg-ghost"></span>
         </div>
-      </div>
-      <div class="dialog-body">
-        <div class="examples" id="dlg-examples">
-          <div class="examples-title" id="dlg-examples-title"></div>
-        </div>
-        <div class="chat" id="dlg-chat"></div>
-        <div class="input-row">
-          <input id="dlg-input" placeholder="Type your message…"/>
-          <button class="btn primary" id="dlg-send">Send</button>
-        </div>
+        <button id="dlg-mic" aria-label="Start voice" class="mic"></button>
+        <button class="btn" id="dlg-send">Send</button>
       </div>
     </div>
   </div>
+</div>
 
-  <footer class="footer">© <span id="year"></span> AI Agents — Tailoured AI for Business</footer>
-
-  <script src="js/site.js"></script>
-  <script src="js/config.js"></script>
-  <script src="js/demos.js"></script>
+<footer class="footer">© <span id="year"></span> AI Agents — Tailoured AI for Business</footer>
+<script src="js/site.js"></script>
+<script src="js/config.js"></script>
+<script src="js/demos.js"></script>
 </body>
 </html>
