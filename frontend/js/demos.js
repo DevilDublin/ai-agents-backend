@@ -30,23 +30,37 @@ function drawHoloCore(c, outer){
   const pulse = 1 + Math.sin(t*2)*0.06;
   const glowR = Math.min(outer*0.52,108)*pulse;
   const g = ctx.createRadialGradient(c.x,c.y,0,c.x,c.y,glowR);
-  g.addColorStop(0,'rgba(185,138,255,0.55)'); g.addColorStop(0.6,'rgba(185,138,255,0.14)'); g.addColorStop(1,'rgba(185,138,255,0)');
+  g.addColorStop(0,'rgba(185,138,255,0.55)');
+  g.addColorStop(0.6,'rgba(185,138,255,0.14)');
+  g.addColorStop(1,'rgba(185,138,255,0)');
   ctx.fillStyle=g; ctx.beginPath(); ctx.arc(c.x,c.y,glowR,0,Math.PI*2); ctx.fill();
 
   const hexR = Math.min(outer*0.32,86);
   ctx.strokeStyle='rgba(255,255,255,0.16)'; ctx.lineWidth=2; ctx.beginPath();
-  for(let i=0;i<6;i++){ const a=(Math.PI/3)*i+0.08*Math.sin(t*0.6); const x=c.x+Math.cos(a)*hexR, y=c.y+Math.sin(a)*hexR; i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+  for(let i=0;i<6;i++){
+    const a=(Math.PI/3)*i+0.08*Math.sin(t*0.6);
+    const x=c.x+Math.cos(a)*hexR, y=c.y+Math.sin(a)*hexR;
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
   ctx.closePath(); ctx.stroke();
 
-  ctx.save(); ctx.fillStyle='#EDEBFF'; ctx.font='600 20px "Space Grotesk", Inter, system-ui'; ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText('Select your demo', c.x, c.y); ctx.restore();
+  ctx.save();
+  ctx.fillStyle='#EDEBFF';
+  ctx.font='600 20px "Space Grotesk", Inter, system-ui';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('Select your demo', c.x, c.y);
+  ctx.restore();
 }
 
 function draw(){
   t+=0.016; ctx.clearRect(0,0,W,H);
   const c=centre(); const M=metrics();
 
-  [M.inner,M.mid,M.outer].forEach((Rr,i)=>{ ctx.beginPath(); ctx.arc(c.x,c.y,Rr,0,Math.PI*2); ctx.strokeStyle=`rgba(185,138,255,${0.05+i*0.02})`; ctx.setLineDash([4,6]); ctx.stroke(); ctx.setLineDash([]); });
+  [M.inner,M.mid,M.outer].forEach((Rr,i)=>{
+    ctx.beginPath(); ctx.arc(c.x,c.y,Rr,0,Math.PI*2);
+    ctx.strokeStyle=`rgba(185,138,255,${0.05+i*0.02})`;
+    ctx.setLineDash([4,6]); ctx.stroke(); ctx.setLineDash([]);
+  });
 
   nodes.forEach(n=>{ n.r=M.outer*(n.factor||1); n.x=c.x+Math.cos(n.angle)*n.r; n.y=c.y+Math.sin(n.angle)*n.r; });
 
@@ -56,16 +70,28 @@ function draw(){
 
   if(hoverIdx>-1){
     if(!beamActive){ beamActive=true; beamStart=performance.now(); }
-    const n=nodes[hoverIdx]; const elapsed=(performance.now()-beamStart)/500; const len=Math.min(1,elapsed);
+    const n=nodes[hoverIdx];
+    const elapsed=(performance.now()-beamStart)/500; const len=Math.min(1,elapsed);
     const bx=c.x+(n.x-c.x)*len, by=c.y+(n.y-c.y)*len;
-    const grad=ctx.createLinearGradient(c.x,c.y,bx,by); grad.addColorStop(0,'rgba(185,138,255,0)'); grad.addColorStop(1,'rgba(185,138,255,0.85)');
-    ctx.strokeStyle=grad; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(c.x,c.y); ctx.lineTo(bx,by); ctx.stroke();
+    const grad=ctx.createLinearGradient(c.x,c.y,bx,by);
+    grad.addColorStop(0,'rgba(185,138,255,0)');
+    grad.addColorStop(1,'rgba(185,138,255,0.85)');
+    ctx.strokeStyle=grad; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(c.x,c.y); ctx.lineTo(bx,by); ctx.stroke();
   } else { beamActive=false; }
 
-  nodes.forEach((n,i)=>{ const dim=(hoverIdx>-1 && hoverIdx!==i);
-    ctx.globalAlpha=dim?0.52:1; ctx.fillStyle=dim?'rgba(26,22,44,.55)':'rgba(26,22,44,.9)'; ctx.strokeStyle='rgba(255,255,255,.10)';
+  nodes.forEach((n,i)=>{
+    const dim=(hoverIdx>-1 && hoverIdx!==i);
+    ctx.globalAlpha=dim?0.52:1;
+    ctx.fillStyle=dim?'rgba(26,22,44,.55)':'rgba(26,22,44,.9)';
+    ctx.strokeStyle='rgba(255,255,255,.10)';
     roundRect(ctx, n.x-120, n.y-24, 240, 48, 14); ctx.fill(); ctx.stroke();
-    ctx.globalAlpha=dim?0.7:1; ctx.fillStyle='#ECECFF'; ctx.font='600 15px Inter, system-ui'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(n.label, n.x, n.y); ctx.globalAlpha=1;
+    ctx.globalAlpha=dim?0.7:1;
+    ctx.fillStyle='#ECECFF';
+    ctx.font='600 15px Inter, system-ui';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(n.label, n.x, n.y);
+    ctx.globalAlpha=1;
   });
 
   drawHoloCore(c, M.outer);
@@ -73,23 +99,70 @@ function draw(){
 }
 draw();
 
-/* hover + tooltip */
+/* Tooltip placement that avoids covering labels */
+function placeTooltipForNode(n){
+  tooltip.style.display='block';
+  tooltip.style.left='-9999px'; tooltip.style.top='-9999px';
+  const pad = 18;
+  const w = tooltip.offsetWidth || 180;
+  const h = tooltip.offsetHeight || 34;
+
+  if(n.key==='appointment'){
+    tooltip.style.left = (n.x - w/2) + 'px';
+    tooltip.style.top  = (n.y + 30) + 'px';
+    return;
+  }
+  if(n.key==='automation'){
+    tooltip.style.left = (n.x - w/2) + 'px';
+    tooltip.style.top  = (n.y - h - 30) + 'px';
+    return;
+  }
+  if(n.key==='internal'){
+    tooltip.style.left = (n.x - w - pad) + 'px';
+    tooltip.style.top  = (n.y - h/2) + 'px';
+    return;
+  }
+  if(n.key==='support'){
+    tooltip.style.left = (n.x + pad) + 'px';
+    tooltip.style.top  = (n.y - h/2) + 'px';
+    return;
+  }
+}
+
+/* hover logic with small hysteresis to stop flicker */
 orbits.addEventListener('mousemove', e=>{
-  const rect=orbits.getBoundingClientRect(); const mx=e.clientX-rect.left, my=e.clientY-rect.top;
+  const rect=orbits.getBoundingClientRect();
+  const mx=e.clientX-rect.left, my=e.clientY-rect.top;
   const R_HIT=150, R_STICKY=170;
+
   let idx=-1, bestD=Infinity;
-  nodes.forEach((n,i)=>{ const dx=mx-n.x, dy=my-n.y; const d=Math.hypot(dx,dy); const limit=(i===hoverIdx?R_STICKY:R_HIT); if(d<limit && d<bestD){ bestD=d; idx=i; } });
+  nodes.forEach((n,i)=>{
+    const dx=mx-n.x, dy=my-n.y; const d=Math.hypot(dx,dy);
+    const limit=(i===hoverIdx?R_STICKY:R_HIT);
+    if(d<limit && d<bestD){ bestD=d; idx=i; }
+  });
+
   if(idx!==hoverCandidate){
     if(hoverTimer) clearTimeout(hoverTimer);
     hoverCandidate=idx;
     if(idx>-1){
-      hoverTimer=setTimeout(()=>{ hoverIdx=hoverCandidate; const n=nodes[hoverIdx];
-        tooltip.textContent=n.desc; tooltip.style.left=(n.x+16)+'px'; tooltip.style.top=(n.y-16)+'px'; tooltip.style.display='block';
-      },140);
-    } else { hoverIdx=-1; tooltip.style.display='none'; }
-  } else if(idx>-1){ const n=nodes[idx]; tooltip.style.left=(n.x+16)+'px'; tooltip.style.top=(n.y-16)+'px'; }
+      hoverTimer=setTimeout(()=>{
+        hoverIdx=hoverCandidate;
+        const n=nodes[hoverIdx];
+        tooltip.textContent=n.desc;
+        placeTooltipForNode(n);
+      },120);
+    }else{
+      hoverIdx=-1; tooltip.style.display='none';
+    }
+  }else if(idx>-1){
+    placeTooltipForNode(nodes[idx]);
+  }
 });
-orbits.addEventListener('mouseleave', ()=>{ if(hoverTimer) clearTimeout(hoverTimer); hoverCandidate=-1; hoverIdx=-1; tooltip.style.display='none'; });
+orbits.addEventListener('mouseleave', ()=>{
+  if(hoverTimer) clearTimeout(hoverTimer);
+  hoverCandidate=-1; hoverIdx=-1; tooltip.style.display='none';
+});
 orbits.addEventListener('click', ()=>{ if(hoverIdx>-1) openAgent(nodes[hoverIdx].key); });
 
 /* modal + chat */
@@ -123,12 +196,15 @@ function openAgent(key){
   dlgChat.innerHTML='';
   const title=document.createElement('div'); title.className='examples-title'; title.textContent='Try these prompts';
   dlgExamples.innerHTML=''; dlgExamples.appendChild(title);
-  (examples[key]||[]).forEach(([label,fill])=>{ const sp=document.createElement('span'); sp.className='chip'; sp.textContent=label; sp.dataset.fill=fill; sp.addEventListener('click',()=>{ dlgInput.value=fill; dlgInput.focus(); }); dlgExamples.appendChild(sp); });
+  (examples[key]||[]).forEach(([label,fill])=>{
+    const sp=document.createElement('span'); sp.className='chip'; sp.textContent=label; sp.dataset.fill=fill;
+    sp.addEventListener('click',()=>{ dlgInput.value=fill; dlgInput.focus(); });
+    dlgExamples.appendChild(sp);
+  });
   bubble(intros[key]||'Hello!');
   overlay.style.display='flex';
   dlgInput.focus();
 }
-
 function closeDlg(){ overlay.style.display='none'; current=null; }
 dlgClose.addEventListener('click', closeDlg);
 overlay.addEventListener('click', e=>{ if(e.target===overlay) closeDlg(); });
@@ -139,9 +215,18 @@ function md(html){
     .replace(/(?:^|\n)[-\u2022]\s+(.*)/g,(m,a)=>`<li>${a}</li>`).replace(/(<li>.*<\/li>)(?![\s\S]*<li>)/g,"<ul>$1</ul>")
     .replace(/\n{2,}/g,"<br><br>").replace(/\n/g,"<br>");
 }
-function bubble(text, me=false){ const div=document.createElement('div'); div.className='bubble'+(me?' me':''); div.innerHTML=md(text); dlgChat.appendChild(div); dlgChat.scrollTop=dlgChat.scrollHeight; }
-function showThinking(){ const think=document.createElement('div'); think.className='orbit-thinking'; dlgChat.appendChild(think); dlgChat.scrollTop=dlgChat.scrollHeight; return think; }
-
+function bubble(text, me=false){
+  const div=document.createElement('div');
+  div.className='bubble'+(me?' me':'');
+  div.innerHTML=md(text);
+  dlgChat.appendChild(div); dlgChat.scrollTop=dlgChat.scrollHeight;
+}
+function showThinking(){
+  const think=document.createElement('div');
+  think.className='orbit-thinking';
+  dlgChat.appendChild(think); dlgChat.scrollTop=dlgChat.scrollHeight;
+  return think;
+}
 function postJSON(url, body){
   const ctl=new AbortController(); const t=setTimeout(()=>ctl.abort(),20000);
   return fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:ctl.signal})
@@ -151,8 +236,10 @@ function postJSON(url, body){
 /* send */
 function sendMsg(){
   const msg=dlgInput.value.trim(); if(!msg || !current) return;
-  if(listening && rec) rec.stop();  // stop mic on send
-  bubble(msg,true); dlgInput.value=''; ghost.style.display='none'; dlgInput.classList.remove('asr-mode');
+  if(listening && rec) rec.stop();             // stop mic on send
+  bubble(msg,true); dlgInput.value='';
+  ghost.style.display='none'; dlgInput.classList.remove('asr-mode');
+
   const think=showThinking();
   const endpoints={appointment:'/appointment',support:'/support',automation:'/automation',internal:'/internal'};
   setTimeout(()=>{ postJSON(`${BACKEND}${endpoints[current]}`,{message:msg, sessionId})
@@ -163,7 +250,7 @@ function sendMsg(){
 dlgSend.addEventListener('click', sendMsg);
 dlgInput.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); sendMsg(); } });
 
-/* speech recognition */
+/* speech recognition with animated ink */
 let rec=null, listening=false, micAccum="";
 function setupASR(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -181,8 +268,8 @@ function setupASR(){
       else interim+=res[0].transcript;
     }
     const text=(micAccum+interim).trim();
-    ghost.textContent=text;   // fancy overlay
-    dlgInput.value=text;      // keep real value in sync
+    ghost.textContent=text;       // animated overlay
+    dlgInput.value=text;          // keep value in sync
   };
   rec.onerror=()=>{ listening=false; setMicUI(false); ghost.style.display='none'; dlgInput.classList.remove('asr-mode'); };
   rec.onend=()=>{ listening=false; setMicUI(false); ghost.style.display='none'; dlgInput.classList.remove('asr-mode'); };
