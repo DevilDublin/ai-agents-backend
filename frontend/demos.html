@@ -45,15 +45,25 @@
         <div class="title" id="dlg-title">Agent</div>
         <button class="btn ghost" id="dlg-close">Close</button>
       </div>
+
       <div class="dialog-body">
         <div class="examples" id="dlg-examples"></div>
         <div class="chat" id="dlg-chat"></div>
+
         <div class="input-row">
-          <input id="dlg-input" placeholder="Type your message…"/>
-          <button id="mic-btn" class="btn mic" aria-pressed="false" title="Speak">🎤</button>
-          <button class="btn" id="dlg-send">Send</button>
+          <div class="composer">
+            <div class="input-shell">
+              <input id="dlg-input" placeholder="Type or press the mic to speak…"/>
+              <div id="dlg-ghost" class="input-ghost"></div>
+            </div>
+            <button id="mic-btn" class="btn mic" aria-pressed="false" title="Speak">
+              <span class="mic-icon" aria-hidden="true"></span>
+            </button>
+            <button class="btn send" id="dlg-send" title="Send">Send</button>
+          </div>
         </div>
       </div>
+
     </div>
   </div>
 
