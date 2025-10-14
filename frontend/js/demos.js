@@ -1,263 +1,203 @@
-const DEFAULT_BACKEND = "https://ai-agents-backend-pejo.onrender.com";
-let BACKEND = DEFAULT_BACKEND;
-setTimeout(() => { BACKEND = window.BACKEND_URL || DEFAULT_BACKEND; }, 0);
+let BACKEND=""; setTimeout(()=> BACKEND = window.BACKEND_URL || "", 0);
 
-// ===== Canvas + layout =====
-const wrap   = document.getElementById("orbit-wrap");
-const orbits = document.getElementById("orbits");
-const ctx    = orbits.getContext("2d");
-const tooltip = document.getElementById("orbit-tooltip");
+const wrap = document.getElementById('orbit-wrap');
+const canvas = document.getElementById('orbits');
+const tip = document.getElementById('orbit-tooltip');
+const ctx = canvas.getContext('2d');
 
-let W=0, H=0, t=0;
-let hoverIdx = -1, hoverCandidate = -1, hoverTimer = null;
-let beamStart = 0, beamActive = false;
+let W,H,t=0, hover=-1;
 
-function sizeOnce(){
-  if(!wrap) return;
-  const w = wrap.clientWidth  || window.innerWidth;
-  const h = wrap.clientHeight || Math.min(640, window.innerHeight - 160);
-  orbits.width  = w;
-  orbits.height = h;
-  W=w; H=h;
+function size(){
+  canvas.width = wrap.clientWidth;
+  canvas.height = Math.max(540, wrap.clientWidth * 0.45);
+  W=canvas.width; H=canvas.height;
 }
-function size(){ sizeOnce(); }
-addEventListener("resize", size);
-if (document.readyState === "complete") size();
-else window.addEventListener("load", size);
+addEventListener('resize', size); size();
 
-function metrics(){ const base=Math.min(W,H); const outer=Math.max(280, base/2 - 90); return{ outer, mid: outer-70, inner: outer-140 }; }
-const centre = () => ({ x: W/2, y: H/2 });
-
-const NODE_W = 240, NODE_H = 48, NODE_R = 14;
+function center(){ return {x: W/2, y:H/2}; }
+function metrics(){
+  const R = Math.min(W,H)*0.36;
+  return {outer:R, mid:R*0.76, inner:R*0.52, core:R*0.22};
+}
 
 const nodes = [
-  {label:'Appointment Setter', key:'appointment', desc:'Arranges meetings and keeps things on track.', angle:-Math.PI/2, factor:0.92},
-  {label:'Support Q&A',        key:'support',     desc:'Helps with returns, delivery and warranty.',   angle:0,               factor:1.00},
-  {label:'Automation Planner', key:'automation',  desc:'Designs practical workflow blueprints.',       angle: Math.PI/2,      factor:0.92},
-  {label:'Internal Knowledge', key:'internal',    desc:'Answers HR and Sales questions clearly.',      angle: Math.PI,        factor:1.00},
+  {label:'Appointment Setter', key:'appointment', desc:'Books qualified meetings and handles dates cleanly.', where:'top'},
+  {label:'Support Q&A', key:'support', desc:'Helps with returns, delivery and warranty.', where:'right'},
+  {label:'Automation Planner', key:'automation', desc:'Turns rough ideas into clear workflows.', where:'bottom'},
+  {label:'Internal Knowledge', key:'internal', desc:'Answers HR and Sales questions clearly.', where:'left'}
 ];
 
-function roundRect(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
-
-function drawHoloCore(c, outer){
-  const pulse = 1 + Math.sin(t*2)*0.06;
-  const glowR = Math.min(outer*0.52,108)*pulse;
-  const g = ctx.createRadialGradient(c.x,c.y,0,c.x,c.y,glowR);
-  g.addColorStop(0,'rgba(185,138,255,0.55)');
-  g.addColorStop(0.6,'rgba(185,138,255,0.14)');
-  g.addColorStop(1,'rgba(185,138,255,0)');
-  ctx.fillStyle=g; ctx.beginPath(); ctx.arc(c.x,c.y,glowR,0,Math.PI*2); ctx.fill();
-
-  const hexR = Math.min(outer*0.32,86);
-  ctx.strokeStyle='rgba(255,255,255,0.16)'; ctx.lineWidth=2; ctx.beginPath();
-  for(let i=0;i<6;i++){
-    const a=(Math.PI/3)*i+0.08*Math.sin(t*0.6);
-    const x=c.x+Math.cos(a)*hexR, y=c.y+Math.sin(a)*hexR;
-    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
-  }
-  ctx.closePath(); ctx.stroke();
-
-  ctx.save();
-  ctx.fillStyle='#EDEBFF';
-  ctx.font='600 20px "Space Grotesk", Inter, system-ui';
-  ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText('Select your demo', c.x, c.y);
-  ctx.restore();
+function layout(){
+  const c = center(); const m = metrics();
+  const angles = [-Math.PI/2, 0, Math.PI/2, Math.PI];
+  nodes.forEach((n,i)=>{
+    n.r = m.outer;
+    n.x = c.x + Math.cos(angles[i])*n.r;
+    n.y = c.y + Math.sin(angles[i])*n.r;
+  });
 }
 
-function draw(){
-  if(!W || !H) { requestAnimationFrame(draw); return; }
-  t+=0.016; ctx.clearRect(0,0,W,H);
-  const c=centre(); const M=metrics();
+function drawRings(){
+  const c=center(), m=metrics();
+  const rings=[m.outer,m.mid,m.inner];
+  ctx.setLineDash([6,8]); ctx.lineWidth=1.2;
+  rings.forEach((R,i)=>{ ctx.strokeStyle=`rgba(185,138,255,${0.06 + i*0.04})`; ctx.beginPath(); ctx.arc(c.x,c.y,R,0,Math.PI*2); ctx.stroke(); });
+  ctx.setLineDash([]);
+}
 
-  [M.inner,M.mid,M.outer].forEach((Rr,i)=>{
-    ctx.beginPath(); ctx.arc(c.x,c.y,Rr,0,Math.PI*2);
-    ctx.strokeStyle=`rgba(185,138,255,${0.05+i*0.02})`;
-    ctx.setLineDash([4,6]); ctx.stroke(); ctx.setLineDash([]);
-  });
+function drawCore(){
+  const c=center(), m=metrics();
+  const g = ctx.createRadialGradient(c.x,c.y,0,c.x,c.y,m.core*2.1);
+  g.addColorStop(0,'rgba(185,138,255,.9)'); g.addColorStop(1,'rgba(185,138,255,0)');
+  ctx.fillStyle=g; ctx.beginPath(); ctx.arc(c.x,c.y,m.core*1.2,0,Math.PI*2); ctx.fill();
+  const hexR = m.core*0.9; ctx.strokeStyle='rgba(255,255,255,.28)'; ctx.lineWidth=2;
+  ctx.beginPath(); for(let i=0;i<6;i++){ const a=(Math.PI/3)*i+0.1; const x=c.x+Math.cos(a)*hexR, y=c.y+Math.sin(a)*hexR; i?ctx.lineTo(x,y):ctx.moveTo(x,y);} ctx.closePath(); ctx.stroke();
+  ctx.fillStyle='#f2ecff'; ctx.font='700 18px Inter,system-ui'; ctx.textAlign='center'; ctx.fillText('Select your demo', c.x, c.y+6);
+}
 
-  nodes.forEach(n=>{ n.r=M.outer*(n.factor||1); n.x=c.x+Math.cos(n.angle)*n.r; n.y=c.y+Math.sin(n.angle)*n.r; });
+function roundRect(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
 
-  ctx.save(); ctx.strokeStyle='rgba(185,138,255,0.10)'; ctx.lineWidth=1;
-  nodes.forEach(n=>{ ctx.beginPath(); ctx.moveTo(c.x,c.y); ctx.lineTo(n.x,n.y); ctx.stroke(); });
-  ctx.restore();
-
-  if(hoverIdx>-1){
-    if(!beamActive){ beamActive=true; beamStart=performance.now(); }
-    const n=nodes[hoverIdx];
-    const len=Math.min(1,(performance.now()-beamStart)/500);
-    const bx=c.x+(n.x-c.x)*len, by=c.y+(n.y-c.y)*len;
-    const grad=ctx.createLinearGradient(c.x,c.y,bx,by);
-    grad.addColorStop(0,'rgba(185,138,255,0)'); grad.addColorStop(1,'rgba(185,138,255,0.85)');
-    ctx.strokeStyle=grad; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(c.x,c.y); ctx.lineTo(bx,by); ctx.stroke();
-  } else beamActive=false;
-
+function drawNodes(){
   nodes.forEach((n,i)=>{
-    const dim=(hoverIdx>-1 && hoverIdx!==i);
-    ctx.globalAlpha=dim?0.52:1;
-    ctx.fillStyle=dim?'rgba(26,22,44,.55)':'rgba(26,22,44,.9)';
-    ctx.strokeStyle='rgba(255,255,255,.10)';
-    roundRect(ctx, n.x-NODE_W/2, n.y-NODE_H/2, NODE_W, NODE_H, NODE_R); ctx.fill(); ctx.stroke();
-    ctx.globalAlpha=dim?0.7:1;
-    ctx.fillStyle='#ECECFF';
-    ctx.font='600 15px Inter, system-ui';
-    ctx.textAlign='center'; ctx.textBaseline='middle';
+    const dim = (hover>-1 && hover!==i);
+    ctx.globalAlpha = dim?0.55:1;
+    const w=240,h=44,r=14;
+    roundRect(n.x-w/2, n.y-h/2, w, h, r);
+    ctx.fillStyle='rgba(26,22,44,.86)'; ctx.fill();
+    ctx.lineWidth=1; ctx.strokeStyle='rgba(255,255,255,.12)'; ctx.stroke();
+    ctx.fillStyle='#EDEBFF'; ctx.font='600 15px Inter,system-ui'; ctx.textAlign='center'; ctx.textBaseline='middle';
     ctx.fillText(n.label, n.x, n.y);
     ctx.globalAlpha=1;
   });
-
-  drawHoloCore(c, M.outer);
-  requestAnimationFrame(draw);
 }
-requestAnimationFrame(draw);
 
-// ===== Tooltip logic =====
-function placeTooltipForNode(n){
-  tooltip.style.display='block';
-  const pad = 16;
-  const w = tooltip.offsetWidth || 220;
-  const h = tooltip.offsetHeight || 36;
-  const leftEdge  = n.x - NODE_W/2;
-  const rightEdge = n.x + NODE_W/2;
-
-  if(n.key==='appointment'){ tooltip.style.left=(n.x - w/2)+'px'; tooltip.style.top =(n.y + NODE_H/2 + pad)+'px'; return; }
-  if(n.key==='automation'){  tooltip.style.left=(n.x - w/2)+'px'; tooltip.style.top =(n.y - NODE_H/2 - h - pad)+'px'; return; }
-  if(n.key==='internal'){    tooltip.style.left=(leftEdge - w - pad)+'px'; tooltip.style.top=(n.y - h/2)+'px'; return; }
-  if(n.key==='support'){     tooltip.style.left=(rightEdge + pad)+'px'; tooltip.style.top=(n.y - h/2)+'px'; return; }
+function draw(){
+  t+=0.016; ctx.clearRect(0,0,W,H); layout(); drawRings(); drawCore(); drawNodes(); requestAnimationFrame(draw);
 }
-function clearTooltip(){ tooltip.style.display='none'; tooltip.textContent=''; }
+draw();
 
-orbits.addEventListener('mousemove', e=>{
-  const rect=orbits.getBoundingClientRect();
-  const mx=e.clientX-rect.left, my=e.clientY-rect.top;
-  const R_HIT=150, R_STICKY=170;
+function hit(mx,my){ for(let i=0;i<nodes.length;i++){ const n=nodes[i]; if(Math.abs(mx-n.x)<=120 && Math.abs(my-n.y)<=22) return i; } return -1; }
 
-  let idx=-1, best=Infinity;
-  nodes.forEach((n,i)=>{
-    const d=Math.hypot(mx-n.x, my-n.y);
-    const lim=(i===hoverIdx?R_STICKY:R_HIT);
-    if(d<lim && d<best){ best=d; idx=i; }
-  });
-
-  if(idx!==hoverCandidate){
-    if(hoverTimer) clearTimeout(hoverTimer);
-    hoverCandidate=idx; clearTooltip();
-    if(idx>-1){
-      hoverTimer=setTimeout(()=>{
-        hoverIdx=hoverCandidate;
-        const n=nodes[hoverIdx];
-        tooltip.textContent=n.desc;
-        placeTooltipForNode(n);
-      },110);
-    } else hoverIdx=-1;
-  } else if(idx>-1) placeTooltipForNode(nodes[idx]);
+canvas.addEventListener('mousemove', e=>{
+  const r = canvas.getBoundingClientRect(); const mx=e.clientX-r.left, my=e.clientY-r.top;
+  const idx=hit(mx,my);
+  if(idx!==hover){ hover=idx; if(idx>-1){ showTip(nodes[idx]); } else { tip.style.display='none'; } }
+  canvas.style.cursor = hover>-1 ? 'pointer' : 'default';
 });
-orbits.addEventListener('mouseleave', ()=>{ if(hoverTimer) clearTimeout(hoverTimer); hoverCandidate=-1; hoverIdx=-1; clearTooltip(); });
-orbits.addEventListener('click', ()=>{ if(hoverIdx>-1) openAgent(nodes[hoverIdx].key); });
 
-// ===== Modal chat, examples, speech etc. (unchanged UI IDs) =====
-const overlay=document.getElementById('overlay');
-const dlgClose=document.getElementById('dlg-close');
-const dlgTitle=document.getElementById('dlg-title');
-const dlgChat=document.getElementById('dlg-chat');
-const dlgInput=document.getElementById('dlg-input');
-const dlgSend=document.getElementById('dlg-send');
-const dlgExamples=document.getElementById('dlg-examples');
-const micBtn=document.getElementById('mic-btn');       // <— single declaration
-const ghost=document.getElementById('dlg-ghost');      // <— single declaration
+function showTip(n){
+  tip.textContent = n.desc;
+  const offset=16;
+  let left=n.x, top=n.y;
+  if(n.where==='left'){ left = n.x-240; top = n.y-28; }
+  if(n.where==='right'){ left = n.x+20; top = n.y-28; }
+  if(n.where==='top'){ left = n.x-100; top = n.y-62; }
+  if(n.where==='bottom'){ left = n.x-110; top = n.y+32; }
+  tip.style.left = left+'px'; tip.style.top = top+'px'; tip.style.display='block';
+}
 
-const intros={
-  appointment:"Hello there 👋 I can get a meeting in the diary. Share a budget, a time, or your e-mail and I’ll take it from there.",
-  support:"Hi, how can I help today? I can answer questions about returns, delivery and warranty.",
-  automation:"Hello! Tell me what you’d like to automate and I’ll sketch a clear, step-by-step plan.",
-  internal:"Hi! Ask me an HR or Sales question and I’ll fetch the answer for you."
+canvas.addEventListener('mouseleave', ()=>{ hover=-1; tip.style.display='none'; });
+canvas.addEventListener('click', ()=>{ if(hover>-1) openAgent(nodes[hover].key); });
+
+/* Modal chat behaviour (no change to your backend) */
+const overlay = document.getElementById('overlay');
+const dlgTitle = document.getElementById('dlg-title');
+const dlgChat = document.getElementById('dlg-chat');
+const dlgInput = document.getElementById('dlg-input');
+const dlgSend = document.getElementById('dlg-send');
+const dlgClose = document.getElementById('dlg-close');
+const exTitle = document.getElementById('dlg-examples-title');
+const exWrap = document.getElementById('dlg-examples');
+const micBtn = document.getElementById('dlg-mic');
+const ghost = document.getElementById('dlg-ghost');
+
+const EXAMPLES = {
+  appointment: [
+    ["Intro + budget", "Hello, I’d like a 30-minute intro next week. Budget is £2k per month."],
+    ["Propose time", "Could you do Tuesday 2–4pm?"],
+    ["Contact", "Use alex@example.com for the invite."]
+  ],
+  support: [
+    ["Nuanced returns", "What is your returns policy for opened but unused items?"],
+    ["Shipping speed", "How fast is expedited shipping to London?"],
+    ["Weekend hours", "When is support available on weekends?"]
+  ],
+  automation: [
+    ["Lead flow", "When a lead completes a form, enrich with Clearbit, score, push to CRM, then post to Slack and e-mail."],
+    ["Weekly summary", "Create a weekly ops summary from Airtable and e-mail it to the team with KPIs."]
+  ],
+  internal: [
+    ["HR policy", "What is the holiday policy?"],
+    ["Sales stages", "What are the sales stages?"]
+  ]
 };
-const examples={
-  appointment:[["Intro + budget","I’d like a 30-minute intro next week. Budget is £2k per month."],["Propose time","Could you do Tuesday 2–4pm?"],["Invite e-mail","Use alex@example.com for the invite."],["Confirm","yes"]],
-  support:[["Nuanced returns","What’s your returns policy for opened but unused items?"],["Shipping speed","How fast is expedited shipping to London?"],["Weekend cover","When is support available on weekends?"]],
-  automation:[["Lead flow","When a lead completes a form, enrich, score, push to CRM, then post to Slack and e-mail sales."],["Ops summary","Create a weekly ops summary from Airtable and e-mail it to the team with KPIs."]],
-  internal:[["HR: holiday","What’s the holiday policy?"],["Sales: stages","What are the sales stages?"]]
+const TITLES = {appointment:'Appointment Setter', support:'Support Q&A', automation:'Automation Planner', internal:'Internal Knowledge'};
+const GREET = {
+  appointment:"Hello! I can help schedule a meeting. What’s your budget or target scope to start with?",
+  support:"Hi — ask me about returns, shipping, warranty or support hours.",
+  automation:"Tell me what you’d like to automate and I’ll sketch a clear, step-by-step workflow.",
+  internal:"Ask me an HR or Sales question; I’ll route it to the right knowledge automatically."
 };
+let current=null, sessionId=null, rec=null, listening=false;
 
-function md(html){
-  return html.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
-    .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")
-    .replace(/\*(.+?)\*/g,"<em>$1</em>")
-    .replace(/(?:^|\n)[-\u2022]\s+(.*)/g,(m,a)=>`<li>${a}</li>`)
-    .replace(/(<li>.*<\/li>)(?![\s\S]*<li>)/g,"<ul>$1</ul>")
-    .replace(/\n{2,}/g,"<br><br>").replace(/\n/g,"<br>");
-}
-function bubble(text, me=false){
-  const div=document.createElement('div');
-  div.className='bubble'+(me?' me':'');
-  div.innerHTML=md(text);
-  dlgChat.appendChild(div); dlgChat.scrollTop=dlgChat.scrollHeight;
-}
-function showThinking(){
-  const think=document.createElement('div'); think.className='orbit-thinking';
-  dlgChat.appendChild(think); dlgChat.scrollTop=dlgChat.scrollHeight; return think;
-}
-
-let current=null, sessionId=null;
 function openAgent(key){
   current=key; sessionId='web-'+Math.random().toString(36).slice(2,8);
-  dlgTitle.textContent=({appointment:'Appointment Setter',support:'Support Q&A',automation:'Automation Planner',internal:'Internal Knowledge'})[key]||'Agent';
+  dlgTitle.textContent = TITLES[key] || 'Agent';
   dlgChat.innerHTML='';
-  dlgExamples.innerHTML='';
-  const title=document.createElement('div'); title.className='examples-title'; title.textContent='Try these prompts';
-  dlgExamples.appendChild(title);
-  (examples[key]||[]).forEach(([label,fill])=>{
-    const sp=document.createElement('span'); sp.className='chip'; sp.textContent=label; sp.dataset.fill=fill;
-    sp.addEventListener('click',()=>{ dlgInput.value=fill; dlgInput.focus(); });
-    dlgExamples.appendChild(sp);
+  exWrap.innerHTML=''; exTitle.textContent='Try these';
+  (EXAMPLES[key]||[]).forEach(([label,fill])=>{
+    const s=document.createElement('span'); s.className='chip'; s.textContent=label; s.dataset.fill=fill;
+    s.addEventListener('click', ()=>{ dlgInput.value=fill; dlgInput.focus(); });
+    exWrap.appendChild(s);
   });
-  bubble(intros[key]||'Hello!');
+  bubble(GREET[key]||'Hello!', false, true);
   overlay.style.display='flex'; dlgInput.focus();
 }
-function closeDlg(){ overlay.style.display='none'; current=null; clearTooltip(); }
+function closeDlg(){ overlay.style.display='none'; current=null; tip.style.display='none'; }
 dlgClose.addEventListener('click', closeDlg);
 overlay.addEventListener('click', e=>{ if(e.target===overlay) closeDlg(); });
 
-function postJSON(url, body){
-  const ctl=new AbortController(); const t=setTimeout(()=>ctl.abort(),20000);
-  return fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:ctl.signal})
-    .then(async r=>{ clearTimeout(t); if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); });
+function bubble(text, me=false, intro=false){
+  const div=document.createElement('div');
+  div.className='bubble'+(me?' me':'')+(intro?' intro':'');
+  div.textContent=text;
+  dlgChat.appendChild(div); dlgChat.scrollTop=dlgChat.scrollHeight;
 }
+
+function postJSON(url, body){ return fetch(url,{method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)}).then(r=>r.json()); }
+
 function sendMsg(){
-  const msg=dlgInput.value.trim(); if(!msg || !current) return;
-  if(listening && rec) rec.stop();
-  bubble(msg,true); dlgInput.value=''; ghost.style.display='none'; dlgInput.classList.remove('asr-mode');
-  const think=showThinking();
-  const endpoints={appointment:'/appointment',support:'/support',automation:'/automation',internal:'/internal'};
-  setTimeout(()=>{ postJSON(`${BACKEND}${endpoints[current]}`,{message:msg, sessionId})
-    .then(r=>{ think.remove(); bubble(r.reply||'All set.'); })
-    .catch(()=>{ think.remove(); bubble("Sorry, I’m having a little trouble connecting. Let’s try that again in a moment."); });
-  },600);
+  const msg=(dlgInput.value||'').trim(); if(!msg||!current) return;
+  bubble(msg,true); dlgInput.value=''; ghost.textContent='';
+  let path = current; const body = {message:msg}; if(current==='appointment') body.sessionId=sessionId;
+  postJSON(`${BACKEND}/${path}`, body).then(r=> bubble(r.reply || '…')).catch(()=> bubble('Cannot reach backend right now.'));
 }
 dlgSend.addEventListener('click', sendMsg);
 dlgInput.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); sendMsg(); } });
 
-// ===== Speech recognition (single declarations) =====
-let rec=null, listening=false, micAccum="";
-function setupASR(){
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR) return null;
-  rec=new SR(); rec.lang='en-GB'; rec.interimResults=true; rec.continuous=true;
-  rec.onstart=()=>{ listening=true; micAccum=''; setMicUI(true); ghost.textContent=''; ghost.style.display='block'; dlgInput.classList.add('asr-mode'); };
-  rec.onresult=e=>{
-    let interim=''; for(let i=e.resultIndex;i<e.results.length;i++){
-      const r=e.results[i]; if(r.isFinal) micAccum+=r[0].transcript+' '; else interim+=r[0].transcript;
+/* Speech-to-text with ghost shimmer */
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  rec = new SR(); rec.lang='en-GB'; rec.interimResults=true; rec.continuous=true;
+
+  rec.onresult = (e)=>{
+    let interim = '', final = dlgInput.value;
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const txt = e.results[i][0].transcript;
+      if(e.results[i].isFinal) final += (final?' ':'') + txt.trim();
+      else interim += txt;
     }
-    const text=(micAccum+interim).trim();
-    ghost.textContent=text; dlgInput.value=text;
+    dlgInput.value = final.trim();
+    ghost.textContent = interim.trim();
+    ghost.className = interim ? 'typing-ghost' : '';
   };
-  rec.onerror=()=>{ listening=false; setMicUI(false); ghost.style.display='none'; dlgInput.classList.remove('asr-mode'); };
-  rec.onend=()=>{ listening=false; setMicUI(false); ghost.style.display='none'; dlgInput.classList.remove('asr-mode'); };
-  return rec;
+  rec.onend = ()=>{ listening=false; micBtn.textContent='🎤'; ghost.textContent=''; ghost.className=''; };
+  rec.onerror = ()=>{ listening=false; micBtn.textContent='🎤'; ghost.textContent=''; ghost.className=''; };
+  micBtn.addEventListener('click', ()=>{
+    if(listening){ rec.stop(); return; }
+    if(!current) return;
+    try{ rec.start(); listening=true; micBtn.textContent='⏹'; }catch{}
+  });
+} else {
+  micBtn.style.display='none';
 }
-function setMicUI(on){ if(!micBtn) return; micBtn.setAttribute('aria-pressed', on?'true':'false'); micBtn.classList.toggle('recording', !!on); }
-function toggleMic(){
-  if(!rec && !setupASR()){ alert('Speech recognition isn’t available in this browser.'); return; }
-  try{ if(!listening) rec.start(); else rec.stop(); }catch{}
-}
-micBtn?.addEventListener('click', toggleMic);
