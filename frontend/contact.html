@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Contact — Orbit v4</title>
+  <title>AI Agents — Contact</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
@@ -11,40 +11,40 @@
 </head>
 <body>
   <canvas id="stars"></canvas>
+
   <header class="nav">
     <div class="brand"><span class="spark"></span> AI Agents</div>
-    <div class="links">
+    <nav class="links">
       <a class="link-chip" href="index.html">Home</a>
       <a class="link-chip" href="demos.html">Demos</a>
       <a class="link-chip" href="contact.html">Contact</a>
-    </div>
+    </nav>
   </header>
 
   <main>
-    <section class="hero" style="min-height:auto; padding-top:28px;">
-      <div class="hero-inner">
-        <h1>Contact</h1>
-        <p class="lead">Tell us about your business and the agent you’d like to build. We’ll reply promptly.</p>
-      </div>
+    <section class="hero hero-small">
+      <h1>Contact</h1>
+      <p class="lead">Tell us about your business and the agent you’d like to build. We’ll reply promptly.</p>
     </section>
 
-    <section class="section" style="min-height:60vh">
-      <div class="container grid">
+    <section class="section">
+      <div class="container contact-grid">
         <div class="card">
           <h3>Start a project</h3>
-          <form onsubmit="event.preventDefault(); alert('Thanks! We’ll reply at aiagents@gmail.com.');">
-            <div class="input-row"><input required placeholder="Your name"/></div>
-            <div class="input-row"><input required placeholder="Your e‑mail"/></div>
-            <div class="input-row"><input placeholder="Company / Website"/></div>
-            <div class="input-row"><input placeholder="Which agent? (Appointment, Support, Internal, etc.)"/></div>
-            <div class="input-row"><button class="btn primary" type="submit">Send</button></div>
+          <form>
+            <input type="text" placeholder="Your name"/>
+            <input type="email" placeholder="Your e-mail"/>
+            <input type="text" placeholder="Company / Website"/>
+            <input type="text" placeholder="Which agent? (Appointment, Support, Internal, Automation)"/>
+            <button type="submit" class="btn">Send</button>
           </form>
         </div>
+
         <div class="card">
-          <h3>Prefer e‑mail?</h3>
-          <p>E‑mail: <a class="email" href="mailto:aiagents@gmail.com">aiagents@gmail.com</a></p>
+          <h3>Prefer e-mail?</h3>
+          <p>E-mail: <a href="mailto:aiagents@gmail.com">aiagents@gmail.com</a></p>
           <p>We usually respond within one working day. If you have a brief, deck or spec, feel free to attach it.</p>
-          <p class="meta">We’re UK‑based; meetings available GMT and EST.</p>
+          <p>We’re UK-based; meetings available GMT and EST.</p>
         </div>
       </div>
     </section>
