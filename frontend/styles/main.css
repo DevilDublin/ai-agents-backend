@@ -60,9 +60,13 @@ p.lead{color:var(--muted); font-size:18px; max-width:840px; margin:0 auto 18px}
 
 .orbit-wrap{position:relative; height:720px; display:grid; place-items:center; margin-top:10px}
 #orbits{position:absolute; inset:0; z-index:2}
+
+/* Tooltip fully repositioned and flicker-proof */
 #orbit-tooltip{
-  position:absolute; z-index:4; padding:8px 10px; border-radius:10px; border:1px solid rgba(255,255,255,.12);
-  background:rgba(18,18,28,.9); font-size:12px; color:#fff; display:none; max-width:260px; pointer-events:none;
+  position:absolute; z-index:4; padding:8px 10px; border-radius:10px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(18,18,28,.92); color:#fff; font-size:12px;
+  display:none; max-width:260px; pointer-events:none;
 }
 
 .overlay{position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:80; display:none; align-items:center; justify-content:center; padding:20px}
@@ -95,16 +99,22 @@ p.lead{color:var(--muted); font-size:18px; max-width:840px; margin:0 auto 18px}
   padding:0 12px; border:0; outline:0; background:transparent; color:#e9ecff; font-size:15px; font-family:inherit;
 }
 .input-shell input::placeholder{color:rgba(233,236,255,.45)}
+
+/* Centred animated “glow-type” for dictation */
 .input-ghost{
-  position:absolute; inset:0; padding:0 12px; line-height:46px;
-  pointer-events:none; font:inherit;
-  color:transparent; -webkit-text-fill-color: transparent;
-  background:linear-gradient(90deg,#b98aff,#8a5cff,#b98aff); background-size:200% 100%;
-  -webkit-background-clip:text; background-clip:text; opacity:.98; white-space:pre; overflow:hidden; display:none;
-  animation:wave-ink 2.2s linear infinite;
+  position:absolute; inset:0; display:none; padding:0 12px; line-height:46px;
+  pointer-events:none; white-space:pre; overflow:hidden; text-overflow:ellipsis;
+  color:transparent; -webkit-text-fill-color:transparent;
+  background:linear-gradient(90deg,#d7c9ff,#b98aff,#8a5cff,#b98aff);
+  background-size:300% 100%; -webkit-background-clip:text; background-clip:text;
+  animation:ink-glow 2.6s linear infinite, ink-float 3s ease-in-out infinite;
 }
-@keyframes wave-ink{from{background-position:0% 0} to{background-position:200% 0}}
 input.asr-mode{ color:transparent; -webkit-text-fill-color:transparent; caret-color:#d9d2ff }
+@keyframes ink-glow{0%{background-position:0% 0}100%{background-position:300% 0}}
+@keyframes ink-float{
+  0%,100%{transform:translateY(0); letter-spacing:.1px; opacity:.98}
+  50%{transform:translateY(-1px); letter-spacing:.6px; opacity:1}
+}
 
 .btn.mic{
   width:44px; height:44px; border-radius:12px; border:1px solid rgba(255,255,255,.14);
@@ -112,10 +122,10 @@ input.asr-mode{ color:transparent; -webkit-text-fill-color:transparent; caret-co
   display:grid; place-items:center; transition:.18s transform,.18s box-shadow;
 }
 .btn.mic:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(138,92,255,.25) }
-.mic-icon{ width:16px; height:22px; position:relative; display:block; background:linear-gradient(180deg,#eee,#c9c3ff); border-radius:8px; }
-.mic-icon:before{ content:""; position:absolute; left:50%; transform:translateX(-50%); bottom:-6px; width:22px; height:10px; border:2px solid #c9c3ff; border-top:0; border-radius:0 0 14px 14px; opacity:.9; }
-.btn.mic.recording{ border-color:transparent; background:radial-gradient(circle at 30% 30%, #2a1230, #201026); box-shadow:0 0 0 0 rgba(255,90,103,.55); animation:mic-pulse 1.2s ease-out infinite; }
-@keyframes mic-pulse{ 0%{box-shadow:0 0 0 0 rgba(255,90,103,.55)} 70%{box-shadow:0 0 0 16px rgba(255,90,103,0)} 100%{box-shadow:0 0 0 0 rgba(255,90,103,0)} }
+.mic-icon{ width:16px; height:22px; position:relative; display:block; background:linear-gradient(180deg,#eee,#c9c3ff); border-radius:8px }
+.mic-icon:before{ content:""; position:absolute; left:50%; transform:translateX(-50%); bottom:-6px; width:22px; height:10px; border:2px solid #c9c3ff; border-top:0; border-radius:0 0 14px 14px; opacity:.9 }
+.btn.mic.recording{ border-color:transparent; background:radial-gradient(circle at 30% 30%, #2a1230, #201026); box-shadow:0 0 0 0 rgba(255,90,103,.55); animation:mic-pulse 1.2s ease-out infinite }
+@keyframes mic-pulse{0%{box-shadow:0 0 0 0 rgba(255,90,103,.55)}70%{box-shadow:0 0 0 16px rgba(255,90,103,0)}100%{box-shadow:0 0 0 0 rgba(255,90,103,0)}}
 
 .btn.send{
   min-width:72px; height:44px; border-radius:12px; border:1px solid transparent;
@@ -132,6 +142,6 @@ input.asr-mode{ color:transparent; -webkit-text-fill-color:transparent; caret-co
               radial-gradient(circle at 36px 8px, var(--p2) 2px, transparent 3px);
   background-repeat:no-repeat; animation:orbit-dots 1s infinite ease-in-out;
 }
-@keyframes orbit-dots{0%,80%,100%{background-size:3px 3px,3px 3px,3px 3px; opacity:.4} 40%{background-size:6px 6px,6px 6px,6px 6px; opacity:1}}
+@keyframes orbit-dots{0%,80%,100%{background-size:3px 3px,3px 3px,3px 3px; opacity:.4}40%{background-size:6px 6px,6px 6px,6px 6px; opacity:1}}
 
 .footer{padding:20px; text-align:center; border-top:1px solid rgba(255,255,255,.06); background:linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,.06))}
