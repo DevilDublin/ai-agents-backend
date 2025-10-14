@@ -44,7 +44,6 @@
       <div class="dialog-head">
         <div class="title" id="dlg-title">Agent</div>
         <div class="controls">
-          <button class="toggle" id="voice-toggle" aria-pressed="false">🔊 Voice: Off</button>
           <button class="btn ghost" id="dlg-close">Close</button>
         </div>
       </div>
@@ -53,6 +52,7 @@
         <div class="chat" id="dlg-chat"></div>
         <div class="input-row">
           <input id="dlg-input" placeholder="Type your message…"/>
+          <button class="mic" id="mic-btn" aria-pressed="false" title="Tap to speak">🎤</button>
           <button class="btn" id="dlg-send">Send</button>
         </div>
       </div>
@@ -62,7 +62,6 @@
   <footer class="footer">© <span id="year"></span> AI Agents — Tailoured AI for Business</footer>
 
   <script src="js/config.js"></script>
-  <script src="js/voice.js"></script>
   <script src="js/demos.js"></script>
   <script src="js/site.js"></script>
 </body>
