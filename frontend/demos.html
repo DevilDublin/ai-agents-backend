@@ -7,13 +7,11 @@
   <link rel="stylesheet" href="/assets/main.css" />
 </head>
 <body>
-  <canvas id="stars"></canvas>
-
   <nav class="nav">
     <div class="brand"><span class="spark"></span> AI Agents</div>
     <div class="links">
       <a class="link-chip" href="/">Home</a>
-      <a class="link-chip" href="/demos">Demos</a>
+      <a class="link-chip active" href="/demos">Demos</a>
       <a class="link-chip" href="/contact">Contact</a>
     </div>
   </nav>
@@ -25,55 +23,39 @@
 
   <section class="section section--orbit">
     <div class="orbit-wrap">
-      <svg id="orbits" viewBox="0 0 800 800" aria-hidden="true"></svg>
-
-      <!-- Spokes -->
-      <div class="crosshair y"></div>
-      <div class="crosshair x"></div>
-
-      <!-- Centre / hexagon + label -->
-      <div id="hex-centre" class="hex-centre">
+      <div id="orbit-centre">
         <div class="hex"></div>
-        <div class="hex-glow"></div>
-        <div class="centre-label">Select your demo</div>
+        <div class="glow"></div>
+        <div class="label">Select your demo</div>
       </div>
 
-      <!-- Bots -->
-      <button class="bot-pill top" data-bot="appt" data-tip-pos="bottom">Appointment Setter</button>
-      <button class="bot-pill left" data-bot="internal" data-tip-pos="left">Internal Knowledge</button>
-      <button class="bot-pill right" data-bot="support" data-tip-pos="right">Support Q&A</button>
-      <button class="bot-pill bottom" data-bot="planner" data-tip-pos="top">Automation Planner</button>
-
-      <div id="orbit-tooltip" role="status" aria-live="polite"></div>
+      <button class="bot top" data-bot="appointment" data-pos="bottom">Appointment Setter</button>
+      <button class="bot right" data-bot="support" data-pos="right">Support Q&A</button>
+      <button class="bot bottom" data-bot="automation" data-pos="top">Automation Planner</button>
+      <button class="bot left" data-bot="internal" data-pos="left">Internal Knowledge</button>
+      <div id="tooltip"></div>
     </div>
   </section>
 
-  <!-- Chat overlay -->
-  <div id="overlay" class="overlay" aria-hidden="true">
-    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
-      <div class="dialog-head">
+  <div id="chat-overlay" class="overlay">
+    <div class="dialog">
+      <div class="head">
         <div>
-          <div id="dlg-title" class="title">Title</div>
-          <div class="subtitle">Try these prompts</div>
+          <h3 id="chat-title"></h3>
+          <p class="subtitle">Try these prompts</p>
         </div>
-        <button id="dlg-close" class="close-btn">Close</button>
+        <button id="chat-close">Close</button>
       </div>
-
-      <div class="dialog-body">
-        <div id="chips" class="examples"></div>
-
-        <div id="chat" class="chat" aria-live="polite"></div>
-
-        <div class="input-wrap">
-          <input id="dlg-input" type="text" placeholder="Type your message…" autocomplete="off" />
-          <button id="mic" class="mic" aria-pressed="false" title="Speak">
-            <!-- mic svg -->
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-              <path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93V21H9v2h6v-2h-2v-2.07A7 7 0 0 0 19 12h-2Z" fill="currentColor"/>
-            </svg>
+      <div class="body">
+        <div id="prompts" class="chips"></div>
+        <div id="chat-window" class="chat-window"></div>
+        <div class="input-box">
+          <input id="chat-input" placeholder="Type your message..." />
+          <button id="mic" class="mic" title="Speak">
+            <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M12 15a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93V21H9v2h6v-2h-2v-2.07A7 7 0 0 0 19 12h-2Z"/></svg>
           </button>
-          <button id="dlg-send" class="btn primary">Send</button>
-          <div id="dlg-ghost" class="ghost"></div>
+          <button id="chat-send" class="btn primary">Send</button>
+          <div id="ghost"></div>
         </div>
       </div>
     </div>
@@ -81,8 +63,8 @@
 
   <footer class="footer">© 2025 AI Agents — Tailoured AI for Business</footer>
 
-  <script src="/assets/stars.js"></script>
+  <script src="/assets/config.js"></script>
   <script src="/assets/demos.js"></script>
-  <script src="/assets/speech.js"></script>
+  <script src="/assets/voice.js"></script>
 </body>
 </html>
