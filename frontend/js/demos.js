@@ -18,7 +18,7 @@ addEventListener("resize", size); size();
 
 function metrics() {
   const base = Math.min(W, H);
-  const outer = Math.max(340, base / 2 - 60);
+  const outer = Math.max(280, base / 2 - 90); // smaller orbit
   const mid = outer - 70;
   const inner = outer - 140;
   return { outer, mid, inner };
@@ -44,7 +44,7 @@ function roundRect(ctx, x, y, w, h, r) {
 
 function drawHoloCore(c, outer) {
   const pulse = 1 + Math.sin(t * 2) * 0.06;
-  const glowR = Math.min(outer * 0.55, 120) * pulse;
+  const glowR = Math.min(outer * 0.52, 108) * pulse;
   const g = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, glowR);
   g.addColorStop(0, "rgba(185,138,255,0.55)");
   g.addColorStop(0.6, "rgba(185,138,255,0.14)");
@@ -54,7 +54,7 @@ function drawHoloCore(c, outer) {
   ctx.arc(c.x, c.y, glowR, 0, Math.PI * 2);
   ctx.fill();
 
-  const hexR = Math.min(outer * 0.35, 95);
+  const hexR = Math.min(outer * 0.32, 86);
   ctx.strokeStyle = "rgba(255,255,255,0.16)";
   ctx.lineWidth = 2;
   ctx.beginPath();
@@ -162,7 +162,7 @@ const dlgChat = document.getElementById("dlg-chat");
 const dlgInput = document.getElementById("dlg-input");
 const dlgSend = document.getElementById("dlg-send");
 const dlgExamples = document.getElementById("dlg-examples");
-const voiceToggle = document.getElementById("voice-toggle");
+const micBtn = document.getElementById("mic-btn");
 
 const intros = {
   appointment: "Hello there 👋 I can get a meeting in the diary. Share a budget, a time, or your e-mail and I’ll take it from there.",
@@ -233,21 +233,8 @@ function bubble(text, me = false) {
   const div = document.createElement("div");
   div.className = "bubble" + (me ? " me" : "");
   div.innerHTML = md(text);
-  if (!me) {
-    const s = document.createElement("button");
-    s.className = "speak";
-    s.textContent = "🔊";
-    s.addEventListener("click", () => window.Voice.speak(stripHTML(div.innerHTML)));
-    div.appendChild(s);
-  }
   dlgChat.appendChild(div);
   dlgChat.scrollTop = dlgChat.scrollHeight;
-}
-
-function stripHTML(h) {
-  const el = document.createElement("div");
-  el.innerHTML = h;
-  return el.textContent || el.innerText || "";
 }
 
 function showThinking() {
@@ -274,24 +261,46 @@ function sendMsg() {
   const endpoints = { appointment: "/appointment", support: "/support", automation: "/automation", internal: "/internal" };
   setTimeout(() => {
     postJSON(`${BACKEND}${endpoints[current]}`, { message: msg, sessionId })
-      .then(r => {
-        think.remove();
-        const reply = r.reply || "All set.";
-        bubble(reply);
-        if (window.Voice.isEnabled()) window.Voice.speak(reply);
-      })
-      .catch(() => {
-        think.remove();
-        bubble("Sorry, I’m having a little trouble connecting. Let’s try that again in a moment.");
-      });
-  }, 650);
+      .then(r => { think.remove(); bubble(r.reply || "All set."); })
+      .catch(() => { think.remove(); bubble("Sorry, I’m having a little trouble connecting. Let’s try that again in a moment."); });
+  }, 600);
 }
-document.getElementById("dlg-send").addEventListener("click", sendMsg);
-document.getElementById("dlg-input").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); sendMsg(); } });
+dlgSend.addEventListener("click", sendMsg);
+dlgInput.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); sendMsg(); } });
 
-voiceToggle.addEventListener("click", () => {
-  const on = voiceToggle.getAttribute("aria-pressed") !== "true";
-  voiceToggle.setAttribute("aria-pressed", on ? "true" : "false");
-  voiceToggle.textContent = on ? "🔊 Voice: On" : "🔊 Voice: Off";
-  window.Voice.setEnabled(on);
-});
+let rec = null, listening = false;
+function setupASR() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return null;
+  rec = new SR();
+  rec.lang = "en-GB";
+  rec.interimResults = true;
+  rec.continuous = false;
+
+  rec.onresult = e => {
+    let finalText = "";
+    for (let i = 0; i < e.results.length; i++) {
+      const res = e.results[i];
+      if (res.isFinal) finalText += res[0].transcript;
+      else dlgInput.value = (finalText || res[0].transcript).trim();
+    }
+    if (finalText) dlgInput.value = finalText.trim();
+  };
+  rec.onstart = () => setMicUI(true);
+  rec.onend = () => { setMicUI(false); listening = false; };
+  rec.onerror = () => { setMicUI(false); listening = false; };
+  return rec;
+}
+function setMicUI(on) {
+  micBtn.setAttribute("aria-pressed", on ? "true" : "false");
+}
+function toggleMic() {
+  if (!rec) {
+    if (!setupASR()) { alert("Speech recognition isn’t available in this browser."); return; }
+  }
+  try {
+    if (!listening) { rec.start(); listening = true; }
+    else { rec.stop(); }
+  } catch {}
+}
+micBtn.addEventListener("click", toggleMic);
