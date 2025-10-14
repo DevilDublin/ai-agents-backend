@@ -1,3 +1,4 @@
+@@ -1,76 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,20 +15,23 @@
 
   <header class="nav">
     <div class="brand"><span class="spark"></span> AI Agents</div>
-    <nav class="links">
+    <div class="links">
       <a class="link-chip" href="index.html">Home</a>
       <a class="link-chip" href="demos.html">Demos</a>
       <a class="link-chip" href="contact.html">Contact</a>
-    </nav>
+    </div>
   </header>
 
   <main>
-    <section class="hero hero-small">
-      <h1>Live Demos</h1>
-      <p class="lead">Hover to connect. Click to chat. Pause on a bot to see what it does.</p>
+    <section class="hero hero-compact">
+      <div class="hero-inner">
+        <h1>Live Demos</h1>
+        <p class="lead">Hover to connect. Click to chat. Pause on a bot to see what it does.</p>
+      </div>
     </section>
 
-    <section class="section tight">
+    <section class="section">
+    <section class="section section-tight">
       <div class="container">
         <div class="orbit-wrap" id="orbit-wrap">
           <canvas id="orbits"></canvas>
@@ -43,18 +47,25 @@
         <div class="title" id="dlg-title">Agent</div>
         <button class="btn ghost" id="dlg-close">Close</button>
       </div>
+
       <div class="dialog-body">
         <div class="examples" id="dlg-examples"></div>
         <div class="chat" id="dlg-chat"></div>
+
         <div class="input-row">
-          <div style="position:relative; flex:1;">
-            <input id="dlg-input" placeholder="Type your message…"/>
-            <div id="dlg-ghost" style="display:none;"></div>
+          <div class="composer">
+            <div class="input-shell">
+              <input id="dlg-input" placeholder="Type or press the mic to speak…"/>
+              <div id="dlg-ghost" class="input-ghost"></div>
+            </div>
+            <button id="mic-btn" class="btn mic" aria-pressed="false" title="Speak">
+              <span class="mic-icon" aria-hidden="true"></span>
+            </button>
+            <button class="btn send" id="dlg-send" title="Send">Send</button>
           </div>
-          <button class="btn ghost" id="mic-btn" aria-pressed="false">🎙️</button>
-          <button class="btn" id="dlg-send">Send</button>
         </div>
       </div>
+
     </div>
   </div>
 
