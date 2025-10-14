@@ -1,30 +1,22 @@
-// year
-document.getElementById('year')?.appendChild(document.createTextNode(new Date().getFullYear()));
+const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear();
 
-// starfield
-(function stars() {
+(function twinkle(){
   const c = document.getElementById('stars');
-  if (!c) return;
+  if(!c) return;
   const ctx = c.getContext('2d');
-  function resize(){ c.width = innerWidth; c.height = innerHeight; }
-  addEventListener('resize', resize); resize();
-  const S = Array.from({length: 220}, ()=>({
-    x: Math.random()*c.width,
-    y: Math.random()*c.height,
-    r: Math.random()*1.1 + .2,
-    a: Math.random()*1
-  }));
-  function tick(){
+  const dpr = window.devicePixelRatio || 1;
+  function size(){ c.width = innerWidth*dpr; c.height = innerHeight*dpr; draw(0); }
+  addEventListener('resize', size); size();
+  const stars = Array.from({length:160}, ()=>({x:Math.random(), y:Math.random(), r:Math.random()*1.6+0.2, p:Math.random()}));
+  function draw(t){
     ctx.clearRect(0,0,c.width,c.height);
-    S.forEach(s=>{
-      s.a += 0.015;
-      const glow = 0.4 + Math.sin(s.a)*0.35;
+    for(const s of stars){
+      const a = 0.35 + 0.65*Math.abs(Math.sin((t/1400)+s.p*6.28));
+      ctx.fillStyle = `rgba(205,187,255,${a})`;
       ctx.beginPath();
-      ctx.fillStyle = `rgba(185,138,255,${0.14+glow*0.2})`;
-      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.arc(s.x*c.width, s.y*c.height, s.r*dpr, 0, Math.PI*2);
       ctx.fill();
-    });
-    requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(draw);
   }
-  tick();
 })();
