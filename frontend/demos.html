@@ -4,12 +4,12 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AI Agents — Demos</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles/main.css"/>
 </head>
-<body>
+<body class="page-demos">
   <canvas id="stars"></canvas>
 
   <header class="nav">
@@ -43,16 +43,14 @@
     <div class="dialog">
       <div class="dialog-head">
         <div class="title" id="dlg-title">Agent</div>
-        <div class="controls">
-          <button class="btn ghost" id="dlg-close">Close</button>
-        </div>
+        <button class="btn ghost" id="dlg-close">Close</button>
       </div>
       <div class="dialog-body">
         <div class="examples" id="dlg-examples"></div>
         <div class="chat" id="dlg-chat"></div>
         <div class="input-row">
           <input id="dlg-input" placeholder="Type your message…"/>
-          <button class="mic" id="mic-btn" aria-pressed="false" title="Tap to speak">🎤</button>
+          <button id="mic-btn" class="btn mic" aria-pressed="false" title="Speak">🎤</button>
           <button class="btn" id="dlg-send">Send</button>
         </div>
       </div>
@@ -61,8 +59,8 @@
 
   <footer class="footer">© <span id="year"></span> AI Agents — Tailoured AI for Business</footer>
 
+  <script src="js/site.js"></script>
   <script src="js/config.js"></script>
   <script src="js/demos.js"></script>
-  <script src="js/site.js"></script>
 </body>
 </html>
