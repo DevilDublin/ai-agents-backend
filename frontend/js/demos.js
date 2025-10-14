@@ -73,7 +73,7 @@ function draw(){
 }
 draw();
 
-/* HOVER + TOOLTIP */
+/* hover + tooltip */
 orbits.addEventListener('mousemove', e=>{
   const rect=orbits.getBoundingClientRect(); const mx=e.clientX-rect.left, my=e.clientY-rect.top;
   const R_HIT=150, R_STICKY=170;
@@ -92,7 +92,7 @@ orbits.addEventListener('mousemove', e=>{
 orbits.addEventListener('mouseleave', ()=>{ if(hoverTimer) clearTimeout(hoverTimer); hoverCandidate=-1; hoverIdx=-1; tooltip.style.display='none'; });
 orbits.addEventListener('click', ()=>{ if(hoverIdx>-1) openAgent(nodes[hoverIdx].key); });
 
-/* MODAL + CHAT */
+/* modal + chat */
 const overlay=document.getElementById('overlay');
 const dlgClose=document.getElementById('dlg-close');
 const dlgTitle=document.getElementById('dlg-title');
@@ -128,6 +128,7 @@ function openAgent(key){
   overlay.style.display='flex';
   dlgInput.focus();
 }
+
 function closeDlg(){ overlay.style.display='none'; current=null; }
 dlgClose.addEventListener('click', closeDlg);
 overlay.addEventListener('click', e=>{ if(e.target===overlay) closeDlg(); });
@@ -147,7 +148,7 @@ function postJSON(url, body){
     .then(async r=>{ clearTimeout(t); if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); });
 }
 
-/* SEND */
+/* send */
 function sendMsg(){
   const msg=dlgInput.value.trim(); if(!msg || !current) return;
   if(listening && rec) rec.stop();  // stop mic on send
@@ -159,10 +160,10 @@ function sendMsg(){
     .catch(()=>{ think.remove(); bubble("Sorry, I’m having a little trouble connecting. Let’s try that again in a moment."); });
   },600);
 }
-document.getElementById('dlg-send').addEventListener('click', sendMsg);
+dlgSend.addEventListener('click', sendMsg);
 dlgInput.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); sendMsg(); } });
 
-/* SPEECH RECOGNITION */
+/* speech recognition */
 let rec=null, listening=false, micAccum="";
 function setupASR(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -170,13 +171,18 @@ function setupASR(){
   rec=new SR(); rec.lang='en-GB'; rec.interimResults=true; rec.continuous=true;
 
   rec.onstart=()=>{ listening=true; micAccum=''; setMicUI(true);
-    ghost.textContent=''; ghost.style.display='block'; dlgInput.classList.add('asr-mode');
+    ghost.textContent=''; ghost.style.display='block';
+    dlgInput.classList.add('asr-mode');
   };
   rec.onresult=e=>{
-    let interim=''; for(let i=e.resultIndex;i<e.results.length;i++){ const res=e.results[i]; if(res.isFinal) micAccum+=res[0].transcript+' '; else interim+=res[0].transcript; }
+    let interim=''; for(let i=e.resultIndex;i<e.results.length;i++){
+      const res=e.results[i];
+      if(res.isFinal) micAccum+=res[0].transcript+' ';
+      else interim+=res[0].transcript;
+    }
     const text=(micAccum+interim).trim();
     ghost.textContent=text;   // fancy overlay
-    dlgInput.value=text;      // real value kept in sync
+    dlgInput.value=text;      // keep real value in sync
   };
   rec.onerror=()=>{ listening=false; setMicUI(false); ghost.style.display='none'; dlgInput.classList.remove('asr-mode'); };
   rec.onend=()=>{ listening=false; setMicUI(false); ghost.style.display='none'; dlgInput.classList.remove('asr-mode'); };
@@ -188,7 +194,6 @@ function setMicUI(on){
   micBtn.classList.toggle('recording', !!on);
 }
 function toggleMic(){
-  if(!micBtn) return;
   if(!rec && !setupASR()){ alert('Speech recognition isn’t available in this browser.'); return; }
   try{ if(!listening) rec.start(); else rec.stop(); }catch{}
 }
