@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AI Agents — Demos</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -10,57 +10,79 @@
   <link rel="stylesheet" href="styles/main.css"/>
 </head>
 <body>
-<canvas id="stars"></canvas>
+  <canvas id="stars"></canvas>
 
-<header class="nav">
-  <div class="brand"><span class="spark"></span> AI Agents</div>
-  <nav class="links">
-    <a class="link-chip" href="index.html">Home</a>
-    <a class="link-chip" href="demos.html">Demos</a>
-    <a class="link-chip" href="contact.html">Contact</a>
-  </nav>
-</header>
-
-<main>
-  <section class="hero hero-compact">
-    <h1>Live Demos</h1>
-    <p class="lead small">Hover to connect. Click to chat. Pause on a bot to see what it does.</p>
-  </section>
-
-  <section class="section section-tight">
-    <div class="container">
-      <div class="orbit-wrap" id="orbit-wrap">
-        <canvas id="orbits"></canvas>
-        <div id="orbit-tooltip"></div>
-      </div>
+  <header class="nav">
+    <div class="brand"><span class="spark"></span> AI Agents</div>
+    <div class="links">
+      <a class="link-chip" href="index.html">Home</a>
+      <a class="link-chip" href="demos.html">Demos</a>
+      <a class="link-chip" href="contact.html">Contact</a>
     </div>
-  </section>
-</main>
+  </header>
 
-<div class="overlay" id="overlay">
-  <div class="dialog">
-    <div class="dialog-head">
-      <div class="title" id="dlg-title">Agent</div>
-      <button class="btn ghost" id="dlg-close">Close</button>
-    </div>
-    <div class="dialog-body">
-      <div class="examples" id="dlg-examples"></div>
-      <div class="chat" id="dlg-chat"></div>
-      <div class="input-row">
-        <div class="input-shell">
-          <input id="dlg-input" placeholder="Type your message…" />
-          <span id="dlg-ghost"></span>
+  <main>
+    <section class="hero hero-compact">
+      <h1>Live Demos</h1>
+      <p class="lead">Hover to connect. Click to chat. Pause on a bot to see what it does.</p>
+    </section>
+
+    <section class="section section-tight">
+      <div class="container">
+        <div class="orbit-wrap" id="orbit-wrap">
+          <canvas id="orbits"></canvas>
+
+          <div class="hub">
+            <div class="hex glow"></div>
+            <div class="hub-label">Select your demo</div>
+          </div>
+
+          <button class="node" data-id="setter"   data-tip="Books qualified consults and sends calendar invites."    style="--place:top">
+            <span class="ray"></span>Appointment Setter
+          </button>
+          <button class="node" data-id="support"  data-tip="Helps with returns, delivery and warranty."               style="--place:right">
+            <span class="ray"></span>Support Q&amp;A
+          </button>
+          <button class="node" data-id="internal" data-tip="Answers HR and Sales questions clearly."                   style="--place:left">
+            <span class="ray"></span>Internal Knowledge
+          </button>
+          <button class="node" data-id="planner"  data-tip="Drafts step-by-step automations and next actions."         style="--place:bottom">
+            <span class="ray"></span>Automation Planner
+          </button>
+
+          <div id="orbit-tooltip"></div>
         </div>
-        <button id="dlg-mic" aria-label="Start voice" class="mic"></button>
-        <button class="btn" id="dlg-send">Send</button>
+      </div>
+    </section>
+  </main>
+
+  <div class="overlay" id="overlay">
+    <div class="dialog">
+      <div class="dialog-head">
+        <div class="title" id="dlg-title">Agent</div>
+        <button class="btn ghost" id="dlg-close">Close</button>
+      </div>
+      <div class="dialog-body">
+        <div class="examples" id="dlg-examples"></div>
+        <div class="chat" id="dlg-chat"></div>
+
+        <div class="input-row">
+          <div class="input-shell">
+            <input id="dlg-input" placeholder="Type your message…"/>
+            <span id="dlg-ghost" aria-hidden="true"></span>
+          </div>
+          <button id="dlg-mic" class="mic-btn" aria-pressed="false" title="Voice input">
+            <span class="mic-dot"></span>
+          </button>
+          <button class="btn primary" id="dlg-send">Send</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<footer class="footer">© <span id="year"></span> AI Agents — Tailoured AI for Business</footer>
-<script src="js/site.js"></script>
-<script src="js/config.js"></script>
-<script src="js/demos.js"></script>
+  <footer class="footer">© <span id="year"></span> AI Agents — Tailoured AI for Business</footer>
+
+  <script src="js/site.js"></script>
+  <script src="js/demos.js"></script>
 </body>
 </html>
