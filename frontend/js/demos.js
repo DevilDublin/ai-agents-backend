@@ -73,7 +73,7 @@ function draw(){
 }
 draw();
 
-/* stable circular hit-area + debounce; tooltip ignores pointer via CSS */
+/* HOVER + TOOLTIP */
 orbits.addEventListener('mousemove', e=>{
   const rect=orbits.getBoundingClientRect(); const mx=e.clientX-rect.left, my=e.clientY-rect.top;
   const R_HIT=150, R_STICKY=170;
@@ -92,7 +92,7 @@ orbits.addEventListener('mousemove', e=>{
 orbits.addEventListener('mouseleave', ()=>{ if(hoverTimer) clearTimeout(hoverTimer); hoverCandidate=-1; hoverIdx=-1; tooltip.style.display='none'; });
 orbits.addEventListener('click', ()=>{ if(hoverIdx>-1) openAgent(nodes[hoverIdx].key); });
 
-/* modal chat + mic */
+/* MODAL + CHAT */
 const overlay=document.getElementById('overlay');
 const dlgClose=document.getElementById('dlg-close');
 const dlgTitle=document.getElementById('dlg-title');
@@ -101,9 +101,7 @@ const dlgInput=document.getElementById('dlg-input');
 const dlgSend=document.getElementById('dlg-send');
 const dlgExamples=document.getElementById('dlg-examples');
 const micBtn=document.getElementById('mic-btn');
-const inputRow=document.querySelector('.input-row');
-
-const ghost=document.createElement('div'); ghost.id='dlg-ghost'; ghost.className='input-ghost'; inputRow.appendChild(ghost);
+const ghost=document.getElementById('dlg-ghost');
 
 const intros={
   appointment:"Hello there 👋 I can get a meeting in the diary. Share a budget, a time, or your e-mail and I’ll take it from there.",
@@ -117,7 +115,6 @@ const examples={
   automation:[["Lead flow","When a lead completes a form, enrich, score, push to CRM, then post to Slack and e-mail sales."],["Ops summary","Create a weekly ops summary from Airtable and e-mail it to the team with KPIs."]],
   internal:[["HR: holiday","What’s the holiday policy?"],["Sales: stages","What are the sales stages?"]]
 };
-
 let current=null, sessionId=null;
 
 function openAgent(key){
@@ -130,7 +127,6 @@ function openAgent(key){
   bubble(intros[key]||'Hello!');
   overlay.style.display='flex';
   dlgInput.focus();
-  setTimeout(layoutGhost,0);
 }
 function closeDlg(){ overlay.style.display='none'; current=null; }
 dlgClose.addEventListener('click', closeDlg);
@@ -151,9 +147,10 @@ function postJSON(url, body){
     .then(async r=>{ clearTimeout(t); if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); });
 }
 
+/* SEND */
 function sendMsg(){
   const msg=dlgInput.value.trim(); if(!msg || !current) return;
-  if(listening && rec) rec.stop(); // stop mic on send
+  if(listening && rec) rec.stop();  // stop mic on send
   bubble(msg,true); dlgInput.value=''; ghost.style.display='none'; dlgInput.classList.remove('asr-mode');
   const think=showThinking();
   const endpoints={appointment:'/appointment',support:'/support',automation:'/automation',internal:'/internal'};
@@ -162,33 +159,37 @@ function sendMsg(){
     .catch(()=>{ think.remove(); bubble("Sorry, I’m having a little trouble connecting. Let’s try that again in a moment."); });
   },600);
 }
-dlgSend.addEventListener('click', sendMsg);
+document.getElementById('dlg-send').addEventListener('click', sendMsg);
 dlgInput.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); sendMsg(); } });
-dlgInput.addEventListener('input', ()=>{ if(!listening) ghost.style.display='none'; });
 
-/* speech recognition with wavy overlay */
+/* SPEECH RECOGNITION */
 let rec=null, listening=false, micAccum="";
-function layoutGhost(){
-  if(!ghost || !dlgInput) return;
-  const pr=inputRow.getBoundingClientRect(), r=dlgInput.getBoundingClientRect();
-  ghost.style.left=(r.left-pr.left)+'px'; ghost.style.top=(r.top-pr.top)+'px';
-  ghost.style.width=r.width+'px'; ghost.style.height=r.height+'px';
-}
-window.addEventListener('resize', layoutGhost);
-
 function setupASR(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR) return null;
   rec=new SR(); rec.lang='en-GB'; rec.interimResults=true; rec.continuous=true;
-  rec.onstart=()=>{ listening=true; micAccum=''; setMicUI(true); ghost.textContent=''; ghost.style.display='block'; dlgInput.classList.add('asr-mode'); layoutGhost(); };
+
+  rec.onstart=()=>{ listening=true; micAccum=''; setMicUI(true);
+    ghost.textContent=''; ghost.style.display='block'; dlgInput.classList.add('asr-mode');
+  };
   rec.onresult=e=>{
     let interim=''; for(let i=e.resultIndex;i<e.results.length;i++){ const res=e.results[i]; if(res.isFinal) micAccum+=res[0].transcript+' '; else interim+=res[0].transcript; }
-    const text=(micAccum+interim).trim(); ghost.textContent=text; dlgInput.value=text; layoutGhost();
+    const text=(micAccum+interim).trim();
+    ghost.textContent=text;   // fancy overlay
+    dlgInput.value=text;      // real value kept in sync
   };
   rec.onerror=()=>{ listening=false; setMicUI(false); ghost.style.display='none'; dlgInput.classList.remove('asr-mode'); };
   rec.onend=()=>{ listening=false; setMicUI(false); ghost.style.display='none'; dlgInput.classList.remove('asr-mode'); };
   return rec;
 }
-function setMicUI(on){ micBtn?.setAttribute('aria-pressed', on?'true':'false'); if(micBtn){ micBtn.textContent=on?'■ Stop':'🎤'; micBtn.classList.toggle('recording', !!on); } }
-function toggleMic(){ if(!micBtn) return; if(!rec && !setupASR()){ alert('Speech recognition isn’t available in this browser.'); return; } try{ if(!listening) rec.start(); else rec.stop(); }catch{} }
+function setMicUI(on){
+  micBtn?.setAttribute('aria-pressed', on?'true':'false');
+  if(!micBtn) return;
+  micBtn.classList.toggle('recording', !!on);
+}
+function toggleMic(){
+  if(!micBtn) return;
+  if(!rec && !setupASR()){ alert('Speech recognition isn’t available in this browser.'); return; }
+  try{ if(!listening) rec.start(); else rec.stop(); }catch{}
+}
 micBtn?.addEventListener('click', toggleMic);
