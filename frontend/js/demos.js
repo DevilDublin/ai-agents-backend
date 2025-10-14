@@ -5,7 +5,26 @@ setTimeout(() => { BACKEND = window.BACKEND_URL || DEFAULT_BACKEND; }, 0);
 const wrap = document.getElementById("orbit-wrap");
 const orbits = document.getElementById("orbits");
 const ctx = orbits.getContext("2d");
-const tooltip = document.getElementById("orbit-tooltip");
+
+let W=0, H=0;
+
+function sizeOnce(){
+  if(!wrap) return;
+  const w = wrap.clientWidth;
+  const h = wrap.clientHeight;
+  if(w === 0 || h === 0){
+    requestAnimationFrame(sizeOnce);
+    return;
+  }
+  orbits.width  = w;
+  orbits.height = h;
+  W = w; H = h;
+}
+function size(){ sizeOnce(); }
+addEventListener("resize", size);
+
+if (document.readyState === "complete") size();
+else window.addEventListener("load", size);
 
 let W, H, t = 0;
 let hoverIdx = -1, hoverCandidate = -1, hoverTimer = null;
