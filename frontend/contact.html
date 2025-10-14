@@ -22,27 +22,26 @@
   </header>
 
   <main>
-    <section class="hero" style="min-height:auto;padding-top:86px;padding-bottom:8px;">
+    <section class="hero hero-compact">
       <h1>Contact</h1>
       <p class="lead">Tell us about your business and the agent you’d like to build. We’ll reply promptly.</p>
     </section>
 
-    <section class="section" style="padding-top:18px;">
+    <section class="section">
       <div class="container contact-grid">
         <div class="card">
           <h3>Start a project</h3>
-          <form action="#" onsubmit="event.preventDefault(); alert('Thanks — we’ll be in touch.');">
-            <input type="text" placeholder="Your name" required>
-            <input type="email" placeholder="Your e-mail" required>
+          <form>
+            <input type="text" placeholder="Your name">
+            <input type="email" placeholder="Your e-mail">
             <input type="text" placeholder="Company / Website">
-            <input type="text" placeholder="Which agent? (Appointment, Support, Internal, Automation)">
+            <textarea placeholder="Which agent? (Appointment, Support, Internal, Automation)"></textarea>
             <button type="submit">Send</button>
           </form>
         </div>
-
         <div class="card">
           <h3>Prefer e-mail?</h3>
-          <p>E-mail: <a href="mailto:aiagents@gmail.com">aiagents@gmail.com</a></p>
+          <p>E-mail: <a class="inline-link" href="mailto:aiagents@gmail.com">aiagents@gmail.com</a></p>
           <p>We usually respond within one working day. If you have a brief, deck or spec, feel free to attach it.</p>
           <p>We’re UK-based; meetings available GMT and EST.</p>
         </div>
@@ -51,6 +50,7 @@
   </main>
 
   <footer class="footer">© <span id="year"></span> AI Agents — Tailoured AI for Business</footer>
+
   <script src="js/site.js"></script>
 </body>
 </html>
