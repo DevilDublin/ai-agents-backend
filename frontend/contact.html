@@ -1,40 +1,38 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>AI Agents — Contact</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/main.css">
 </head>
-<body class="page-contact">
+<body class="page page--contact">
   <canvas id="stars"></canvas>
 
   <nav class="nav">
-    <div class="brand"><span class="spark"></span>AI Agents</div>
-    <div class="links">
-      <a class="badge" href="index.html">Home</a>
-      <a class="badge" href="demos.html">Demos</a>
-      <a class="badge" href="contact.html">Contact</a>
+    <div class="brand"><span class="dot"></span>AI Agents</div>
+    <div class="nav-links">
+      <a href="index.html" class="pill">Home</a>
+      <a href="demos.html" class="pill">Demos</a>
+      <a href="contact.html" class="pill">Contact</a>
     </div>
   </nav>
 
-  <header class="hero">
-    <h2 class="page-title">Contact</h2>
-    <p class="page-subtitle">Tell us about your business and the agent you’d like to build. We’ll reply promptly.</p>
-  </header>
+  <main class="content">
+    <header class="page-head">
+      <h1>Contact</h1>
+      <p class="sub">Tell us about your business and the agent you’d like to build. We’ll reply promptly.</p>
+    </header>
 
-  <section class="section">
-    <div class="contact-grid">
+    <section class="contact-grid contact-grid--tight">
       <article class="card">
         <h3>Start a project</h3>
         <form>
-          <input placeholder="Your name" />
-          <input placeholder="Your e-mail" />
-          <input placeholder="Company / Website" />
-          <input placeholder="Which agent? (Appointment, Support, Internal, Automation)" />
-          <button class="btn primary" type="button">Send</button>
+          <input placeholder="Your name">
+          <input placeholder="Your e-mail">
+          <input placeholder="Company / Website">
+          <input placeholder="Which agent? (Appointment, Support, Internal, Automation)">
+          <button class="btn btn--primary" type="button">Send</button>
         </form>
       </article>
 
@@ -44,10 +42,13 @@
         <p>We usually respond within one working day. If you have a brief, deck or spec, feel free to attach it.</p>
         <p>We’re UK-based; meetings available GMT and EST.</p>
       </article>
-    </div>
-  </section>
+    </section>
+  </main>
 
-  <footer class="footer stick-bottom">© 2025 AI Agents — Tailoured AI for Business</footer>
+  <footer class="footer">
+    <div>© 2025 AI Agents — Tailoured AI for Business</div>
+  </footer>
+
   <script src="js/site.js"></script>
 </body>
 </html>
