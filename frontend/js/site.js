@@ -1,43 +1,67 @@
-(function(){
-  const starEl = document.getElementById('stars');
-  const dots = [];
-  const count = 220;
-  for(let i=0;i<count;i++){
-    dots.push({
-      x: Math.random()*100,
-      y: Math.random()*100,
-      s: Math.random()*1.2+0.3,
-      v: Math.random()*0.02+0.005
-    });
-  }
-  function draw(){
-    const stars = dots.map(d=>`${d.x}vw ${d.y}vh rgba(255,255,255,0.85)`).join(',');
-    starEl.style.boxShadow = stars;
-  }
-  function tick(){
-    dots.forEach(d=>{
-      d.y += d.v;
-      if(d.y>100) d.y = -1;
-    });
-    draw();
-    requestAnimationFrame(tick);
-  }
-  draw(); tick();
+// Starfield + shooting stars
+const sky = (() => {
+  const c = document.getElementById('sky');
+  const s = document.getElementById('shooting');
+  if (!c || !s) return;
+  const ctx = c.getContext('2d');
+  const sctx = s.getContext('2d');
+  let w, h, stars = [];
 
-  setInterval(()=>{
-    const s = document.createElement('span');
-    s.className = 'shoot';
-    s.style.position='fixed';
-    s.style.top = Math.random()*60+'vh';
-    s.style.left = Math.random()*100+'vw';
-    s.style.width='120px';
-    s.style.height='2px';
-    s.style.background='linear-gradient(90deg,rgba(255,255,255,0.9),rgba(255,255,255,0))';
-    s.style.filter='blur(0.3px)';
-    s.style.zIndex='0';
-    s.style.transform='rotate('+(Math.random()*20-10)+'deg)';
-    s.style.opacity='0.9';
-    document.body.appendChild(s);
-    s.animate([{transform:s.style.transform,opacity:0.9},{transform:`translateX(200px) ${s.style.transform}`,opacity:0}],{duration:1200,fill:'forwards'}).onfinish=()=>s.remove();
-  }, 2200);
+  function resize() {
+    w = c.width = s.width = window.innerWidth;
+    h = c.height = s.height = window.innerHeight;
+    stars = Array.from({ length: Math.round((w*h)/14000) }, () => ({
+      x: Math.random()*w,
+      y: Math.random()*h,
+      z: 0.6 + Math.random()*0.6,
+      tw: Math.random()*2*Math.PI
+    }));
+  }
+
+  function paintStars(t) {
+    ctx.clearRect(0,0,w,h);
+    for (const st of stars) {
+      st.tw += 0.02;
+      const alpha = 0.35 + Math.sin(st.tw)*0.25;
+      ctx.fillStyle = `rgba(215,205,255,${alpha})`;
+      ctx.fillRect(st.x, st.y, st.z, st.z);
+    }
+  }
+
+  // simple shooting star every few seconds
+  let shots = [];
+  function spawnShot() {
+    const y = Math.random()*h*0.8 + 40;
+    shots.push({ x: -80, y, vx: 6+Math.random()*3, life: 1 });
+    setTimeout(spawnShot, 2500 + Math.random()*3500);
+  }
+
+  function paintShots() {
+    sctx.clearRect(0,0,w,h);
+    shots = shots.filter(sh => sh.life > 0 && sh.x < w+120);
+    for (const sh of shots) {
+      sh.x += sh.vx; sh.life -= 0.006;
+      const grd = sctx.createLinearGradient(sh.x-80, sh.y-10, sh.x, sh.y);
+      grd.addColorStop(0, `rgba(155,114,255,0)`);
+      grd.addColorStop(1, `rgba(155,114,255,${sh.life})`);
+      sctx.strokeStyle = grd; sctx.lineWidth = 2;
+      sctx.beginPath(); sctx.moveTo(sh.x-80, sh.y-10); sctx.lineTo(sh.x, sh.y); sctx.stroke();
+    }
+  }
+
+  function loop(t) { paintStars(t); paintShots(); requestAnimationFrame(loop) }
+  window.addEventListener('resize', resize);
+  resize(); spawnShot(); requestAnimationFrame(loop);
 })();
+
+// Smooth scroll for hero buttons
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-scroll]');
+  if (!a) return;
+  const id = a.getAttribute('data-scroll');
+  const target = document.querySelector(id);
+  if (target) {
+    e.preventDefault();
+    target.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+});
