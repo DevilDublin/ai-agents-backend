@@ -1,116 +1,65 @@
-// Voice module: mic control, ghost typing, and auto-send after silence
-window.Voice = (function () {
-  let rec = null;
+(function(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  function wire({mic,input,ghost,onFinal,onInterim}){
+    if(!SR){ mic.style.display="none"; return }
+    const r = new SR();
+    r.lang="en-GB";
+    r.continuous=true;
+    r.interimResults=true;
 
-  function ensure() {
-    if (rec) return rec;
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) return null;
-    rec = new SR();
-    rec.lang = "en-GB";
-    rec.interimResults = true;
-    rec.continuous = true;
-    return rec;
-  }
+    let lastSpeech=0, silenceTimer=null, active=false, finalBuffer="";
 
-  function typeGhost(el, text, guard) {
-    if (!el) return;
-    let i = 0;
-    el.textContent = "";
-    function step() {
-      if (!guard.active) return;
-      if (i > text.length) return;
-      el.textContent = text.slice(0, i);
-      i += 1;
-      requestAnimationFrame(step);
+    function start(){
+      if(active) return;
+      active=true;
+      mic.setAttribute("aria-pressed","true");
+      ghost.textContent="";
+      finalBuffer="";
+      lastSpeech=Date.now();
+      r.start();
+      tickSilence();
     }
-    requestAnimationFrame(step);
-  }
-
-  function attach(root, opts = {}) {
-    const mic   = root.querySelector(".mic");
-    const input = root.querySelector("#dlg-input");
-    const send  = root.querySelector("#dlg-send");
-    let ghost = root.querySelector(".ghost");
-    if (!ghost) {
-      ghost = document.createElement("div");
-      ghost.className = "ghost";
-      root.appendChild(ghost);
-    }
-
-    const r = ensure();
-    const guard = { active:false };
-    let silenceTimer = null;
-    const silenceMs = Math.max(1500, +opts.silenceMs || 3600);
-
-    function clearSilence() {
-      if (silenceTimer) {
-        clearTimeout(silenceTimer);
-        silenceTimer = null;
+    function stop(send){
+      if(!active) return;
+      active=false;
+      mic.setAttribute("aria-pressed","false");
+      r.stop();
+      clearTimeout(silenceTimer);
+      if(send){
+        const txt=finalBuffer.trim();
+        if(txt){ onFinal && onFinal(txt) }
       }
+      finalBuffer="";
+      ghost.textContent="";
     }
-    function armSilence() {
-      clearSilence();
-      silenceTimer = setTimeout(() => {
-        if (!guard.active) return;
-        const text = (input.value || "").trim();
-        if (text) {
-          if (typeof opts.onAutoSend === "function") {
-            opts.onAutoSend(text);
-          }
-        }
-        stop();
-      }, silenceMs);
+    function tickSilence(){
+      clearTimeout(silenceTimer);
+      silenceTimer=setTimeout(()=>{
+        if(Date.now()-lastSpeech>3200) stop(true);
+        else tickSilence();
+      },800);
     }
 
-    function stop() {
-      if (!guard.active) return;
-      guard.active = false;
-      mic.setAttribute("aria-pressed", "false");
-      ghost.textContent = "";
-      clearSilence();
-      if (r) r.stop();
-    }
+    r.onresult = e=>{
+      lastSpeech=Date.now();
+      let interim="", final="";
+      for(let i=e.resultIndex;i<e.results.length;i++){
+        const res=e.results[i];
+        if(res.isFinal) final+=res[0].transcript;
+        else interim+=res[0].transcript;
+      }
+      if(interim){ onInterim && onInterim(interim) }
+      if(final){
+        finalBuffer += " " + final;
+        onInterim && onInterim("");
+      }
+      tickSilence();
+    };
+    r.onerror = ()=>stop(false);
+    r.onend = ()=>{ if(active) r.start() };
 
-    function start() {
-      if (!r) return;
-      guard.active = true;
-      mic.setAttribute("aria-pressed", "true");
-      try { r.start(); } catch {}
-    }
-
-    if (r) {
-      r.onresult = (e) => {
-        let final = "";
-        let interim = "";
-        for (let i = e.resultIndex; i < e.results.length; i++) {
-          const t = e.results[i][0].transcript;
-          if (e.results[i].isFinal) final += t;
-          else interim += t;
-        }
-        const out = (final + " " + interim).trim();
-        input.value = out;
-        if (out) typeGhost(ghost, out, guard);
-        armSilence();
-      };
-      r.onend = () => {
-        if (guard.active) {
-          try { r.start(); } catch {}
-        }
-      };
-      r.onerror = () => { stop(); };
-    }
-
-    mic.addEventListener("click", () => (guard.active ? stop() : start()));
-
-    if (send) {
-      send.addEventListener("click", () => stop());
-    }
-
-    input.addEventListener("input", () => { ghost.textContent = ""; });
-
-    return { start, stop };
+    mic.addEventListener('click',()=> active ? stop(false) : start());
   }
-
-  return { attach };
+  window.AA = window.AA || {};
+  AA.voice = { wire };
 })();
