@@ -1,142 +1,108 @@
-(function () {
-  const orbit = document.getElementById('orbit');
+(function(){
+  const wrap = document.querySelector('.orbit-wrap');
   const tooltip = document.getElementById('orbit-tooltip');
+  const lineSvg = document.getElementById('pulse-line');
   const dlg = document.getElementById('dlg');
-  const dlgTitle = document.getElementById('dlg-title');
-  const dlgSub = document.getElementById('dlg-sub');
-  const dlgChat = document.getElementById('dlg-chat');
-  const dlgGreet = document.getElementById('dlg-greet');
-  const dlgClose = document.getElementById('dlg-close');
-  const dlgInput = document.getElementById('dlg-input');
-  const dlgSend = document.getElementById('dlg-send');
-  const examples = document.getElementById('dlg-examples');
+  const close = dlg.querySelector('[data-close]');
+  const chatBox = document.getElementById('dlg-chat');
+  const input = document.getElementById('dlg-input');
+  const sendBtn = document.getElementById('dlg-send');
+  const exWrap = document.getElementById('dlg-examples');
+  const title = document.getElementById('dlg-title');
+  const sub = document.getElementById('dlg-sub');
 
-  if (!orbit) return;
-
-  function beam(fromEl) {
-    const svg = document.getElementById('orbits');
-    const rect = svg.getBoundingClientRect();
-    const c = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
-    const r = fromEl.getBoundingClientRect();
-    const x = r.left + r.width / 2;
-    const y = r.top + r.height / 2;
-
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', c.x - rect.left);
-    line.setAttribute('y1', c.y - rect.top);
-    line.setAttribute('x2', x - rect.left);
-    line.setAttribute('y2', y - rect.top);
-    line.setAttribute('stroke', 'rgba(185,138,255,0.55)');
-    line.setAttribute('stroke-width', '1.5');
-    line.setAttribute('filter', 'url(#softGlow)');
-    svg.appendChild(line);
-    setTimeout(() => line.remove(), 380);
+  function centre(){
+    const r = wrap.getBoundingClientRect();
+    return {x: r.left + r.width/2, y: r.top + r.height/2};
   }
 
-  function showTip(el, text, side) {
+  function pulseTo(el){
+    const c = centre();
+    const r = el.getBoundingClientRect();
+    const x1 = c.x, y1 = c.y;
+    const x2 = r.left + r.width/2, y2 = r.top + r.height/2;
+    const svgW = Math.abs(x2-x1), svgH = Math.abs(y2-y1);
+    const left = Math.min(x1,x2), top = Math.min(y1,y2);
+    lineSvg.setAttribute('width', svgW);
+    lineSvg.setAttribute('height', svgH);
+    lineSvg.style.left = left+'px';
+    lineSvg.style.top = top+'px';
+    lineSvg.innerHTML = `<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#b98aff" stop-opacity="0"/><stop offset="100%" stop-color="#b98aff" stop-opacity="1"/></linearGradient></defs>
+      <path d="M ${x1< x2? 0:svgW} ${y1<y2?0:svgH} L ${x1<x2? svgW:0} ${y1<y2?svgH:0}" stroke="url(#g)" stroke-width="2" fill="none">
+        <animate attributeName="stroke-dasharray" from="0,1000" to="1000,0" dur=".7s" fill="freeze"/>
+      </path>`;
+  }
+
+  function showTip(el, text){
     tooltip.textContent = text;
-    tooltip.style.display = 'block';
+    tooltip.style.display='block';
     const r = el.getBoundingClientRect();
     const t = tooltip.getBoundingClientRect();
-    let x = r.left + (r.width - t.width) / 2;
-    let y = r.top - t.height - 10;
-
-    if (side === 'right') { x = r.right + 12; y = r.top + (r.height - t.height) / 2; }
-    if (side === 'left')  { x = r.left - t.width - 12; y = r.top + (r.height - t.height) / 2; }
-    if (side === 'bottom'){ x = r.left + (r.width - t.width) / 2; y = r.bottom + 12; }
-
-    tooltip.style.transform = `translate(${x}px, ${y}px)`;
+    if(el.classList.contains('top')) tooltip.style.transform = `translate(${r.left + r.width/2 - t.width/2}px, ${r.bottom + 10}px)`;
+    if(el.classList.contains('bottom')) tooltip.style.transform = `translate(${r.left + r.width/2 - t.width/2}px, ${r.top - t.height - 10}px)`;
+    if(el.classList.contains('left')) tooltip.style.transform = `translate(${r.right + 12}px, ${r.top + r.height/2 - t.height/2}px)`;
+    if(el.classList.contains('right')) tooltip.style.transform = `translate(${r.left - t.width - 12}px, ${r.top + r.height/2 - t.height/2}px)`;
   }
+  function hideTip(){ tooltip.style.display='none'; }
 
-  function hideTip() { tooltip.style.display = 'none'; }
-
-  function openDialog(botKey) {
-    const bot = window.AGENT_DEMOS[botKey];
-    if (!bot) return;
-
-    dlgTitle.textContent = bot.title;
-    dlgSub.textContent = bot.blurb;
-    dlgGreet.textContent = bot.greet;
-    dlgChat.innerHTML = '';
-    dlgChat.appendChild(dlgGreet);
-
-    examples.innerHTML = '';
-    bot.examples.forEach(txt => {
-      const chip = document.createElement('div');
-      chip.className = 'chip';
-      chip.textContent = txt;
-      chip.addEventListener('click', () => {
-        dlgInput.value = txt;
-        dlgSend.click();
-      });
-      examples.appendChild(chip);
+  function openChat(key){
+    const bot = window.BOTS[key];
+    if(!bot) return;
+    dlg.style.display='flex';
+    title.textContent = bot.title;
+    sub.textContent = bot.subtitle;
+    chatBox.innerHTML = '';
+    addBubble(bot.opening,false);
+    addBubble(bot.persona,false);
+    exWrap.innerHTML = '';
+    bot.tips.forEach(t=>{
+      const b = document.createElement('span');
+      b.className='chip';
+      b.textContent=t;
+      b.addEventListener('click',()=> send(t));
+      exWrap.appendChild(b);
     });
-
-    dlg.style.display = 'flex';
-    dlgInput.focus();
   }
+  function closeChat(){ dlg.style.display='none'; }
 
-  function closeDialog() {
-    dlg.style.display = 'none';
-  }
-
-  dlgClose.addEventListener('click', closeDialog);
-  dlg.addEventListener('click', e => { if (e.target === dlg) closeDialog(); });
-
-  function addBubble(text, me = false) {
+  function addBubble(text, me){
     const b = document.createElement('div');
-    b.className = 'bubble' + (me ? ' me' : '');
+    b.className = 'bubble'+(me?' me':'');
     b.textContent = text;
-    dlgChat.appendChild(b);
-    dlgChat.scrollTop = dlgChat.scrollHeight;
+    chatBox.appendChild(b);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+  function send(text){
+    if(!text){ text = input.value.trim(); if(!text) return; input.value=''; }
+    addBubble(text,true);
+    setTimeout(()=>{
+      const reply = craftReply(text);
+      addBubble(reply,false);
+    }, 450);
+  }
+  function craftReply(q){
+    q = q.toLowerCase();
+    if(q.includes('return')) return 'Returns are accepted within 30 days in unused condition. I can generate a label if you like.';
+    if(q.includes('ship')) return 'We ship across the UK and most EU countries. Standard Royal Mail 48 or DPD Next Day are available.';
+    if(q.includes('meeting')||q.includes('tuesday')||q.includes('schedule')) return 'I can offer Tue 14:30 or Wed 09:00. Which would you prefer? I’ll send a calendar invite.';
+    if(q.includes('flow')||q.includes('workflow')) return 'I’d map it as: trigger → validate → enrich CRM → notify Slack → schedule task. Want the step-by-step?';
+    return 'Noted. I’ll summarise and point you to the right place if needed.';
   }
 
-  function reply(botKey, user) {
-    const flavours = {
-      appointments: `Got it. I can pencil that in and send a tidy calendar invite. If you’ve a preferred slot or timezone, pop it in.`,
-      support: `I’ll check policy and give you the precise answer, not a waffle. What’s the situation in a sentence?`,
-      internal: `Alright — I’ll fetch the relevant bit from HR/Sales. Anything sensitive, keep it brief.`,
-      automation: `Let’s make life easier. Tell me the steps you do now and where it drags, and I’ll sketch a tidy automation.`
-    };
-    const txt = flavours[botKey] || `Noted. I’ll help with that.`;
-    setTimeout(() => addBubble(txt), 500);
-  }
-
-  let currentBot = null;
-
-  dlgSend.addEventListener('click', () => {
-    const v = dlgInput.value.trim();
-    if (!v) return;
-    addBubble(v, true);
-    dlgInput.value = '';
-    reply(currentBot, v);
-  });
-
-  dlgInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      dlgSend.click();
-    }
-  });
-
-  document.querySelectorAll('.bot-pill').forEach(btn => {
-    const key = btn.getAttribute('data-bot');
-
-    btn.addEventListener('mouseenter', () => {
-      beam(btn);
-      const side = btn.classList.contains('left') ? 'left'
-                 : btn.classList.contains('right') ? 'right'
-                 : btn.classList.contains('bottom') ? 'bottom'
-                 : 'top';
-      const tip = window.AGENT_DEMOS[key]?.blurb || 'Live demo';
-      showTip(btn, tip, side);
+  document.querySelectorAll('.bot-pill').forEach(el=>{
+    const bot = el.dataset.bot;
+    el.addEventListener('mouseenter',()=>{
+      const tip = (window.BOTS[bot]||{}).subtitle || '';
+      showTip(el, tip);
+      pulseTo(el);
     });
-
-    btn.addEventListener('mouseleave', hideTip);
-
-    btn.addEventListener('click', () => {
-      currentBot = key;
-      openDialog(key);
-    });
+    el.addEventListener('mouseleave',hideTip);
+    el.addEventListener('click',()=>openChat(bot));
   });
+
+  close.addEventListener('click', closeChat);
+  dlg.addEventListener('click', e=>{ if(e.target===dlg) closeChat(); });
+
+  sendBtn.addEventListener('click', ()=> send());
+  window.addEventListener('chat:send', e=> send(e.detail));
 })();
