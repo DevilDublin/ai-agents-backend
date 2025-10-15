@@ -7,47 +7,50 @@
   <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
-  <div id="stars"></div>
+  <div class="sky"><canvas id="sky"></canvas><canvas id="shooting"></canvas></div>
+  <div class="page-glow"></div>
 
-  <nav class="nav">
-    <div class="brand"><span class="spark"></span> AI Agents</div>
-    <div class="links">
-      <a class="link-chip" href="index.html">Home</a>
-      <a class="link-chip" href="demos.html">Demos</a>
-      <a class="link-chip" href="contact.html">Contact</a>
-    </div>
-  </nav>
+  <div class="page">
+    <header class="nav">
+      <div class="brand"><span class="dot"></span> AI Agents</div>
+      <nav class="links">
+        <a class="chip" href="index.html">Home</a>
+        <a class="chip" href="demos.html">Demos</a>
+        <a class="chip" href="contact.html">Contact</a>
+      </nav>
+    </header>
 
-  <header class="page-head">
-    <h1 class="page-title">Contact</h1>
-    <p class="page-subtitle">Tell us about your business and the agent you’d like to build. We’ll reply promptly.</p>
-  </header>
+    <main>
+      <section class="page-head">
+        <h1>Contact</h1>
+        <p class="page-sub">Tell us about your business and the agent you’d like to build. We’ll reply promptly.</p>
+      </section>
 
-  <section class="section">
-    <div class="container contact-grid">
-      <article class="card">
-        <h3>Start a project</h3>
-        <form action="#" onsubmit="return false;">
-          <input type="text" placeholder="Your name">
-          <input type="email" placeholder="Your e-mail">
-          <input type="text" placeholder="Company / Website">
-          <input type="text" placeholder="Which agent? (Appointment, Support, Internal, Automation)">
-          <button type="submit" class="btn">Send</button>
-        </form>
-      </article>
-
-      <article class="card">
-        <h3>Prefer e-mail?</h3>
-        <p>E-mail: <a href="mailto:aiagents@gmail.com">aiagents@gmail.com</a></p>
-        <p>We usually respond within one working day. If you have a brief, deck or spec, feel free to attach it.</p>
-        <p>We’re UK-based; meetings available GMT and EST.</p>
-      </article>
-    </div>
+      <section class="section" style="padding-top:12px">
+        <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:24px;max-width:1100px;margin:0 auto">
+          <article class="card">
+            <h3>Start a project</h3>
+            <form style="display:grid;gap:10px">
+              <input class="input" placeholder="Your name">
+              <input class="input" placeholder="Your e-mail">
+              <input class="input" placeholder="Company / Website">
+              <input class="input" placeholder="Which agent? (Appointment, Support, Internal, Automation)">
+              <button class="btn primary">Send</button>
+            </form>
+          </article>
+          <article class="card">
+            <h3>Prefer e-mail?</h3>
+            <p>E-mail: <a href="mailto:aiagents@gmail.com" class="chip">aiagents@gmail.com</a></p>
+            <p>We usually respond within one working day. If you have a brief, deck or spec, feel free to attach it.</p>
+            <p>We’re UK-based; meetings available GMT and EST.</p>
+          </article>
+        </div>
+      </section>
+    </main>
 
     <footer class="footer">© 2025 AI Agents — Tailoured AI for Business</footer>
-  </section>
+  </div>
 
-  <script src="js/config.js"></script>
   <script src="js/site.js"></script>
 </body>
 </html>
