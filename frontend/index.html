@@ -2,73 +2,63 @@
 <html lang="en-GB">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AI Agents — Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
-  <div class="sky"><canvas id="sky"></canvas><canvas id="shooting"></canvas></div>
-  <div class="page-glow"></div>
+  <canvas id="stars"></canvas>
+  <div id="page-glow"></div>
 
-  <div class="page">
-    <header class="nav">
-      <div class="brand"><span class="dot"></span> AI Agents</div>
-      <nav class="links">
-        <a class="chip" href="index.html">Home</a>
-        <a class="chip" href="demos.html">Demos</a>
-        <a class="chip" href="contact.html">Contact</a>
-        <a class="chip primary" href="demos.html">Try Live Demos</a>
-      </nav>
-    </header>
+  <nav class="nav">
+    <div class="brand"><span class="spark"></span> AI Agents</div>
+    <div class="links">
+      <a class="link-chip" href="index.html">Home</a>
+      <a class="link-chip" href="demos.html">Demos</a>
+      <a class="link-chip" href="contact.html">Contact</a>
+      <a class="link-chip primary" href="demos.html">Try Live Demos</a>
+    </div>
+  </nav>
 
-    <main>
-      <section class="hero">
-        <h1>Agents that turn clicks into calls and questions into answers</h1>
-        <p class="lead">
-          We design and maintain conversational agents and automation that slot neatly into your calendars, CRMs, help centres and internal tools.
-        </p>
-        <div class="btn-row">
-          <a class="btn primary" href="demos.html">Explore Demos</a>
-        </div>
-        <div class="btn-row" style="margin-top:8px">
-          <a class="btn ghost" data-scroll="#approach">Our Approach</a>
-        </div>
-      </section>
+  <header class="hero hero--home push-down">
+    <h1>Agents that turn clicks into calls and questions into answers</h1>
+    <p class="lead">We design and maintain conversational agents and automation that slot neatly into your calendars, CRMs, help centres and internal tools.</p>
+    <div class="cta">
+      <a class="btn primary" href="demos.html">Explore Demos</a>
+      <a class="btn ghost" href="#approach">Our Approach</a>
+    </div>
+  </header>
 
-      <section id="approach" class="section">
-        <div class="grid cards">
-          <article class="card">
-            <h3>What we deliver</h3>
-            <ul>
-              <li>Appointment-setting agents that book qualified meetings</li>
-              <li>Support agents that answer from your policies and docs</li>
-              <li>Internal knowledge assistants for HR and Sales</li>
-              <li>Automation that joins the dots across your tools</li>
-            </ul>
-          </article>
+  <section id="approach" class="section">
+    <div class="grid grid--cards">
+      <article class="card">
+        <h3>What we deliver</h3>
+        <ul>
+          <li>Appointment-setting agents that book qualified meetings</li>
+          <li>Support agents that answer from your policies and docs</li>
+          <li>Internal knowledge assistants for HR and Sales</li>
+          <li>Automation that joins the dots across your tools</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>How we work</h3>
+        <ul>
+          <li>Discovery — goals, data, constraints</li>
+          <li>Pilot — focused prototype with real users</li>
+          <li>Integrate — calendars, CRMs, workflows</li>
+          <li>Handover — docs and training for your team</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>Where we fit</h3>
+        <p>We’re platform-agnostic: Express/FastAPI, n8n/Make/Zapier and whichever database or vector store suits best. You get robust systems, not experiments.</p>
+      </article>
+    </div>
+  </section>
 
-          <article class="card">
-            <h3>How we work</h3>
-            <ul>
-              <li>Discovery — goals, data, constraints</li>
-              <li>Pilot — focused prototype with real users</li>
-              <li>Integrate — calendars, CRMs, workflows</li>
-              <li>Handover — docs and training for your team</li>
-            </ul>
-          </article>
-
-          <article class="card">
-            <h3>Where we fit</h3>
-            <p>
-              We’re platform-agnostic: Express/FastAPI, n8n/Make/Zapier and whichever database or vector store suits best. You get robust systems, not experiments.
-            </p>
-          </article>
-        </div>
-      </section>
-    </main>
-
-    <footer class="footer">© 2025 AI Agents — Tailoured AI for Business</footer>
-  </div>
+  <footer class="footer">© 2025 AI Agents — Tailoured AI for Business</footer>
 
   <script src="js/site.js"></script>
 </body>
