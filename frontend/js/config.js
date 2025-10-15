@@ -1,53 +1,25 @@
-window.CONFIG = {
-  brand: "AI Agents",
-  bots: [
-    {
-      id: "setter",
-      label: "Appointment Setter",
-      side: "top",
-      tip: "Books intros, qualifies leads, reads calendars.",
-      examples: [
-        "Hello, I'd like a 30-minute intro next week. Budget is £2k per month.",
-        "Could you do Tuesday 2–4pm?",
-        "Use alex@example.com for the invite."
-      ],
-      intro: "Hi — ask me about appointment setting, availability and basic qualification and I’ll help."
+window.AA = window.AA || {};
+AA.copy = {
+  bots: {
+    appointment: {
+      title: "Appointment Setter",
+      sub: "Books meetings from rough enquiries.",
+      prompts: ["Hello, I'd like a 30-minute intro next week.", "Could you do Tuesday 2–4pm?", "Use alex@example.com for the invite."]
     },
-    {
-      id: "support",
-      label: "Support Q&A",
-      side: "right",
-      tip: "Helps with returns, delivery and warranty.",
-      examples: [
-        "Try: nuanced returns",
-        "Try: shipping speed",
-        "Try: weekend hours"
-      ],
-      intro: "Hi — ask me about returns, shipping, warranty or support hours and I’ll answer from policy."
+    support: {
+      title: "Support Q&A",
+      sub: "Helps with returns, delivery and warranty.",
+      prompts: ["What are weekend support hours?", "How long is delivery to London?", "What’s your returns window?"]
     },
-    {
-      id: "internal",
-      label: "Internal Knowledge",
-      side: "left",
-      tip: "Answers HR and Sales questions clearly.",
-      examples: [
-        "How many holidays do we have?",
-        "What is the SDR lead handoff?",
-        "What’s our parental leave policy?"
-      ],
-      intro: "Hi — ask me about HR, Sales or general internal knowledge."
+    internal: {
+      title: "Internal Knowledge",
+      sub: "Answers HR and Sales questions clearly.",
+      prompts: ["How much is annual leave?", "What’s the travel policy?", "Where’s the brand deck?"]
     },
-    {
-      id: "planner",
-      label: "Automation Planner",
-      side: "bottom",
-      tip: "Designs workflows across your tools.",
-      examples: [
-        "Connect CRM to Slack for new deals.",
-        "Draft onboarding workflow in n8n.",
-        "Sync Zendesk tags to the data warehouse."
-      ],
-      intro: "Hi — describe the workflow you want and I’ll plan the steps and tools."
+    automation: {
+      title: "Automation Planner",
+      sub: "Plans small automations that save time.",
+      prompts: ["Log leads to CRM and Slack.", "Create tasks from contact forms.", "Draft follow-ups after a call."]
     }
-  ]
+  }
 };
