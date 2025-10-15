@@ -1,97 +1,84 @@
 <!doctype html>
-<html lang="en-GB">
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>AI Agents — Demos</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/main.css"/>
 </head>
 <body>
-  <canvas id="stars"></canvas>
-  <div id="page-glow"></div>
+<canvas id="stars"></canvas>
+<canvas id="shooters"></canvas>
 
-  <nav class="nav">
-    <div class="brand"><span class="spark"></span> AI Agents</div>
-    <div class="links">
-      <a class="link-chip" href="index.html">Home</a>
-      <a class="link-chip" href="demos.html">Demos</a>
-      <a class="link-chip" href="contact.html">Contact</a>
-    </div>
-  </nav>
+<nav class="nav">
+  <div class="brand"><span class="spark"></span> AI Agents</div>
+  <div class="links">
+    <a class="link-chip" href="index.html">Home</a>
+    <a class="link-chip" href="demos.html">Demos</a>
+    <a class="link-chip" href="contact.html">Contact</a>
+  </div>
+</nav>
 
+<main class="page">
   <header class="page-head">
     <h1 class="page-title">Live Demos</h1>
-    <p class="page-subtitle">Hover to connect. Click to chat. Pause on a bot to see what it does.</p>
+    <p class="page-sub">Hover to connect. Click to chat. Pause on a bot to see what it does.</p>
   </header>
 
-  <section class="section section--orbit">
-    <div class="orbit-wrap">
-      <svg id="orbits" viewBox="0 0 600 600" preserveAspectRatio="xMidYMid meet">
-        <defs>
-          <radialGradient id="centreGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="rgba(185,138,255,0.65)"/>
-            <stop offset="60%" stop-color="rgba(185,138,255,0.15)"/>
-            <stop offset="100%" stop-color="rgba(185,138,255,0)"/>
-          </radialGradient>
-        </defs>
-        <g transform="translate(300,300)">
-          <circle r="220" class="orbit-ring"></circle>
-          <circle r="150" class="orbit-ring"></circle>
-          <circle r="90" class="orbit-ring"></circle>
-          <g id="crosshair">
-            <line x1="-280" y1="0" x2="280" y2="0" class="cross"></line>
-            <line x1="0" y1="-280" x2="0" y2="280" class="cross"></line>
-          </g>
-          <circle r="115" fill="url(#centreGlow)"></circle>
-          <g id="hex" class="hex-sway">
-            <polygon points="0,-20 18,-8 18,8 0,20 -18,8 -18,-8" class="hex"></polygon>
-          </g>
-        </g>
-      </svg>
+  <section class="orbit-wrap">
+    <div class="orbit">
+      <div class="rings r1"></div>
+      <div class="rings r2"></div>
+      <div class="rings r3"></div>
+      <div class="axes"></div>
 
-      <div class="centre-label">Select<br>your<br>demo</div>
+      <div class="center-node"></div>
+      <div class="center-outline"></div>
+      <div class="center-label">Select<br/>your<br/>demo</div>
 
-      <button class="bot-pill top" data-bot="appoint" data-tip="Books qualifying meetings from website and email">Appointment Setter</button>
-      <button class="bot-pill right" data-bot="support" data-tip="Answers support questions from policy pages">Support Q&amp;A</button>
-      <button class="bot-pill left" data-bot="internal" data-tip="Answers HR and Sales questions clearly">Internal Knowledge</button>
-      <button class="bot-pill bottom" data-bot="planner" data-tip="Plans multi-step automations across tools">Automation Planner</button>
+      <button class="pill" data-pos="top" data-bot="appt">Appointment Setter</button>
+      <button class="pill" data-pos="left" data-bot="internal">Internal Knowledge</button>
+      <button class="pill" data-pos="right" data-bot="support">Support Q&A</button>
+      <button class="pill" data-pos="bottom" data-bot="planner">Automation Planner</button>
 
-      <div id="orbit-tooltip"></div>
-      <svg id="pointer" class="pointer"><line x1="0" y1="0" x2="0" y2="0"/></svg>
+      <div class="beam" data-to="left"></div>
+      <div class="beam" data-to="right"></div>
+      <div class="beam" data-to="top"></div>
+      <div class="beam" data-to="bottom"></div>
+
+      <div class="tip left">Answers from your policies and docs</div>
+      <div class="tip right">Support that links to the right pages</div>
+      <div class="tip top">Books qualifying meetings</div>
+      <div class="tip bottom">Maps tasks and integrations</div>
     </div>
   </section>
 
-  <div class="overlay" id="dlg">
-    <div class="dialog">
-      <div class="dialog-head">
-        <div>
-          <div class="title" id="dlg-title">Demo</div>
-          <div class="subtitle" id="dlg-sub">Sub</div>
-        </div>
-        <button class="close-btn" id="dlg-close">Close</button>
+  <footer class="footer">© 2025 AI Agents — Tailoured AI for Business</footer>
+</main>
+
+<div class="overlay" id="dlg">
+  <div class="dialog">
+    <div class="dialog-head">
+      <div>
+        <div class="dialog-title" id="dlg-title"></div>
+        <div class="dialog-sub" id="dlg-sub"></div>
       </div>
-      <div class="dialog-body">
-        <div class="chat" id="dlg-chat">
-          <div class="bubble">Hi — ask me about booking times and availability.</div>
-        </div>
-        <div class="input-wrap">
-          <input id="dlg-input" placeholder="Type your message…" autocomplete="off">
-          <button id="mic" class="mic" aria-pressed="false" aria-label="Start voice">
-            <span class="mic-dot"></span>
-          </button>
-          <button id="send" class="btn primary">Send</button>
-          <div id="ghost" class="ghost"></div>
-        </div>
+      <button class="link-chip ghost" id="dlg-close">Close</button>
+    </div>
+    <div class="dialog-body">
+      <div class="tips" id="dlg-tips"></div>
+      <div class="chat" id="dlg-chat"></div>
+      <div class="input-row" style="position:relative">
+        <input id="dlg-input" class="input" type="text" placeholder="Type your message…"/>
+        <button id="mic" class="mic" aria-pressed="false">🎙️</button>
+        <button id="send" class="send">Send</button>
       </div>
     </div>
   </div>
+</div>
 
-  <footer class="footer">© 2025 AI Agents — Tailoured AI for Business</footer>
-
-  <script src="js/site.js"></script>
-  <script src="js/voice.js"></script>
-  <script src="js/demos.js"></script>
+<script src="js/site.js"></script>
+<script src="js/demos.js"></script>
+<script src="js/voice.js"></script>
 </body>
 </html>
