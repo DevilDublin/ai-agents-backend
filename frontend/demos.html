@@ -1,93 +1,84 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>AI Agents — Live Demos</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css" />
 </head>
-<body id="live">
+<body>
   <canvas id="stars"></canvas>
-  <div class="glow"></div>
 
   <nav class="nav">
-    <div class="brand"><span class="dot"></span> AI Agents</div>
+    <div class="brand"><span class="spark"></span>AI Agents</div>
     <div class="links">
-      <a class="chip" href="index.html">Home</a>
-      <a class="chip" href="demos.html">Demos</a>
-      <a class="chip" href="contact.html">Contact</a>
+      <a class="badge" href="index.html">Home</a>
+      <a class="badge" href="demos.html">Demos</a>
+      <a class="badge" href="contact.html">Contact</a>
     </div>
   </nav>
 
-  <header class="page-head">
-    <h1 class="page-title">Live Demos</h1>
+  <header class="hero">
+    <h2 class="page-title">Live Demos</h2>
     <p class="page-subtitle">Hover to connect. Click to chat. Pause on a bot to see what it does.</p>
   </header>
 
   <section class="section section--orbit">
-    <div class="orbit-wrap" id="orbit">
+    <div class="orbit">
       <div class="rings">
-        <span class="ring r1"></span>
-        <span class="ring r2"></span>
-        <span class="ring r3"></span>
-        <span class="axis x"></span>
-        <span class="axis y"></span>
+        <div class="ring r1"></div>
+        <div class="ring r2"></div>
+        <div class="ring r3"></div>
       </div>
 
-      <div class="centre">
-        <div class="hex">
-          <div class="hex-1"></div><div class="hex-2"></div><div class="hex-3"></div>
-        </div>
-        <div class="centre-label">
-          <span>Select</span><span>your</span><span>demo</span>
-        </div>
+      <div class="axes">
+        <span class="ax x"></span>
+        <span class="ax y"></span>
       </div>
 
-      <button class="pill top" data-bot="appt">
-        <span>Appointment Setter</span>
-      </button>
-      <button class="pill left" data-bot="internal">
-        <span>Internal Knowledge</span>
-      </button>
-      <button class="pill right" data-bot="support">
-        <span>Support Q&A</span>
-      </button>
-      <button class="pill bottom" data-bot="auto">
-        <span>Automation Planner</span>
-      </button>
+      <div class="hex-glow"></div>
+      <div class="hex wobble"></div>
+      <div class="centre-label">
+        <span>Select<br/>your<br/>demo</span>
+      </div>
 
-      <div id="tooltip" class="tooltip"></div>
-      <div id="ray" class="ray"></div>
+      <button class="bot b-top" data-id="booker" data-tip="Books qualifying meetings from website and email">Appointment Setter</button>
+      <button class="bot b-left" data-id="internal" data-tip="Answers from your internal knowledge and docs">Internal Knowledge</button>
+      <button class="bot b-right" data-id="support" data-tip="Support answers with links to policy pages">Support Q&amp;A</button>
+      <button class="bot b-bottom" data-id="planner" data-tip="Plans automations and hands them to your stack">Automation Planner</button>
+
+      <div class="beam"></div>
+      <div id="orbit-tip" class="tip"></div>
     </div>
   </section>
 
-  <footer class="footer">© 2025 AI Agents — Tailoured AI for Business</footer>
-
-  <div id="overlay" class="overlay" aria-hidden="true">
+  <div class="overlay" id="dlg">
     <div class="dialog">
       <div class="dialog-head">
         <div>
           <div class="title" id="dlg-title"></div>
           <div class="subtitle" id="dlg-sub"></div>
         </div>
-        <button class="close-btn" id="dlg-close">Close</button>
+        <button id="dlg-close" class="close-btn">Close</button>
       </div>
 
       <div class="dialog-body">
-        <div class="examples" id="chips"></div>
-        <div class="chat" id="chat"></div>
-
-        <div class="input-wrap">
-          <input id="dlg-input" placeholder="Type your message…" autocomplete="off">
-          <button id="mic" class="mic" aria-pressed="false" title="Speak"><span class="mic-led"></span></button>
-          <button id="send" class="btn primary">Send</button>
-          <div class="ghost" id="ghost"></div>
+        <div class="examples" id="dlg-ex"></div>
+        <div id="dlg-chat" class="chat"></div>
+        <div class="input-row">
+          <input id="dlg-input" placeholder="Type your message..." />
+          <button id="dlg-mic" aria-pressed="false" title="Speak" class="mic">
+            <span class="mic-dot"></span>
+          </button>
+          <button id="dlg-send" class="btn primary">Send</button>
         </div>
       </div>
     </div>
   </div>
 
+  <footer class="footer">© 2025 AI Agents — Tailoured AI for Business</footer>
   <script src="js/site.js"></script>
   <script src="js/voice.js"></script>
   <script src="js/demos.js"></script>
