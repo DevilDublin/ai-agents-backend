@@ -1,49 +1,57 @@
-const starCanvas = document.getElementById('stars');
-if (starCanvas) {
-  const ctx = starCanvas.getContext('2d');
-  let w, h, stars;
+(function(){
+  const c = document.getElementById('stars');
+  const dpr = Math.max(1, Math.min(2, window.devicePixelRatio||1));
+  const ctx = c.getContext('2d');
+  let w=0,h=0,stars=[],t=0;
 
-  const gen = () => {
-    w = starCanvas.width = window.innerWidth;
-    h = starCanvas.height = window.innerHeight;
-    const count = Math.min(250, Math.floor((w * h) / 12000));
-    stars = Array.from({ length: count }, () => ({
-      x: Math.random() * w,
-      y: Math.random() * h,
-      z: Math.random() * 0.8 + 0.2,
-      tw: Math.random() * 0.8 + 0.2
+  function resize(){
+    w = c.width = Math.floor(innerWidth*dpr);
+    h = c.height = Math.floor(innerHeight*dpr);
+    c.style.width = innerWidth+'px';
+    c.style.height = innerHeight+'px';
+    const count = Math.floor((w*h)/(18000*dpr));
+    stars = Array.from({length:count}).map(()=>({
+      x: Math.random()*w,
+      y: Math.random()*h,
+      r: Math.random()*1.6*dpr+0.2,
+      a: Math.random()*1
     }));
-  };
+  }
 
-  const draw = (t) => {
-    ctx.clearRect(0, 0, w, h);
-    ctx.fillStyle = '#0b0816';
-    ctx.fillRect(0, 0, w, h);
-
-    for (const s of stars) {
-      const size = s.z * 1.4;
-      const alpha = 0.35 + Math.sin((t * 0.001 + s.tw) * 6.283) * 0.25;
-      ctx.fillStyle = `rgba(233,236,255,${alpha})`;
-      ctx.fillRect(s.x, s.y, size, size);
-      s.x -= 0.02 * s.z;
-      if (s.x < -2) s.x = w + 2;
-    }
-
-    // occasional shooting star
-    if (Math.random() < 0.005) {
-      const sy = Math.random() * h * 0.9;
-      ctx.strokeStyle = 'rgba(185,138,255,0.7)';
-      ctx.lineWidth = 1.2;
+  function tick(){
+    t+=0.016;
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle = '#fff';
+    for(const s of stars){
+      const tw = 0.5+0.5*Math.sin(t*2 + s.x*0.001 + s.y*0.0015);
+      ctx.globalAlpha = 0.25+0.6*tw;
       ctx.beginPath();
-      ctx.moveTo(w, sy);
-      ctx.lineTo(w - 120, sy + 6);
-      ctx.stroke();
+      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fill();
     }
+    if(Math.random()<0.008){
+      const sx = Math.random()*w, sy = Math.random()*h*0.8;
+      shoot(sx,sy);
+    }
+    requestAnimationFrame(tick);
+  }
 
-    requestAnimationFrame(draw);
-  };
+  function shoot(x,y){
+    const len = 120*dpr, life = 700;
+    const t0 = performance.now();
+    (function draw(now){
+      const p = Math.min(1,(now-t0)/life);
+      ctx.globalAlpha = 0.25*(1-p);
+      ctx.strokeStyle = '#b98aff';
+      ctx.lineWidth = 1.2*dpr;
+      ctx.beginPath();
+      ctx.moveTo(x - p*len, y - p*len*0.2);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      if(p<1) requestAnimationFrame(draw);
+    })(t0);
+  }
 
-  window.addEventListener('resize', gen);
-  gen();
-  requestAnimationFrame(draw);
-}
+  addEventListener('resize', resize, {passive:true});
+  resize(); tick();
+})();
