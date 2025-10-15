@@ -7,61 +7,64 @@
   <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
-  <canvas id="stars" aria-hidden="true"></canvas>
+  <div id="stars"></div>
 
-  <header class="nav">
-    <div class="brand"><span class="spark"></span>AI Agents</div>
-    <nav class="links">
+  <nav class="nav">
+    <div class="brand"><span class="spark"></span> AI Agents</div>
+    <div class="links">
       <a class="link-chip" href="index.html">Home</a>
       <a class="link-chip" href="demos.html">Demos</a>
       <a class="link-chip" href="contact.html">Contact</a>
-      <a class="link-chip primary" href="demos.html#live">Try Live Demos</a>
-    </nav>
+      <a class="link-chip primary" href="demos.html">Try Live Demos</a>
+    </div>
+  </nav>
+
+  <header class="hero hero--home">
+    <h1>Agents that turn clicks into calls and questions into answers</h1>
+    <p class="lead">
+      We design and maintain conversational agents and automation that slot neatly into your calendars,
+      CRMs, help centres and internal tools.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href="demos.html">Explore Demos</a>
+    </div>
+    <div class="underlink">
+      <a href="#approach" class="chip soft">Our Approach</a>
+    </div>
   </header>
 
-  <main>
-    <section class="hero hero--home">
-      <h1>Agents that turn clicks into calls and questions into answers</h1>
-      <p class="lead">We design and maintain conversational agents and automation that slot neatly into your calendars, CRMs, help centres and internal tools.</p>
-      <div class="cta">
-        <a class="btn primary" href="demos.html#live">Explore Demos</a>
-      </div>
-
-      <div class="divider-cta">
-        <a class="ghost-link" href="#approach">Our Approach</a>
-      </div>
-    </section>
-
-    <section id="approach" class="section">
-      <div class="container grid grid--cards">
-        <article class="card">
-          <h3>What we deliver</h3>
-          <ul>
-            <li>Appointment-setting agents that book qualified meetings</li>
-            <li>Support agents that answer from your policies and docs</li>
-            <li>Internal knowledge assistants for HR and Sales</li>
-            <li>Automation that joins the dots across your tools</li>
-          </ul>
-        </article>
-        <article class="card">
-          <h3>How we work</h3>
-          <ul>
-            <li>Discovery — goals, data, constraints</li>
-            <li>Pilot — focused prototype with real users</li>
-            <li>Integrate — calendars, CRMs, workflows</li>
-            <li>Handover — docs and training for your team</li>
-          </ul>
-        </article>
-        <article class="card">
-          <h3>Where we fit</h3>
-          <p>We’re platform-agnostic: Express/FastAPI, n8n/Make/Zapier and whichever database or vector store fits best. You get robust systems, not experiments.</p>
-        </article>
-      </div>
-    </section>
-
+  <section id="approach" class="section">
+    <div class="container grid grid--cards">
+      <article class="card">
+        <h3>What we deliver</h3>
+        <ul>
+          <li>Appointment-setting agents that book qualified meetings</li>
+          <li>Support agents that answer from your policies and docs</li>
+          <li>Internal knowledge assistants for HR and Sales</li>
+          <li>Automation that joins the dots across your tools</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>How we work</h3>
+        <ul>
+          <li><strong>Discovery</strong> — goals, data, constraints</li>
+          <li><strong>Pilot</strong> — focused prototype with real users</li>
+          <li><strong>Integrate</strong> — calendars, CRMs, workflows</li>
+          <li><strong>Handover</strong> — docs and training for your team</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>Where we fit</h3>
+        <p>
+          We’re platform-agnostic: Express/FastAPI, n8n/Make/Zapier and whichever database or vector
+          store fits best. You get robust systems, not experiments.
+        </p>
+      </article>
+    </div>
     <footer class="footer">© 2025 AI Agents — Tailoured AI for Business</footer>
-  </main>
+  </section>
 
+  <script src="js/config.js"></script>
   <script src="js/site.js"></script>
 </body>
 </html>
