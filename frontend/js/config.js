@@ -1,25 +1,42 @@
-window.AA = window.AA || {};
-AA.copy = {
-  bots: {
-    appointment: {
-      title: "Appointment Setter",
-      sub: "Books meetings from rough enquiries.",
-      prompts: ["Hello, I'd like a 30-minute intro next week.", "Could you do Tuesday 2–4pm?", "Use alex@example.com for the invite."]
-    },
-    support: {
-      title: "Support Q&A",
-      sub: "Helps with returns, delivery and warranty.",
-      prompts: ["What are weekend support hours?", "How long is delivery to London?", "What’s your returns window?"]
-    },
-    internal: {
-      title: "Internal Knowledge",
-      sub: "Answers HR and Sales questions clearly.",
-      prompts: ["How much is annual leave?", "What’s the travel policy?", "Where’s the brand deck?"]
-    },
-    automation: {
-      title: "Automation Planner",
-      sub: "Plans small automations that save time.",
-      prompts: ["Log leads to CRM and Slack.", "Create tasks from contact forms.", "Draft follow-ups after a call."]
-    }
+window.AGENT_DEMOS = {
+  appointments: {
+    title: 'Appointment Setter',
+    blurb: 'I book qualified meetings without fuss.',
+    examples: [
+      'Hello, I’d like a 30-minute intro next week.',
+      'Could you do Tuesday 2–4pm?',
+      'Use alex@example.com for the invite.'
+    ],
+    greet: 'Hi — ask me about appointment setting and I’ll help.'
+  },
+  support: {
+    title: 'Support Q&A',
+    blurb: 'I answer from your policies, warranty and support docs.',
+    examples: [
+      'Try: returns policy nuance',
+      'Try: shipping speed',
+      'Try: weekend hours'
+    ],
+    greet: 'Hi — ask me about returns, shipping, warranty or support hours.'
+  },
+  internal: {
+    title: 'Internal Knowledge',
+    blurb: 'I help your team with HR and Sales answers.',
+    examples: [
+      'How do I book annual leave?',
+      'Do we have a partner discount?',
+      'Where’s the pitch deck?'
+    ],
+    greet: 'Hi — ask me an internal question and I’ll pull the answer.'
+  },
+  automation: {
+    title: 'Automation Planner',
+    blurb: 'I sketch small automations that save real time.',
+    examples: [
+      'Auto-create a ticket when an email lands',
+      'Pipe Calendly into HubSpot',
+      'Sync a Slack emoji to a Notion status'
+    ],
+    greet: 'Hi — describe a fiddly workflow and I’ll suggest an automation.'
   }
 };
