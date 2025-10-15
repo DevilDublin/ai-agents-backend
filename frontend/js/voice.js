@@ -1,59 +1,61 @@
-(function(){
-  const wire = window.__voiceWire;
-  if(!wire) return;
-  const { input, mic, onSend } = wire;
-  const ghost = document.getElementById('dlg-ghost');
+// Speech-to-text for bot chat: inline animation + auto-send on 3.5s silence
+(() => {
+  const mic = document.querySelector('.mic-btn');
+  const input = document.querySelector('#chat-input');
+  const ghost = document.querySelector('.ghost-txt');
+  const form = document.querySelector('#chat-form');
+  if (!mic || !input || !form) return;
 
-  let rec, silenceTimer, lastTranscript = '';
-  const haveAPI = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
-  const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { mic.disabled = true; return; }
 
-  function start(){
-    if(!haveAPI) return;
-    if(rec) rec.stop();
-    rec = new Rec();
-    rec.lang = 'en-GB';
-    rec.continuous = true;
-    rec.interimResults = true;
+  let recog = null, silenceTimer = null, running = false, finalised = '';
 
-    mic.setAttribute('aria-pressed','true');
-    ghost.textContent = 'Listening…';
-    ghost.style.display='block';
+  function start() {
+    recog = new SR();
+    recog.lang = 'en-GB';
+    recog.continuous = true;
+    recog.interimResults = true;
+    running = true; mic.setAttribute('aria-pressed','true'); mic.focus();
 
-    rec.onresult = e=>{
-      let finalText = '', interim = '';
-      for(let i=e.resultIndex;i<e.results.length;i++){
-        const r = e.results[i];
-        (r.isFinal? finalText : interim) += r[0].transcript;
+    recog.onresult = e => {
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const res = e.results[i];
+        if (res.isFinal) finalised += res[0].transcript + ' ';
+        else interim += res[0].transcript;
       }
-      if(finalText) lastTranscript += ' ' + finalText.trim();
-      const preview = (lastTranscript + ' ' + interim).trim();
-      input.value = preview;
+      const composite = (finalised + interim).trim();
+      ghost.textContent = composite;
+      input.value = composite;
       resetSilence();
     };
-    rec.onend = ()=>{
-      mic.setAttribute('aria-pressed','false');
-      ghost.style.display='none';
-      if(lastTranscript.trim()){
-        onSend();
-        lastTranscript='';
-      }
-    };
-    rec.start();
+    recog.onend = () => stop(false);
+    recog.start();
     resetSilence();
   }
-  function stop(){
-    if(rec) rec.stop();
-    mic.setAttribute('aria-pressed','false');
-    ghost.style.display='none';
-  }
-  function resetSilence(){
-    if(silenceTimer) clearTimeout(silenceTimer);
-    silenceTimer = setTimeout(()=>{ stop(); }, 3200);
+
+  function resetSilence() {
+    clearTimeout(silenceTimer);
+    silenceTimer = setTimeout(() => {
+      stop(true);
+    }, 3500);
   }
 
-  mic.addEventListener('click',()=>{
-    const on = mic.getAttribute('aria-pressed')==='true';
-    if(on) stop(); else start();
+  function stop(autoSend) {
+    if (!running) return;
+    running = false;
+    try { recog.stop(); } catch {}
+    mic.setAttribute('aria-pressed','false');
+    clearTimeout(silenceTimer);
+    ghost.textContent = input.value;
+    if (autoSend && input.value.trim()) {
+      form.requestSubmit();
+    }
+  }
+
+  mic.addEventListener('click', e => {
+    e.preventDefault();
+    if (running) stop(false); else { finalised=''; ghost.textContent=''; start(); }
   });
 })();
