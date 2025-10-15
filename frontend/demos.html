@@ -1,69 +1,81 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-GB">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>AI Agents — Demos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
-<canvas id="stars"></canvas>
+  <canvas id="stars"></canvas>
 
-<nav class="nav">
-  <div class="brand"><span class="spark"></span> AI Agents</div>
-  <div class="links">
-    <a class="link-chip" href="index.html">Home</a>
-    <a class="link-chip" href="demos.html">Demos</a>
-    <a class="link-chip" href="contact.html">Contact</a>
-  </div>
-</nav>
-
-<header class="page-head">
-  <h1 class="page-title">Live Demos</h1>
-  <p class="page-subtitle">Hover to connect. Click to chat. Pause on a bot to see what it does.</p>
-</header>
-
-<section class="section section--orbit">
-  <div class="orbit-wrap">
-    <div id="orbits"></div>
-    <div class="crosshair x"></div>
-    <div class="crosshair y"></div>
-
-    <button class="bot-pill top" data-bot="appointment">Appointment Setter</button>
-    <button class="bot-pill right" data-bot="support">Support Q&A</button>
-    <button class="bot-pill bottom" data-bot="automation">Automation Planner</button>
-    <button class="bot-pill left" data-bot="internal">Internal Knowledge</button>
-
-    <div id="orbit-tooltip"></div>
-  </div>
-</section>
-
-<div id="chat-overlay" class="overlay">
-  <div class="dialog">
-    <div class="dialog-head">
-      <div>
-        <div id="chat-title" class="title">Title</div>
-        <div id="chat-sub" class="subtitle">Try these prompts:</div>
-      </div>
-      <button id="chat-close" class="close-btn">Close</button>
+  <nav class="nav">
+    <div class="brand"><span class="spark"></span>AI Agents</div>
+    <div class="links">
+      <a class="link-chip" href="index.html">Home</a>
+      <a class="link-chip" href="demos.html">Demos</a>
+      <a class="link-chip" href="contact.html">Contact</a>
     </div>
-    <div class="dialog-body">
-      <div id="prompts" class="examples"></div>
-      <div id="chat-window" class="chat"></div>
-      <div class="input-wrap">
-        <input id="chat-input" type="text" placeholder="Type your message...">
-        <button id="mic" class="mic" aria-pressed="false" title="Speech to text">🎤</button>
-        <button id="chat-send" class="btn primary">Send</button>
+  </nav>
+
+  <header class="page-head" id="live">
+    <h1 class="page-title">Live Demos</h1>
+    <p class="page-subtitle">Hover to connect. Click to chat. Pause on a bot to see what it does.</p>
+  </header>
+
+  <section class="section section--orbit">
+    <div class="orbit-wrap">
+      <canvas id="orbits"></canvas>
+
+      <div class="hex-centre">
+        <div class="hex-glow"></div>
+        <div class="hex"></div>
+        <div class="centre-label">Select your demo</div>
+      </div>
+
+      <button class="bot-pill top" data-bot="appointment">Appointment Setter</button>
+      <button class="bot-pill right" data-bot="support">Support Q&A</button>
+      <button class="bot-pill left" data-bot="internal">Internal Knowledge</button>
+      <button class="bot-pill bottom" data-bot="automation">Automation Planner</button>
+
+      <div id="orbit-tooltip"></div>
+      <div class="crosshair x"></div>
+      <div class="crosshair y"></div>
+    </div>
+  </section>
+
+  <footer class="footer">© 2025 AI Agents — Tailoured AI for Business</footer>
+
+  <div class="overlay" id="dlg">
+    <div class="dialog">
+      <div class="dialog-head">
+        <div>
+          <div class="title" id="dlg-title">Agent</div>
+          <div class="subtitle" id="dlg-sub">Say hello or use a prompt to get started.</div>
+        </div>
+        <button class="close-btn" id="dlg-close">Close</button>
+      </div>
+      <div class="dialog-body">
+        <div class="examples" id="dlg-examples"></div>
+        <div class="chat" id="dlg-chat">
+          <div class="bubble intro">Hi — ask me about the demo and I’ll answer from policy.</div>
+        </div>
+        <div class="input-wrap">
+          <input id="dlg-input" type="text" placeholder="Type your message…">
+          <button class="mic" id="dlg-mic" aria-pressed="false" title="Start voice input">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 1 1-6 0V6a3 3 0 0 1 3-3Z" stroke="currentColor" stroke-width="2"/><path d="M19 11a7 7 0 1 1-14 0" stroke="currentColor" stroke-width="2"/><path d="M12 18v3" stroke="currentColor" stroke-width="2"/></svg>
+          </button>
+          <button id="dlg-send" class="btn primary">Send</button>
+          <div id="dlg-ghost" class="ghost"></div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<footer class="footer">© 2025 AI Agents — Tailoured AI for Business</footer>
-
-<script src="js/config.js" defer></script>
-<script src="js/site.js" defer></script>
-<script src="js/demos.js" defer></script>
-<script src="js/voice.js" defer></script>
+  <script src="js/config.js"></script>
+  <script src="js/voice.js"></script>
+  <script src="js/demos.js"></script>
+  <script src="js/site.js"></script>
 </body>
 </html>
