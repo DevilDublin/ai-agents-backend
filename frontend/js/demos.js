@@ -1,74 +1,92 @@
-// Orbit wiring: correct node placement, hover beam, tooltips
-(() => {
-  const orbit = document.querySelector('.orbit');
-  if (!orbit) return;
+const pills = [...document.querySelectorAll('.bot-pill')];
+const tooltip = document.getElementById('orbit-tooltip');
+const pointer = document.getElementById('pointer').querySelector('line');
+const centre = {x: window.innerWidth/2, y: document.querySelector('.orbit-wrap').getBoundingClientRect().top + 310};
 
-  const centre = () => {
-    const r = orbit.getBoundingClientRect();
-    return { cx: r.left + r.width/2, cy: r.top + r.height/2 };
-  };
+function placeTooltip(el){
+  const rect = el.getBoundingClientRect();
+  tooltip.textContent = el.dataset.tip || '';
+  tooltip.style.display = 'block';
+  const side = el.classList.contains('left') ? 'left' :
+               el.classList.contains('right') ? 'right' :
+               el.classList.contains('top') ? 'top' : 'bottom';
+  const pad = 12;
+  let x=0,y=0;
+  if(side==='left'){ x = rect.left - tooltip.offsetWidth - pad; y = rect.top + rect.height/2 - tooltip.offsetHeight/2; }
+  if(side==='right'){ x = rect.right + pad; y = rect.top + rect.height/2 - tooltip.offsetHeight/2; }
+  if(side==='top'){ x = rect.left + rect.width/2 - tooltip.offsetWidth/2; y = rect.top - tooltip.offsetHeight - pad; }
+  if(side==='bottom'){ x = rect.left + rect.width/2 - tooltip.offsetWidth/2; y = rect.bottom + pad; }
+  tooltip.style.left = `${x}px`;
+  tooltip.style.top = `${y}px`;
 
-  const beamSvg = document.getElementById('beam');
-  if (beamSvg) {
-    beamSvg.innerHTML = `<svg width="100%" height="100%"><line x1="0" y1="0" x2="0" y2="0" stroke="url(#grad)" stroke-width="3" stroke-linecap="round" opacity="0">
-      </line><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="rgba(155,114,255,0)"/><stop offset="100%" stop-color="rgba(155,114,255,0.85)"/></linearGradient></defs></svg>`;
-  }
-  const beamLine = beamSvg?.querySelector('line');
+  const end = {x: rect.left + rect.width/2, y: rect.top + rect.height/2};
+  pointer.setAttribute('x1', centre.x);
+  pointer.setAttribute('y1', centre.y);
+  pointer.setAttribute('x2', end.x);
+  pointer.setAttribute('y2', end.y);
+  pointer.parentElement.style.display='block';
+}
+function hideTooltip(){
+  tooltip.style.display='none';
+  pointer.parentElement.style.display='none';
+}
 
-  const tooltip = document.getElementById('orbit-tip');
+pills.forEach(p=>{
+  p.addEventListener('mouseenter', ()=>placeTooltip(p));
+  p.addEventListener('mouseleave', hideTooltip);
+});
 
-  function showBeam(toEl) {
-    if (!beamLine) return;
-    const { cx, cy } = centre();
-    const rect = toEl.getBoundingClientRect();
-    const tx = rect.left + rect.width/2;
-    const ty = rect.top + rect.height/2;
-    beamLine.setAttribute('x1', String(cx - orbit.getBoundingClientRect().left));
-    beamLine.setAttribute('y1', String(cy - orbit.getBoundingClientRect().top));
-    beamLine.setAttribute('x2', String(tx - orbit.getBoundingClientRect().left));
-    beamLine.setAttribute('y2', String(ty - orbit.getBoundingClientRect().top));
-    beamLine.setAttribute('opacity','1');
-  }
-  function hideBeam(){ beamLine?.setAttribute('opacity','0') }
+const overlay = document.getElementById('dlg');
+const closeBtn = document.getElementById('dlg-close');
+const chat = document.getElementById('dlg-chat');
+const input = document.getElementById('dlg-input');
+const sendBtn = document.getElementById('send');
+const title = document.getElementById('dlg-title');
+const sub = document.getElementById('dlg-sub');
 
-  function placeTip(node, text, side) {
-    if (!tooltip) return;
-    tooltip.textContent = text;
-    const r = node.getBoundingClientRect();
-    const pad = 12;
-    if (side === 'left') {
-      tooltip.style.left = `${r.left - tooltip.offsetWidth - pad}px`;
-      tooltip.style.top  = `${r.top + r.height/2 - tooltip.offsetHeight/2}px`;
-    } else if (side === 'right') {
-      tooltip.style.left = `${r.right + pad}px`;
-      tooltip.style.top  = `${r.top + r.height/2 - tooltip.offsetHeight/2}px`;
-    } else if (side === 'top') {
-      tooltip.style.left = `${r.left + r.width/2 - tooltip.offsetWidth/2}px`;
-      tooltip.style.top  = `${r.top - tooltip.offsetHeight - pad}px`;
-    } else {
-      tooltip.style.left = `${r.left + r.width/2 - tooltip.offsetWidth/2}px`;
-      tooltip.style.top  = `${r.bottom + pad}px`;
-    }
-    tooltip.classList.add('show');
-  }
-  function hideTip(){ tooltip?.classList.remove('show') }
+const presets = {
+  appoint:{title:'Appointment Setter', sub:'Books meetings from website or email'},
+  support:{title:'Support Q&A', sub:'Answers from your policy and docs'},
+  internal:{title:'Internal Knowledge', sub:'Answers HR and Sales questions'},
+  planner:{title:'Automation Planner', sub:'Plans multi-step automations'}
+};
 
-  const map = {
-    '#node-appoint': { tip:'Books qualifying meetings from website and email', side:'top' },
-    '#node-support': { tip:'Answers support queries from your policies', side:'right' },
-    '#node-internal':{ tip:'Handles HR and Sales internal questions', side:'left' },
-    '#node-auto':    { tip:'Plans multi-step automations across your tools', side:'bottom' },
-  };
+function openDlg(key){
+  title.textContent = presets[key].title;
+  sub.textContent = presets[key].sub;
+  overlay.style.display='flex';
+  document.body.style.overflow='hidden';
+  input.focus();
+}
+function closeDlg(){
+  overlay.style.display='none';
+  document.body.style.overflow='';
+}
 
-  Object.entries(map).forEach(([sel, info]) => {
-    const el = document.querySelector(sel);
-    if (!el) return;
-    el.addEventListener('mouseenter', () => { showBeam(el); placeTip(el, info.tip, info.side) });
-    el.addEventListener('mouseleave', () => { hideBeam(); hideTip() });
-    el.addEventListener('click', () => {
-      const dlg = document.querySelector(sel + '-dialog');
-      dlg?.showModal?.();
-    });
+pills.forEach(p=>{
+  p.addEventListener('click', ()=>{
+    openDlg(p.dataset.bot);
   });
-})();
+});
+closeBtn.addEventListener('click', closeDlg);
+overlay.addEventListener('click', e=>{ if(e.target===overlay) closeDlg(); });
+
+function appendBubble(text, me=false){
+  const b = document.createElement('div');
+  b.className = 'bubble' + (me?' me':'');
+  b.textContent = text;
+  chat.appendChild(b);
+  chat.scrollTop = chat.scrollHeight;
+}
+sendBtn.addEventListener('click', ()=>{
+  const v = input.value.trim();
+  if(!v) return;
+  appendBubble(v, true);
+  input.value='';
+  setTimeout(()=>appendBubble('Thanks — this is a static demo. In your build this would call the agent’s API.'), 500);
+});
+input.addEventListener('keydown', e=>{
+  if(e.key==='Enter'){ sendBtn.click(); }
+});
+
+initVoice('#mic', '#dlg-input', '#ghost', ()=>sendBtn.click());
