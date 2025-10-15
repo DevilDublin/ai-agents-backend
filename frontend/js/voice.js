@@ -1,1 +1,73 @@
-(()=>{const mic=document.getElementById("mic");const input=document.getElementById("chat-input");const send=document.getElementById("chat-send");if(!mic||!input)return;const ghost=document.getElementById("ghost")||(()=>{const g=document.createElement("div");g.id="ghost";g.className="ghost";document.querySelector(".input-wrap")?.appendChild(g);return g})();const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){mic.style.display="none";return}const rec=new SR();rec.lang="en-GB";rec.interimResults=true;rec.continuous=true;let finalText="";const start=()=>{finalText=input.value||"";ghost.textContent="";mic.setAttribute("aria-pressed","true");try{rec.start()}catch(_){}};const stop=()=>{try{rec.stop()}catch(_){ }mic.setAttribute("aria-pressed","false");ghost.textContent=""};mic.addEventListener("click",()=>{const on=mic.getAttribute("aria-pressed")==="true";on?stop():start()});send?.addEventListener("click",stop);rec.onresult=e=>{let interim="";for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)finalText+=(finalText?" ":"")+t.trim();else interim+=t}const live=finalText+(interim?(finalText?" ":"")+interim:"");ghost.textContent=live;input.value=live;input.selectionStart=input.selectionEnd=input.value.length};rec.onerror=stop;rec.onend=stop})();
+window.Voice = (function () {
+  let rec = null;
+  let active = false;
+  function ensure() {
+    if (rec) return rec;
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) return null;
+    rec = new SR();
+    rec.lang = "en-GB";
+    rec.interimResults = true;
+    rec.continuous = true;
+    return rec;
+  }
+  function typeGhost(ghostEl, text) {
+    if (!ghostEl) return;
+    let i = 0;
+    ghostEl.textContent = "";
+    function step() {
+      if (i > text.length) return;
+      ghostEl.textContent = text.slice(0, i);
+      i += 1;
+      if (active) requestAnimationFrame(step);
+    }
+    step();
+  }
+  function attach(root) {
+    const mic = root.querySelector(".mic");
+    const input = root.querySelector("#dlg-input");
+    let ghost = root.querySelector(".ghost");
+    if (!ghost) {
+      ghost = document.createElement("div");
+      ghost.className = "ghost";
+      root.appendChild(ghost);
+    }
+    const r = ensure();
+    function stop() {
+      if (!active) return;
+      active = false;
+      mic.setAttribute("aria-pressed", "false");
+      ghost.textContent = "";
+      if (r) r.stop();
+    }
+    function start() {
+      if (!r) return;
+      active = true;
+      mic.setAttribute("aria-pressed", "true");
+      r.start();
+    }
+    if (r) {
+      r.onresult = (e) => {
+        let final = "";
+        let interim = "";
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          const str = e.results[i][0].transcript;
+          if (e.results[i].isFinal) final += str;
+          else interim += str;
+        }
+        const out = (final + " " + interim).trim();
+        typeGhost(ghost, out);
+        input.value = out;
+      };
+      r.onend = () => {
+        if (active) r.start();
+      };
+    }
+    mic.onclick = () => {
+      if (active) stop();
+      else start();
+    };
+    return { stop, start };
+  }
+  return { attach };
+})();
