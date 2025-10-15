@@ -1,89 +1,142 @@
-(function(){
-  const orbitCanvas = document.getElementById('orbits');
-  if(!orbitCanvas) return;
-  const ctx = orbitCanvas.getContext('2d');
-  function size(){ orbitCanvas.width=orbitCanvas.clientWidth; orbitCanvas.height=orbitCanvas.clientHeight; draw() }
-  function draw(){
-    const w=orbitCanvas.width,h=orbitCanvas.height;
-    ctx.clearRect(0,0,w,h);
-    ctx.strokeStyle="rgba(255,255,255,.12)";
-    ctx.setLineDash([6,8]);
-    const cx=w/2, cy=h/2; const radii=[120,200,280];
-    radii.forEach(r=>{ ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke() });
-  }
-  new ResizeObserver(size).observe(orbitCanvas); size();
-
+(function () {
+  const orbit = document.getElementById('orbit');
   const tooltip = document.getElementById('orbit-tooltip');
-  const pills = document.querySelectorAll('.bot-pill');
-  const placements = {
-    appointment: el=>{ el.style.left="50%"; el.style.transform="translateX(-50%)"; el.style.top="110px" },
-    support: el=>{ el.style.top="50%"; el.style.right="70px"; el.style.left=""; el.style.transform="translateY(-50%)" },
-    internal: el=>{ el.style.top="50%"; el.style.left="70px"; el.style.transform="translateY(-50%)" },
-    automation: el=>{ el.style.left="50%"; el.style.transform="translateX(-50%)"; el.style.bottom="80px" }
-  };
-  pills.forEach(p=>{
-    const key=p.dataset.bot;
-    if(placements[key]) placements[key](p);
-    p.addEventListener('mouseenter',()=>{
-      const t=AA.copy.bots[key].sub;
-      tooltip.textContent=t;
-      tooltip.style.display="block";
-      const rect=p.getBoundingClientRect(), tw=tooltip.offsetWidth;
-      if(key==="internal"){ tooltip.style.left=(rect.left - tw - 12)+"px"; tooltip.style.top=(rect.top + rect.height/2 - 18)+"px" }
-      if(key==="support"){ tooltip.style.left=(rect.right + 12)+"px"; tooltip.style.top=(rect.top + rect.height/2 - 18)+"px" }
-      if(key==="appointment"){ tooltip.style.left=(rect.left + rect.width/2 - tw/2)+"px"; tooltip.style.top=(rect.top - 40)+"px" }
-      if(key==="automation"){ tooltip.style.left=(rect.left + rect.width/2 - tw/2)+"px"; tooltip.style.top=(rect.bottom + 12)+"px" }
+  const dlg = document.getElementById('dlg');
+  const dlgTitle = document.getElementById('dlg-title');
+  const dlgSub = document.getElementById('dlg-sub');
+  const dlgChat = document.getElementById('dlg-chat');
+  const dlgGreet = document.getElementById('dlg-greet');
+  const dlgClose = document.getElementById('dlg-close');
+  const dlgInput = document.getElementById('dlg-input');
+  const dlgSend = document.getElementById('dlg-send');
+  const examples = document.getElementById('dlg-examples');
+
+  if (!orbit) return;
+
+  function beam(fromEl) {
+    const svg = document.getElementById('orbits');
+    const rect = svg.getBoundingClientRect();
+    const c = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+    const r = fromEl.getBoundingClientRect();
+    const x = r.left + r.width / 2;
+    const y = r.top + r.height / 2;
+
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', c.x - rect.left);
+    line.setAttribute('y1', c.y - rect.top);
+    line.setAttribute('x2', x - rect.left);
+    line.setAttribute('y2', y - rect.top);
+    line.setAttribute('stroke', 'rgba(185,138,255,0.55)');
+    line.setAttribute('stroke-width', '1.5');
+    line.setAttribute('filter', 'url(#softGlow)');
+    svg.appendChild(line);
+    setTimeout(() => line.remove(), 380);
+  }
+
+  function showTip(el, text, side) {
+    tooltip.textContent = text;
+    tooltip.style.display = 'block';
+    const r = el.getBoundingClientRect();
+    const t = tooltip.getBoundingClientRect();
+    let x = r.left + (r.width - t.width) / 2;
+    let y = r.top - t.height - 10;
+
+    if (side === 'right') { x = r.right + 12; y = r.top + (r.height - t.height) / 2; }
+    if (side === 'left')  { x = r.left - t.width - 12; y = r.top + (r.height - t.height) / 2; }
+    if (side === 'bottom'){ x = r.left + (r.width - t.width) / 2; y = r.bottom + 12; }
+
+    tooltip.style.transform = `translate(${x}px, ${y}px)`;
+  }
+
+  function hideTip() { tooltip.style.display = 'none'; }
+
+  function openDialog(botKey) {
+    const bot = window.AGENT_DEMOS[botKey];
+    if (!bot) return;
+
+    dlgTitle.textContent = bot.title;
+    dlgSub.textContent = bot.blurb;
+    dlgGreet.textContent = bot.greet;
+    dlgChat.innerHTML = '';
+    dlgChat.appendChild(dlgGreet);
+
+    examples.innerHTML = '';
+    bot.examples.forEach(txt => {
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.textContent = txt;
+      chip.addEventListener('click', () => {
+        dlgInput.value = txt;
+        dlgSend.click();
+      });
+      examples.appendChild(chip);
     });
-    p.addEventListener('mouseleave',()=>{ tooltip.style.display="none" });
-    p.addEventListener('click',()=>openDialog(key));
+
+    dlg.style.display = 'flex';
+    dlgInput.focus();
+  }
+
+  function closeDialog() {
+    dlg.style.display = 'none';
+  }
+
+  dlgClose.addEventListener('click', closeDialog);
+  dlg.addEventListener('click', e => { if (e.target === dlg) closeDialog(); });
+
+  function addBubble(text, me = false) {
+    const b = document.createElement('div');
+    b.className = 'bubble' + (me ? ' me' : '');
+    b.textContent = text;
+    dlgChat.appendChild(b);
+    dlgChat.scrollTop = dlgChat.scrollHeight;
+  }
+
+  function reply(botKey, user) {
+    const flavours = {
+      appointments: `Got it. I can pencil that in and send a tidy calendar invite. If you’ve a preferred slot or timezone, pop it in.`,
+      support: `I’ll check policy and give you the precise answer, not a waffle. What’s the situation in a sentence?`,
+      internal: `Alright — I’ll fetch the relevant bit from HR/Sales. Anything sensitive, keep it brief.`,
+      automation: `Let’s make life easier. Tell me the steps you do now and where it drags, and I’ll sketch a tidy automation.`
+    };
+    const txt = flavours[botKey] || `Noted. I’ll help with that.`;
+    setTimeout(() => addBubble(txt), 500);
+  }
+
+  let currentBot = null;
+
+  dlgSend.addEventListener('click', () => {
+    const v = dlgInput.value.trim();
+    if (!v) return;
+    addBubble(v, true);
+    dlgInput.value = '';
+    reply(currentBot, v);
   });
 
-  const overlay=document.getElementById('dlg');
-  const title=document.getElementById('dlg-title');
-  const sub=document.getElementById('dlg-sub');
-  const exWrap=document.getElementById('dlg-examples');
-  const chat=document.getElementById('dlg-chat');
-  const input=document.getElementById('dlg-input');
-  const send=document.getElementById('dlg-send');
-  const mic=document.getElementById('dlg-mic');
-  const ghost=document.getElementById('dlg-ghost');
+  dlgInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      dlgSend.click();
+    }
+  });
 
-  function openDialog(key){
-    const data=AA.copy.bots[key];
-    title.textContent=data.title;
-    sub.textContent=data.sub;
-    exWrap.innerHTML="";
-    data.prompts.forEach(t=>{
-      const b=document.createElement('div');
-      b.className="chip";
-      b.textContent=t;
-      b.addEventListener('click',()=>{ input.value=t; input.focus() });
-      exWrap.appendChild(b);
+  document.querySelectorAll('.bot-pill').forEach(btn => {
+    const key = btn.getAttribute('data-bot');
+
+    btn.addEventListener('mouseenter', () => {
+      beam(btn);
+      const side = btn.classList.contains('left') ? 'left'
+                 : btn.classList.contains('right') ? 'right'
+                 : btn.classList.contains('bottom') ? 'bottom'
+                 : 'top';
+      const tip = window.AGENT_DEMOS[key]?.blurb || 'Live demo';
+      showTip(btn, tip, side);
     });
-    chat.innerHTML='<div class="bubble intro">Hi — ask me about '+data.title.toLowerCase()+'.</div>';
-    input.value="";
-    ghost.textContent="";
-    overlay.style.display="flex";
-  }
-  document.getElementById('dlg-close').addEventListener('click',()=>overlay.style.display="none");
 
-  function pushBubble(text,me=false){
-    const b=document.createElement('div');
-    b.className="bubble"+(me?" me":"");
-    b.textContent=text;
-    chat.appendChild(b);
-    chat.scrollTop=chat.scrollHeight;
-  }
-  function handleSend(){
-    const t=input.value.trim();
-    if(!t) return;
-    pushBubble(t,true);
-    input.value="";
-    ghost.textContent="";
-    setTimeout(()=>pushBubble("Thanks — this is a static demo. In your build this would call the agent’s API."),400);
-  }
-  send.addEventListener('click',handleSend);
-  input.addEventListener('keydown',e=>{ if(e.key==="Enter") handleSend() });
+    btn.addEventListener('mouseleave', hideTip);
 
-  AA.voice && AA.voice.wire({mic,input,ghost,onFinal:(txt)=>{ input.value=txt; handleSend() },onInterim:(txt)=>{ ghost.textContent=txt }});
+    btn.addEventListener('click', () => {
+      currentBot = key;
+      openDialog(key);
+    });
+  });
 })();
