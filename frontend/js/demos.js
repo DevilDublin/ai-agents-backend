@@ -1,3 +1,4 @@
+// Orbit hover tips + ray + open dialog on click only
 const orbit = document.getElementById('orbit');
 const tip = document.getElementById('tip');
 const ray = document.getElementById('ray');
@@ -26,9 +27,7 @@ function showTip(node){
     tip.style.top = `${cy - tip.offsetHeight/2}px`;
   }
 
-  const center = {
-    x: orect.width/2, y: orect.height/2
-  };
+  const center = { x: orect.width/2, y: orect.height/2 };
   ray.style.display='block';
   const dx = cx - center.x;
   const dy = cy - center.y;
@@ -40,16 +39,16 @@ function showTip(node){
   ray.style.transform = `rotate(${angle}deg)`;
 }
 
-function hideTip(){
-  tip.style.display='none';
-  ray.style.display='none';
-}
+function hideTip(){ tip.style.display='none'; ray.style.display='none'; }
 
 nodes.forEach(n=>{
   n.addEventListener('mouseenter',()=>showTip(n));
   n.addEventListener('mouseleave',hideTip);
-  n.addEventListener('click',()=>openDialog(n));
+  n.addEventListener('click',()=>openDialog(n)); // click only
 });
+
+// Guard: never open on load
+document.addEventListener('DOMContentLoaded',()=>{ hideTip(); });
 
 /* Dialog */
 const overlay = document.getElementById('overlay');
@@ -67,14 +66,10 @@ function openDialog(node){
   overlay.hidden = false;
   input.focus();
 }
-
 dlgClose.addEventListener('click',()=>overlay.hidden=true);
 overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.hidden=true;});
 
-chips.forEach(c=>c.addEventListener('click',()=>{
-  send(c.textContent);
-}));
-
+chips.forEach(c=>c.addEventListener('click',()=>send(c.textContent)));
 sendBtn.addEventListener('click',()=>send(input.value));
 input.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); send(input.value);} });
 
