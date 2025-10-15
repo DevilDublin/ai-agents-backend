@@ -1,37 +1,35 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>AI Agents — Home</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/main.css">
 </head>
-<body>
+<body class="page page--home">
   <canvas id="stars"></canvas>
 
   <nav class="nav">
-    <div class="brand"><span class="spark"></span>AI Agents</div>
-    <div class="links">
-      <a class="badge" href="index.html">Home</a>
-      <a class="badge" href="demos.html">Demos</a>
-      <a class="badge" href="contact.html">Contact</a>
-      <a class="badge primary" href="demos.html">Try Live Demos</a>
+    <div class="brand"><span class="dot"></span>AI Agents</div>
+    <div class="nav-links">
+      <a href="index.html" class="pill">Home</a>
+      <a href="demos.html" class="pill">Demos</a>
+      <a href="contact.html" class="pill">Contact</a>
+      <a href="demos.html" class="pill pill--cta">Try Live Demos</a>
     </div>
   </nav>
 
-  <header class="hero hero--home">
-    <h1>Agents that turn clicks into calls and questions into answers</h1>
-    <p class="lead">We design and maintain conversational agents and automation that slot neatly into your calendars, CRMs, help centres and internal tools.</p>
-    <div class="cta">
-      <a class="btn primary" href="demos.html">Explore Demos</a>
-      <a class="btn ghost" href="#approach">Our Approach</a>
-    </div>
-  </header>
+  <main class="content">
+    <section class="hero hero--padded">
+      <h1>Agents that turn clicks into calls and questions into answers</h1>
+      <p class="lead">We design and maintain conversational agents and automation that slot neatly into your calendars, CRMs, help centres and internal tools.</p>
+      <div class="cta-row">
+        <a href="demos.html" class="btn btn--primary">Explore Demos</a>
+        <a href="#approach" class="btn">Our Approach</a>
+      </div>
+    </section>
 
-  <section id="approach" class="section section--cards">
-    <div class="cards">
+    <section id="approach" class="triptych">
       <article class="card">
         <h3>What we deliver</h3>
         <ul>
@@ -41,6 +39,7 @@
           <li>Automation that joins the dots across your tools</li>
         </ul>
       </article>
+
       <article class="card">
         <h3>How we work</h3>
         <ul>
@@ -50,14 +49,18 @@
           <li>Handover — docs and training for your team</li>
         </ul>
       </article>
+
       <article class="card">
         <h3>Where we fit</h3>
         <p>We’re platform-agnostic: Express/FastAPI, n8n/Make/Zapier and whichever database or vector store suits best. You get robust systems, not experiments.</p>
       </article>
-    </div>
-  </section>
+    </section>
+  </main>
 
-  <footer class="footer">© 2025 AI Agents — Tailoured AI for Business</footer>
+  <footer class="footer">
+    <div>© 2025 AI Agents — Tailoured AI for Business</div>
+  </footer>
+
   <script src="js/site.js"></script>
 </body>
 </html>
