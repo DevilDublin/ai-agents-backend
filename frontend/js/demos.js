@@ -1,161 +1,144 @@
-const toolcopy = {
-  appt: 'Books qualifying meetings from website and e-mail',
-  support: 'Answers from policies and docs, links included',
-  internal: 'Quick answers from your internal knowledge',
-  auto: 'Plans automations and hands them to your stack'
+const orbit = document.querySelector('.orbit');
+const tip = document.getElementById('orbit-tip');
+const beam = document.querySelector('.beam');
+
+function placeTooltip(btn) {
+  const rect = btn.getBoundingClientRect();
+  const orect = orbit.getBoundingClientRect();
+  const text = btn.dataset.tip || '';
+  tip.textContent = text;
+  tip.style.display = 'block';
+
+  if (btn.classList.contains('b-left')) {
+    tip.style.left = (rect.left - orect.left - tip.offsetWidth - 14) + 'px';
+    tip.style.top = (rect.top - orect.top - 6) + 'px';
+  } else if (btn.classList.contains('b-right')) {
+    tip.style.left = (rect.right - orect.left + 14) + 'px';
+    tip.style.top = (rect.top - orect.top - 6) + 'px';
+  } else if (btn.classList.contains('b-top')) {
+    tip.style.left = (rect.left - orect.left + rect.width/2 - tip.offsetWidth/2) + 'px';
+    tip.style.top = (rect.top - orect.top - tip.offsetHeight - 10) + 'px';
+  } else {
+    tip.style.left = (rect.left - orect.left + rect.width/2 - tip.offsetWidth/2) + 'px';
+    tip.style.top = (rect.bottom - orect.top + 10) + 'px';
+  }
+}
+
+function drawBeam(btn){
+  const orect = orbit.getBoundingClientRect();
+  const cx = orect.left + orect.width/2;
+  const cy = orect.top + orect.height/2;
+  const b = btn.getBoundingClientRect();
+  const bx = b.left + b.width/2;
+  const by = b.top + b.height/2;
+  const dx = bx - cx;
+  const dy = by - cy;
+  const len = Math.hypot(dx,dy);
+  const ang = Math.atan2(dy,dx);
+  beam.style.left = (cx - orect.left) + 'px';
+  beam.style.top = (cy - orect.top) + 'px';
+  beam.style.width = len + 'px';
+  beam.style.transform = `rotate(${ang}rad)`;
+  beam.style.opacity = 1;
+}
+
+function clearHover(){
+  tip.style.display = 'none';
+  beam.style.opacity = 0;
+}
+
+document.querySelectorAll('.bot').forEach(btn=>{
+  btn.addEventListener('mouseenter',()=>{ placeTooltip(btn); drawBeam(btn); });
+  btn.addEventListener('mouseleave', clearHover);
+  btn.addEventListener('click',()=>openDialog(btn));
+});
+
+/* dialog */
+const dlg = document.getElementById('dlg');
+const dlgClose = document.getElementById('dlg-close');
+const dlgTitle = document.getElementById('dlg-title');
+const dlgSub = document.getElementById('dlg-sub');
+const dlgEx = document.getElementById('dlg-ex');
+const dlgChat = document.getElementById('dlg-chat');
+const dlgInput = document.getElementById('dlg-input');
+const dlgSend = document.getElementById('dlg-send');
+const dlgMic = document.getElementById('dlg-mic');
+
+const presets = {
+  booker:{
+    title:'Appointment Setter',
+    sub:'Books meetings from website or email',
+    chips:['What’s your budget?','Can you do Tuesday 2–4pm?','Use alex@example.com for the invite.'],
+    hello:'Hi — ask me about appointment setter.'
+  },
+  internal:{
+    title:'Internal Knowledge',
+    sub:'Answers from policies and internal docs',
+    chips:['Holiday policy','New starter checklist','Expenses limit'],
+    hello:'Hi — ask about internal knowledge.'
+  },
+  support:{
+    title:'Support Q&A',
+    sub:'Links answers to policy pages',
+    chips:['What’s the returns window?','Do you ship to the UK?','Are weekend deliveries available?'],
+    hello:'Hi — ask about returns, shipping or hours.'
+  },
+  planner:{
+    title:'Automation Planner',
+    sub:'Plans automations and hands them to your stack',
+    chips:['Draft a handover flow','Sync Zendesk tags','Escalation rule'],
+    hello:'Hi — ask me to design an automation.'
+  }
 };
-const prompts = {
-  appt: [
-    "Hello, I'd like a 30-minute intro next week. Budget is £2k per month.",
-    "Could you do Tuesday 2–4pm?",
-    "Use alex@example.com for the invite."
-  ],
-  support: [
-    "What’s the returns window?",
-    "Do you ship to the UK?",
-    "Are weekend deliveries available?"
-  ],
-  internal: [
-    "What’s our SDR playbook for outbound?",
-    "Where’s the latest HR policy doc?",
-    "What’s the travel budget for EMEA?"
-  ],
-  auto: [
-    "Webhook from Stripe should open a CRM ticket.",
-    "When we get a lead, create a Slack thread.",
-    "Nightly summary e-mail from yesterday’s sales."
-  ]
+
+function openDialog(btn){
+  clearHover();
+  const id = btn.dataset.id;
+  const p = presets[id];
+  dlgTitle.textContent = p.title;
+  dlgSub.textContent = p.sub;
+  dlgEx.innerHTML = '';
+  p.chips.forEach(c=>{
+    const el = document.createElement('button');
+    el.className='chip';
+    el.textContent=c;
+    el.onclick=()=>{ send(c); };
+    dlgEx.appendChild(el);
+  });
+  dlgChat.innerHTML='';
+  dlgChat.appendChild(bubble(p.hello,false));
+  dlg.style.display='flex';
+  dlgInput.value='';
+  dlgInput.focus();
+}
+
+dlgClose.onclick = ()=> dlg.style.display='none';
+
+function bubble(text, me){
+  const b = document.createElement('div');
+  b.className='bubble'+(me?' me':'');
+  b.textContent = text;
+  return b;
+}
+
+function send(text){
+  const t = text || dlgInput.value.trim();
+  if(!t) return;
+  dlgChat.appendChild(bubble(t,true));
+  dlgInput.value='';
+  setTimeout(()=>{
+    dlgChat.appendChild(bubble('Thanks — this is a static demo. In your build this would call the agent’s API.',false));
+    dlgChat.scrollTop = dlgChat.scrollHeight;
+  },500);
+}
+
+dlgSend.onclick = ()=>send();
+
+dlgMic.onclick = ()=>{
+  dlgMic.setAttribute('aria-pressed','true');
+  Voice.useMic(dlgInput, (finalText)=>{
+    dlgMic.setAttribute('aria-pressed','false');
+    dlgInput.style.backgroundImage='none';
+    send(finalText);
+  });
 };
-
-(() => {
-  const orbit = document.getElementById('orbit');
-  const t = document.getElementById('tooltip');
-  const ray = document.getElementById('ray');
-
-  const pills = {
-    appt: document.querySelector('.pill.top'),
-    internal: document.querySelector('.pill.left'),
-    support: document.querySelector('.pill.right'),
-    auto: document.querySelector('.pill.bottom')
-  };
-
-  function centrePos() {
-    const r = orbit.getBoundingClientRect();
-    return { x: r.left + r.width/2, y: r.top + r.height/2 };
-  }
-  function pillCentre(el) {
-    const r = el.getBoundingClientRect();
-    return { x: r.left + r.width/2, y: r.top + r.height/2, rect: r };
-  }
-  function showTip(el, id) {
-    const p = pillCentre(el);
-    t.textContent = toolcopy[id];
-    t.style.display = 'block';
-    if (id === 'support') { t.style.left = (p.rect.right + 14) + 'px'; t.style.top = (p.rect.top - 6) + 'px'; }
-    else if (id === 'internal') { t.style.left = (p.rect.left - t.offsetWidth - 14) + 'px'; t.style.top = (p.rect.top - 6) + 'px'; }
-    else if (id === 'appt') { t.style.left = (p.rect.left - t.offsetWidth/2 + p.rect.width/2) + 'px'; t.style.top = (p.rect.top - t.offsetHeight - 10) + 'px'; }
-    else { t.style.left = (p.rect.left - t.offsetWidth/2 + p.rect.width/2) + 'px'; t.style.top = (p.rect.bottom + 10) + 'px'; }
-    const c = centrePos();
-    const dx = p.x - c.x, dy = p.y - c.y;
-    const len = Math.hypot(dx, dy);
-    const ang = Math.atan2(dy, dx);
-    ray.style.opacity = 1;
-    ray.style.left = c.x + 'px';
-    ray.style.top = c.y + 'px';
-    ray.style.width = len + 'px';
-    ray.style.transform = `rotate(${ang}rad)`;
-  }
-  function hideTip() {
-    t.style.display = 'none';
-    ray.style.opacity = 0;
-  }
-
-  Object.entries(pills).forEach(([id, el]) => {
-    el.addEventListener('mouseenter', () => showTip(el, id));
-    el.addEventListener('mouseleave', hideTip);
-    el.addEventListener('click', () => openDialog(id));
-  });
-
-  const overlay = document.getElementById('overlay');
-  const closeBtn = document.getElementById('dlg-close');
-  const title = document.getElementById('dlg-title');
-  const sub = document.getElementById('dlg-sub');
-  const chips = document.getElementById('chips');
-  const chat = document.getElementById('chat');
-  const input = document.getElementById('dlg-input');
-  const send = document.getElementById('send');
-  const mic = document.getElementById('mic');
-
-  function openDialog(id){
-    overlay.style.display = 'flex';
-    overlay.setAttribute('aria-hidden', 'false');
-    title.textContent = elTitle(id);
-    sub.textContent = toolcopy[id];
-    chips.innerHTML = '';
-    prompts[id].forEach(p => {
-      const c = document.createElement('span');
-      c.className = 'chip';
-      c.textContent = p;
-      c.addEventListener('click', ()=>{ appendMe(p); aiReply(id); });
-      chips.appendChild(c);
-    });
-    chat.innerHTML = '';
-    input.value = '';
-    Voice.bind(mic, input, onDictation);
-    input.focus();
-  }
-  function elTitle(id){
-    return id==='appt'?'Appointment Setter'
-      : id==='support'?'Support Q&A'
-      : id==='internal'?'Internal Knowledge'
-      : 'Automation Planner';
-  }
-  function appendMe(text){
-    const b = document.createElement('div');
-    b.className = 'bubble me';
-    b.textContent = text;
-    chat.appendChild(b);
-    chat.scrollTop = chat.scrollHeight;
-  }
-  function appendBot(text){
-    const b = document.createElement('div');
-    b.className = 'bubble';
-    b.textContent = text;
-    chat.appendChild(b);
-    chat.scrollTop = chat.scrollHeight;
-  }
-  function aiReply(id){
-    const copy = {
-      appt: "Thanks — this is a static demo. In your build this would check calendars and create an invite.",
-      support: "I’ll pull the answer from your policy and link the source. This box is just a preview.",
-      internal: "I would search your internal docs and return the relevant snippet. This is a demo stub.",
-      auto: "I’d draft the automation and hand it to your stack. Here we just show the flow."
-    };
-    setTimeout(()=>appendBot(copy[id]), 600);
-  }
-
-  send.addEventListener('click', () => {
-    if(!input.value.trim()) return;
-    const id = title.textContent.includes('Appointment')?'appt':
-               title.textContent.includes('Support')?'support':
-               title.textContent.includes('Internal')?'internal':'auto';
-    appendMe(input.value.trim());
-    input.value='';
-    aiReply(id);
-  });
-  function onDictation(text, final) {
-    if(final && text.trim()){
-      appendMe(text.trim());
-      const id = title.textContent.includes('Appointment')?'appt':
-                 title.textContent.includes('Support')?'support':
-                 title.textContent.includes('Internal')?'internal':'auto';
-      aiReply(id);
-    }
-  }
-
-  closeBtn.addEventListener('click', () => {
-    overlay.style.display = 'none';
-    overlay.setAttribute('aria-hidden', 'true');
-    Voice.unbind();
-  });
-})();
