@@ -1,38 +1,38 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta charset="utf-8">
   <title>AI Agents — Home</title>
-  <link rel="stylesheet" href="styles/main.css"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
-<canvas id="stars"></canvas>
-<canvas id="shooters"></canvas>
+  <canvas id="stars"></canvas>
+  <div class="glow"></div>
 
-<nav class="nav">
-  <div class="brand"><span class="spark"></span> AI Agents</div>
-  <div class="links">
-    <a class="link-chip" href="index.html">Home</a>
-    <a class="link-chip" href="demos.html">Demos</a>
-    <a class="link-chip" href="contact.html">Contact</a>
-    <a class="link-chip primary" href="demos.html">Try Live Demos</a>
-  </div>
-</nav>
+  <nav class="nav">
+    <div class="brand"><span class="dot"></span> AI Agents</div>
+    <div class="links">
+      <a class="chip" href="index.html">Home</a>
+      <a class="chip" href="demos.html">Demos</a>
+      <a class="chip" href="contact.html">Contact</a>
+      <a class="chip primary" href="demos.html#live">Try Live Demos</a>
+    </div>
+  </nav>
 
-<main class="page">
-  <section class="hero">
+  <header class="hero hero--home">
     <h1>Agents that turn clicks into calls and questions into answers</h1>
-    <p>We design and maintain conversational agents and automation that slot neatly into your calendars, CRMs, help centres and internal tools.</p>
+    <p class="lead">We design and maintain conversational agents and automation that slot neatly into your calendars, CRMs, help centres and internal tools.</p>
     <div class="cta">
       <a class="btn primary" href="demos.html">Explore Demos</a>
       <a class="btn ghost" href="#approach">Our Approach</a>
     </div>
-  </section>
+  </header>
 
-  <section class="section bump-up" id="approach">
-    <div class="grid cards">
-      <div class="card">
+  <section id="approach" class="section">
+    <div class="grid grid--cards tight-top">
+      <article class="card">
         <h3>What we deliver</h3>
         <ul>
           <li>Appointment-setting agents that book qualified meetings</li>
@@ -40,8 +40,8 @@
           <li>Internal knowledge assistants for HR and Sales</li>
           <li>Automation that joins the dots across your tools</li>
         </ul>
-      </div>
-      <div class="card">
+      </article>
+      <article class="card">
         <h3>How we work</h3>
         <ul>
           <li>Discovery — goals, data, constraints</li>
@@ -49,17 +49,16 @@
           <li>Integrate — calendars, CRMs, workflows</li>
           <li>Handover — docs and training for your team</li>
         </ul>
-      </div>
-      <div class="card">
+      </article>
+      <article class="card">
         <h3>Where we fit</h3>
         <p>We’re platform-agnostic: Express/FastAPI, n8n/Make/Zapier and whichever database or vector store suits best. You get robust systems, not experiments.</p>
-      </div>
+      </article>
     </div>
   </section>
 
   <footer class="footer">© 2025 AI Agents — Tailoured AI for Business</footer>
-</main>
 
-<script src="js/site.js"></script>
+  <script src="js/site.js"></script>
 </body>
 </html>
