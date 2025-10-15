@@ -1,52 +1,51 @@
 const canvas = document.getElementById('stars');
 const ctx = canvas.getContext('2d');
-let W, H, stars = [], streaks = [];
+let W, H, stars = [], trails = [];
 
 function resize() {
   W = canvas.width = window.innerWidth;
   H = canvas.height = window.innerHeight;
 }
-resize();
 window.addEventListener('resize', resize);
+resize();
 
-function spawnStars() {
-  stars = Array.from({length: 280}, () => ({
-    x: Math.random()*W,
-    y: Math.random()*H,
-    z: Math.random()*0.6 + 0.4,
-    tw: Math.random()*0.5 + 0.5
+function seed() {
+  stars = Array.from({length: 180}, () => ({
+    x: Math.random()*W, y: Math.random()*H,
+    r: Math.random()*1.2 + .2, s: Math.random()*.4+.15
+  }));
+  trails = Array.from({length: 8}, () => ({
+    x: Math.random()*W, y: Math.random()*H,
+    vx: (Math.random()-.5)*1.2, vy: (Math.random()-.5)*1.2,
+    life: Math.random()*220+120
   }));
 }
-function spawnStreak() {
-  const a = Math.random()*Math.PI*2;
-  streaks.push({
-    x: Math.random()*W, y: Math.random()*H,
-    vx: Math.cos(a)*4, vy: Math.sin(a)*4, life: 80
-  });
-}
-spawnStars();
-setInterval(spawnStreak, 900);
+seed();
 
-function draw() {
+function step() {
   ctx.clearRect(0,0,W,H);
-  ctx.fillStyle = '#ffffff';
-  stars.forEach(s=>{
-    const b = Math.sin((Date.now()/900)*s.tw)*0.5+0.5;
-    ctx.globalAlpha = 0.25*b*s.z;
-    ctx.fillRect(s.x, s.y, 1.2*s.z, 1.2*s.z);
+  ctx.fillStyle = '#bdb6ff';
+  stars.forEach(st => {
+    st.x += st.s*0.2; if (st.x>W) st.x=0;
+    ctx.globalAlpha = .55;
+    ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, Math.PI*2); ctx.fill();
   });
-  ctx.globalAlpha = 1;
 
-  streaks = streaks.filter(s=>s.life>0);
-  streaks.forEach(s=>{
-    ctx.strokeStyle = 'rgba(169,135,255,.8)';
-    ctx.lineWidth = 1.5;
+  trails.forEach(t=>{
+    t.x+=t.vx; t.y+=t.vy; t.life-=1;
+    if (t.x<0||t.x>W||t.y<0||t.y>H||t.life<0){
+      t.x=Math.random()*W; t.y=Math.random()*H;
+      t.vx=(Math.random()-.5)*1.2; t.vy=(Math.random()-.5)*1.2; t.life=Math.random()*220+120;
+    }
+    const len = 28;
+    ctx.strokeStyle = 'rgba(155,125,255,.65)';
+    ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(s.x, s.y);
-    ctx.lineTo(s.x - s.vx*8, s.y - s.vy*8);
+    ctx.moveTo(t.x,t.y);
+    ctx.lineTo(t.x-t.vx*len,t.y-t.vy*len);
     ctx.stroke();
-    s.x += s.vx; s.y += s.vy; s.life--;
   });
-  requestAnimationFrame(draw);
+
+  requestAnimationFrame(step);
 }
-draw();
+step();
