@@ -1,65 +1,57 @@
-function initVoice(micSel, inputSel, ghostSel, onAutoSend){
-  const mic = document.querySelector(micSel);
-  const input = document.querySelector(inputSel);
-  const ghost = document.querySelector(ghostSel);
-  let rec, active=false, silenceTimer=null, buffer='';
+(function(){
+  const mic = document.getElementById('mic');
+  const input = document.getElementById('dlg-input');
+  const send = document.getElementById('send');
+  if(!mic || !input) return;
 
-  function ensure(){
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if(!SR) return null;
-    const r = new SR();
-    r.lang = 'en-GB';
-    r.interimResults = true;
-    r.continuous = true;
-    return r;
+  let rec, live=false, silenceTimer;
+
+  function stopAll(){
+    if(rec){ try{rec.stop()}catch(e){} }
+    mic.setAttribute('aria-pressed','false');
+    mic.classList.remove('live');
+    live=false;
   }
 
   function start(){
-    rec = ensure();
-    if(!rec) return;
-    active=true;
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(!SR){ alert('Speech recognition is unavailable in this browser.'); return; }
+    rec = new SR();
+    rec.lang = 'en-GB';
+    rec.interimResults = true;
+    rec.continuous = true;
+
     mic.setAttribute('aria-pressed','true');
-    ghost.style.display='block';
-    mic.classList.add('listening');
-    rec.onresult = e=>{
-      let interim='', final='';
-      for(let i=e.resultIndex;i<e.results.length;i++){
-        const str = e.results[i][0].transcript;
-        if(e.results[i].isFinal) final += str;
-        else interim += str;
+    mic.classList.add('live');
+    live=true;
+    input.focus();
+
+    const base = input.value;
+
+    function restartSilence() {
+      clearTimeout(silenceTimer);
+      silenceTimer = setTimeout(()=>{
+        stopAll();
+        if(input.value.trim()) send.click();
+      }, 3800);
+    }
+
+    rec.onresult = e => {
+      let finalText = '';
+      let interim = '';
+      for (let i=e.resultIndex;i<e.results.length;i++){
+        const t = e.results[i][0].transcript;
+        if(e.results[i].isFinal) finalText += t;
+        else interim += t;
       }
-      if(interim) ghost.textContent = interim;
-      if(final){
-        buffer += (buffer ? ' ' : '') + final.trim();
-        input.value = buffer;
-        ghost.textContent = '';
-      }
-      resetSilence();
+      input.value = (base + ' ' + finalText + ' ' + interim).trimStart();
+      restartSilence();
     };
-    rec.onend = ()=>{ if(active) rec.start(); };
-    rec.onerror = ()=> stop();
+
+    rec.onend = ()=> stopAll();
+    rec.onerror = ()=> stopAll();
     rec.start();
-    resetSilence();
-  }
-  function stop(){
-    active=false;
-    if(rec){ try{rec.onend=null;rec.stop();}catch{} }
-    mic.setAttribute('aria-pressed','false');
-    mic.classList.remove('listening');
-    ghost.style.display='none';
-    clearTimeout(silenceTimer);
-    ghost.textContent='';
-  }
-  function resetSilence(){
-    clearTimeout(silenceTimer);
-    silenceTimer = setTimeout(()=>{
-      stop();
-      if(input.value.trim()){ onAutoSend && onAutoSend(); }
-      buffer='';
-    }, 3500);
   }
 
-  mic.addEventListener('click', ()=>{
-    if(active) stop(); else { buffer=''; start(); }
-  });
-}
+  mic.addEventListener('click', ()=> live ? stopAll() : start());
+})();
