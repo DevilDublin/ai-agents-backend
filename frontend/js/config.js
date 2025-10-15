@@ -1,30 +1,58 @@
-window.BOTS = {
+window.DEMOS = {
   appointments: {
     title: 'Appointment Setter',
-    subtitle: 'Books meetings and handles availability',
-    tips: ['Hello, I’d like a 30-minute intro next week.', 'Could you do Tuesday 2–4pm?', 'Use alex@example.com for the invite.'],
-    opening: 'Hi — ask me about appointment setter.',
-    persona: 'I’ll help you find a time that suits and send a calendar invite.'
+    sub: 'Books calls directly into your calendar',
+    examples: [
+      'Hello — I’d like a 30-minute intro next week.',
+      'Could you do Tuesday 2–4pm?',
+      'Use alex@example.com for the invite.'
+    ],
+    replies: [
+      'I can place that for you. What times suit you next week?',
+      'Tuesday 2–4pm works. Shall I book 2:30pm?',
+      'Brilliant — I’ll send the invite shortly.'
+    ]
   },
   support: {
     title: 'Support Q&A',
-    subtitle: 'Answers from your policy and docs',
-    tips: ['What’s the returns window?', 'Do you ship to the UK?', 'Are weekend deliveries available?'],
-    opening: 'Hi — ask me about returns, shipping, warranty or support hours.',
-    persona: 'I’ll answer quickly and link to the relevant policy pages.'
+    sub: 'Answers from your policy and docs',
+    examples: [
+      'What’s the returns window?',
+      'Do you ship to the UK?',
+      'Are weekend deliveries available?'
+    ],
+    replies: [
+      'Returns are accepted within 30 days when items are unused.',
+      'Yes — standard and express options are available for the UK.',
+      'Weekend delivery is available in most cities.'
+    ]
   },
   internal: {
     title: 'Internal Knowledge',
-    subtitle: 'HR and Sales answers for your team',
-    tips: ['What’s the parental leave policy?', 'Where’s the sales playbook?', 'Who approves new software?'],
-    opening: 'Hi — ask me about internal knowledge.',
-    persona: 'I’ll respond with short, clear guidance and links to source docs.'
+    sub: 'Answers HR and Sales questions clearly',
+    examples: [
+      'How do I book training?',
+      'What’s the onboarding checklist?',
+      'Where’s the sales playbook?'
+    ],
+    replies: [
+      'Training can be booked via the People portal.',
+      'You’ll find the onboarding checklist in Notion.',
+      'The sales playbook is in the shared drive under GTM.'
+    ]
   },
   automation: {
     title: 'Automation Planner',
-    subtitle: 'Maps the steps between tools',
-    tips: ['Draft a flow for new-lead handoff.', 'How would you sync meetings to the CRM?', 'Outline an onboarding workflow.'],
-    opening: 'Hi — ask me to map automations across your tools.',
-    persona: 'I’ll sketch out steps and edge cases so engineers can build quickly.'
+    sub: 'Plans cross-tool tasks, then runs them',
+    examples: [
+      'Draft a follow-up sequence for no-shows.',
+      'Add new leads to CRM and ping Slack.',
+      'Create a weekly task report.'
+    ],
+    replies: [
+      'I’ll prepare a three-step follow-up with gentle nudges.',
+      'New leads will be added and the team notified.',
+      'The weekly report will be ready every Friday.'
+    ]
   }
 };
