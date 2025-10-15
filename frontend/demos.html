@@ -25,16 +25,15 @@
     </header>
 
     <section class="orbital">
-      <div class="orbit" id="orbit">
+      <div class="orbit" id="orbit" aria-label="Demo orbit">
         <div class="ring ring--1"></div>
         <div class="ring ring--2"></div>
         <div class="ring ring--3"></div>
-
         <div class="axes"></div>
 
         <button class="node node--top" data-key="appt" data-desc="Books qualifying meetings from website and email">Appointment Setter</button>
         <button class="node node--left" data-key="internal" data-desc="Answers from your policies and docs">Internal Knowledge</button>
-        <button class="node node--right" data-key="support" data-desc="Customer support Q&A with quick links">Support Q&A</button>
+        <button class="node node--right" data-key="support" data-desc="Customer support Q&amp;A with quick links">Support Q&amp;A</button>
         <button class="node node--bottom" data-key="planner" data-desc="Plans automations and hands them to your stack">Automation Planner</button>
 
         <div class="hex-wrap">
@@ -45,20 +44,21 @@
           </div>
         </div>
 
-        <div class="tooltip" id="tip"></div>
+        <div class="tooltip" id="tip" role="status" aria-live="polite"></div>
         <div class="ray" id="ray"></div>
       </div>
     </section>
   </main>
 
+  <!-- Hidden by default; never opens until a node is clicked -->
   <div class="overlay" id="overlay" hidden>
-    <div class="dialog">
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
       <div class="dialog-head">
         <div>
           <div class="title" id="dlg-title">Agent</div>
           <div class="subtitle" id="dlg-sub">Live demo</div>
         </div>
-        <button class="close" id="dlg-close">Close</button>
+        <button class="close" id="dlg-close" title="Close">Close</button>
       </div>
 
       <div class="dialog-body">
@@ -75,7 +75,10 @@
         </div>
 
         <div class="input-row">
-          <input id="msg" class="input" placeholder="Type your message…">
+          <div class="input-shell">
+            <input id="msg" class="input" placeholder="Type your message…">
+            <span id="liveText" class="live-text" aria-hidden="true"></span>
+          </div>
           <button id="mic" class="mic" aria-pressed="false" title="Speak">
             <svg viewBox="0 0 24 24" width="20" height="20">
               <path d="M12 14a3 3 0 0 0 3-3V7a3 3 0 0 0-6 0v4a3 3 0 0 0 3 3zm-5-3a5 5 0 0 0 10 0h2a7 7 0 0 1-6 6.92V20h3v2H8v-2h3v-2.08A7 7 0 0 1 5 11h2z" fill="currentColor"/>
