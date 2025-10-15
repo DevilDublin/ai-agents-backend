@@ -1,108 +1,103 @@
 (function(){
   const wrap = document.querySelector('.orbit-wrap');
   const tooltip = document.getElementById('orbit-tooltip');
-  const lineSvg = document.getElementById('pulse-line');
-  const dlg = document.getElementById('dlg');
-  const close = dlg.querySelector('[data-close]');
-  const chatBox = document.getElementById('dlg-chat');
-  const input = document.getElementById('dlg-input');
-  const sendBtn = document.getElementById('dlg-send');
-  const exWrap = document.getElementById('dlg-examples');
-  const title = document.getElementById('dlg-title');
-  const sub = document.getElementById('dlg-sub');
+  const beam = document.getElementById('orbit-beam');
+  const centre = { x: wrap.clientWidth/2, y: wrap.clientHeight/2 };
 
-  function centre(){
-    const r = wrap.getBoundingClientRect();
-    return {x: r.left + r.width/2, y: r.top + r.height/2};
-  }
-
-  function pulseTo(el){
-    const c = centre();
-    const r = el.getBoundingClientRect();
-    const x1 = c.x, y1 = c.y;
-    const x2 = r.left + r.width/2, y2 = r.top + r.height/2;
-    const svgW = Math.abs(x2-x1), svgH = Math.abs(y2-y1);
-    const left = Math.min(x1,x2), top = Math.min(y1,y2);
-    lineSvg.setAttribute('width', svgW);
-    lineSvg.setAttribute('height', svgH);
-    lineSvg.style.left = left+'px';
-    lineSvg.style.top = top+'px';
-    lineSvg.innerHTML = `<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#b98aff" stop-opacity="0"/><stop offset="100%" stop-color="#b98aff" stop-opacity="1"/></linearGradient></defs>
-      <path d="M ${x1< x2? 0:svgW} ${y1<y2?0:svgH} L ${x1<x2? svgW:0} ${y1<y2?svgH:0}" stroke="url(#g)" stroke-width="2" fill="none">
-        <animate attributeName="stroke-dasharray" from="0,1000" to="1000,0" dur=".7s" fill="freeze"/>
-      </path>`;
-  }
-
-  function showTip(el, text){
-    tooltip.textContent = text;
+  function showTip(btn){
+    const tip = btn.getAttribute('data-tip') || '';
+    tooltip.textContent = tip;
+    const r = btn.getBoundingClientRect();
+    const w = wrap.getBoundingClientRect();
     tooltip.style.display='block';
-    const r = el.getBoundingClientRect();
-    const t = tooltip.getBoundingClientRect();
-    if(el.classList.contains('top')) tooltip.style.transform = `translate(${r.left + r.width/2 - t.width/2}px, ${r.bottom + 10}px)`;
-    if(el.classList.contains('bottom')) tooltip.style.transform = `translate(${r.left + r.width/2 - t.width/2}px, ${r.top - t.height - 10}px)`;
-    if(el.classList.contains('left')) tooltip.style.transform = `translate(${r.right + 12}px, ${r.top + r.height/2 - t.height/2}px)`;
-    if(el.classList.contains('right')) tooltip.style.transform = `translate(${r.left - t.width - 12}px, ${r.top + r.height/2 - t.height/2}px)`;
+
+    if(btn.classList.contains('top')){
+      tooltip.style.left = (r.left + r.width/2 - w.left - tooltip.offsetWidth/2)+'px';
+      tooltip.style.top  = (r.bottom - w.top + 8)+'px';
+    } else if(btn.classList.contains('right')){
+      tooltip.style.left = (r.left - w.left - tooltip.offsetWidth - 8)+'px';
+      tooltip.style.top  = (r.top + r.height/2 - w.top - tooltip.offsetHeight/2)+'px';
+    } else if(btn.classList.contains('left')){
+      tooltip.style.left = (r.right - w.left + 8)+'px';
+      tooltip.style.top  = (r.top + r.height/2 - w.top - tooltip.offsetHeight/2)+'px';
+    } else {
+      tooltip.style.left = (r.left + r.width/2 - w.left - tooltip.offsetWidth/2)+'px';
+      tooltip.style.top  = (r.top - w.top - tooltip.offsetHeight - 8)+'px';
+    }
   }
   function hideTip(){ tooltip.style.display='none'; }
 
-  function openChat(key){
-    const bot = window.BOTS[key];
-    if(!bot) return;
-    dlg.style.display='flex';
-    title.textContent = bot.title;
-    sub.textContent = bot.subtitle;
-    chatBox.innerHTML = '';
-    addBubble(bot.opening,false);
-    addBubble(bot.persona,false);
-    exWrap.innerHTML = '';
-    bot.tips.forEach(t=>{
-      const b = document.createElement('span');
-      b.className='chip';
-      b.textContent=t;
-      b.addEventListener('click',()=> send(t));
-      exWrap.appendChild(b);
-    });
-  }
-  function closeChat(){ dlg.style.display='none'; }
+  function shootBeam(btn){
+    const rb = btn.getBoundingClientRect();
+    const rw = wrap.getBoundingClientRect();
+    const bx = rb.left + rb.width/2 - rw.left;
+    const by = rb.top + rb.height/2 - rw.top;
+    const dx = centre.x - bx;
+    const dy = centre.y - by;
+    const len = Math.sqrt(dx*dx+dy*dy);
+    const angle = Math.atan2(dy,dx)*180/Math.PI;
 
-  function addBubble(text, me){
-    const b = document.createElement('div');
-    b.className = 'bubble'+(me?' me':'');
-    b.textContent = text;
-    chatBox.appendChild(b);
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
-  function send(text){
-    if(!text){ text = input.value.trim(); if(!text) return; input.value=''; }
-    addBubble(text,true);
-    setTimeout(()=>{
-      const reply = craftReply(text);
-      addBubble(reply,false);
-    }, 450);
-  }
-  function craftReply(q){
-    q = q.toLowerCase();
-    if(q.includes('return')) return 'Returns are accepted within 30 days in unused condition. I can generate a label if you like.';
-    if(q.includes('ship')) return 'We ship across the UK and most EU countries. Standard Royal Mail 48 or DPD Next Day are available.';
-    if(q.includes('meeting')||q.includes('tuesday')||q.includes('schedule')) return 'I can offer Tue 14:30 or Wed 09:00. Which would you prefer? I’ll send a calendar invite.';
-    if(q.includes('flow')||q.includes('workflow')) return 'I’d map it as: trigger → validate → enrich CRM → notify Slack → schedule task. Want the step-by-step?';
-    return 'Noted. I’ll summarise and point you to the right place if needed.';
+    beam.style.left = bx+'px';
+    beam.style.top  = by+'px';
+    beam.style.width = len+'px';
+    beam.style.transform = `rotate(${angle}deg)`;
+    beam.animate([{opacity:0},{opacity:1,offset:.2},{opacity:0}],{duration:900,fill:'forwards'});
   }
 
-  document.querySelectorAll('.bot-pill').forEach(el=>{
-    const bot = el.dataset.bot;
-    el.addEventListener('mouseenter',()=>{
-      const tip = (window.BOTS[bot]||{}).subtitle || '';
-      showTip(el, tip);
-      pulseTo(el);
-    });
-    el.addEventListener('mouseleave',hideTip);
-    el.addEventListener('click',()=>openChat(bot));
+  wrap.querySelectorAll('.bot-pill').forEach(btn=>{
+    btn.addEventListener('mouseenter',()=>{ showTip(btn); shootBeam(btn); });
+    btn.addEventListener('mouseleave',hideTip);
+    btn.addEventListener('click',()=>openDialog(btn.getAttribute('data-bot')));
   });
 
-  close.addEventListener('click', closeChat);
-  dlg.addEventListener('click', e=>{ if(e.target===dlg) closeChat(); });
+  const dlg = document.getElementById('dlg');
+  const dlgTitle = document.getElementById('dlg-title');
+  const dlgSub = document.getElementById('dlg-sub');
+  const dlgChat = document.getElementById('dlg-chat');
+  const dlgEx = document.getElementById('dlg-examples');
+  const input = document.getElementById('dlg-input');
+  const mic = document.getElementById('dlg-mic');
+  const send = document.getElementById('dlg-send');
+  document.getElementById('dlg-close').onclick=()=>{dlg.style.display='none';};
 
-  sendBtn.addEventListener('click', ()=> send());
-  window.addEventListener('chat:send', e=> send(e.detail));
+  function openDialog(key){
+    const spec = window.DEMOS[key];
+    dlgTitle.textContent = spec.title;
+    dlgSub.textContent = spec.sub;
+    dlgEx.innerHTML = '';
+    spec.examples.forEach(e=>{
+      const c = document.createElement('div');
+      c.className='chip';
+      c.textContent=e;
+      c.onclick=()=>{input.value=e; send.click();};
+      dlgEx.appendChild(c);
+    });
+    dlgChat.innerHTML='';
+    addBubble('Hi — ask me about '+spec.title.toLowerCase()+'.','sys');
+    addBubble(spec.replies[0],'bot');
+    dlg.style.display='flex';
+    dlg.setAttribute('data-key',key);
+    input.focus();
+  }
+
+  function addBubble(text, who){
+    const b = document.createElement('div');
+    b.className='bubble';
+    if(who==='me') b.classList.add('me');
+    b.textContent=text;
+    dlgChat.appendChild(b);
+    dlgChat.scrollTop = dlgChat.scrollHeight;
+  }
+
+  send.onclick = ()=>{
+    const t = input.value.trim();
+    if(!t) return;
+    addBubble(t,'me');
+    const spec = window.DEMOS[dlg.getAttribute('data-key')];
+    const reply = spec.replies[(Math.random()*spec.replies.length)|0];
+    input.value='';
+    setTimeout(()=>addBubble(reply,'bot'), 450);
+  };
+
+  window.__voiceWire = { input, mic, onSend: ()=>send.click() };
 })();
