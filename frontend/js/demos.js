@@ -1,103 +1,74 @@
-(function(){
-  const wrap = document.querySelector('.orbit-wrap');
-  const tooltip = document.getElementById('orbit-tooltip');
-  const beam = document.getElementById('orbit-beam');
-  const centre = { x: wrap.clientWidth/2, y: wrap.clientHeight/2 };
+// Orbit wiring: correct node placement, hover beam, tooltips
+(() => {
+  const orbit = document.querySelector('.orbit');
+  if (!orbit) return;
 
-  function showTip(btn){
-    const tip = btn.getAttribute('data-tip') || '';
-    tooltip.textContent = tip;
-    const r = btn.getBoundingClientRect();
-    const w = wrap.getBoundingClientRect();
-    tooltip.style.display='block';
-
-    if(btn.classList.contains('top')){
-      tooltip.style.left = (r.left + r.width/2 - w.left - tooltip.offsetWidth/2)+'px';
-      tooltip.style.top  = (r.bottom - w.top + 8)+'px';
-    } else if(btn.classList.contains('right')){
-      tooltip.style.left = (r.left - w.left - tooltip.offsetWidth - 8)+'px';
-      tooltip.style.top  = (r.top + r.height/2 - w.top - tooltip.offsetHeight/2)+'px';
-    } else if(btn.classList.contains('left')){
-      tooltip.style.left = (r.right - w.left + 8)+'px';
-      tooltip.style.top  = (r.top + r.height/2 - w.top - tooltip.offsetHeight/2)+'px';
-    } else {
-      tooltip.style.left = (r.left + r.width/2 - w.left - tooltip.offsetWidth/2)+'px';
-      tooltip.style.top  = (r.top - w.top - tooltip.offsetHeight - 8)+'px';
-    }
-  }
-  function hideTip(){ tooltip.style.display='none'; }
-
-  function shootBeam(btn){
-    const rb = btn.getBoundingClientRect();
-    const rw = wrap.getBoundingClientRect();
-    const bx = rb.left + rb.width/2 - rw.left;
-    const by = rb.top + rb.height/2 - rw.top;
-    const dx = centre.x - bx;
-    const dy = centre.y - by;
-    const len = Math.sqrt(dx*dx+dy*dy);
-    const angle = Math.atan2(dy,dx)*180/Math.PI;
-
-    beam.style.left = bx+'px';
-    beam.style.top  = by+'px';
-    beam.style.width = len+'px';
-    beam.style.transform = `rotate(${angle}deg)`;
-    beam.animate([{opacity:0},{opacity:1,offset:.2},{opacity:0}],{duration:900,fill:'forwards'});
-  }
-
-  wrap.querySelectorAll('.bot-pill').forEach(btn=>{
-    btn.addEventListener('mouseenter',()=>{ showTip(btn); shootBeam(btn); });
-    btn.addEventListener('mouseleave',hideTip);
-    btn.addEventListener('click',()=>openDialog(btn.getAttribute('data-bot')));
-  });
-
-  const dlg = document.getElementById('dlg');
-  const dlgTitle = document.getElementById('dlg-title');
-  const dlgSub = document.getElementById('dlg-sub');
-  const dlgChat = document.getElementById('dlg-chat');
-  const dlgEx = document.getElementById('dlg-examples');
-  const input = document.getElementById('dlg-input');
-  const mic = document.getElementById('dlg-mic');
-  const send = document.getElementById('dlg-send');
-  document.getElementById('dlg-close').onclick=()=>{dlg.style.display='none';};
-
-  function openDialog(key){
-    const spec = window.DEMOS[key];
-    dlgTitle.textContent = spec.title;
-    dlgSub.textContent = spec.sub;
-    dlgEx.innerHTML = '';
-    spec.examples.forEach(e=>{
-      const c = document.createElement('div');
-      c.className='chip';
-      c.textContent=e;
-      c.onclick=()=>{input.value=e; send.click();};
-      dlgEx.appendChild(c);
-    });
-    dlgChat.innerHTML='';
-    addBubble('Hi — ask me about '+spec.title.toLowerCase()+'.','sys');
-    addBubble(spec.replies[0],'bot');
-    dlg.style.display='flex';
-    dlg.setAttribute('data-key',key);
-    input.focus();
-  }
-
-  function addBubble(text, who){
-    const b = document.createElement('div');
-    b.className='bubble';
-    if(who==='me') b.classList.add('me');
-    b.textContent=text;
-    dlgChat.appendChild(b);
-    dlgChat.scrollTop = dlgChat.scrollHeight;
-  }
-
-  send.onclick = ()=>{
-    const t = input.value.trim();
-    if(!t) return;
-    addBubble(t,'me');
-    const spec = window.DEMOS[dlg.getAttribute('data-key')];
-    const reply = spec.replies[(Math.random()*spec.replies.length)|0];
-    input.value='';
-    setTimeout(()=>addBubble(reply,'bot'), 450);
+  const centre = () => {
+    const r = orbit.getBoundingClientRect();
+    return { cx: r.left + r.width/2, cy: r.top + r.height/2 };
   };
 
-  window.__voiceWire = { input, mic, onSend: ()=>send.click() };
+  const beamSvg = document.getElementById('beam');
+  if (beamSvg) {
+    beamSvg.innerHTML = `<svg width="100%" height="100%"><line x1="0" y1="0" x2="0" y2="0" stroke="url(#grad)" stroke-width="3" stroke-linecap="round" opacity="0">
+      </line><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="rgba(155,114,255,0)"/><stop offset="100%" stop-color="rgba(155,114,255,0.85)"/></linearGradient></defs></svg>`;
+  }
+  const beamLine = beamSvg?.querySelector('line');
+
+  const tooltip = document.getElementById('orbit-tip');
+
+  function showBeam(toEl) {
+    if (!beamLine) return;
+    const { cx, cy } = centre();
+    const rect = toEl.getBoundingClientRect();
+    const tx = rect.left + rect.width/2;
+    const ty = rect.top + rect.height/2;
+    beamLine.setAttribute('x1', String(cx - orbit.getBoundingClientRect().left));
+    beamLine.setAttribute('y1', String(cy - orbit.getBoundingClientRect().top));
+    beamLine.setAttribute('x2', String(tx - orbit.getBoundingClientRect().left));
+    beamLine.setAttribute('y2', String(ty - orbit.getBoundingClientRect().top));
+    beamLine.setAttribute('opacity','1');
+  }
+  function hideBeam(){ beamLine?.setAttribute('opacity','0') }
+
+  function placeTip(node, text, side) {
+    if (!tooltip) return;
+    tooltip.textContent = text;
+    const r = node.getBoundingClientRect();
+    const pad = 12;
+    if (side === 'left') {
+      tooltip.style.left = `${r.left - tooltip.offsetWidth - pad}px`;
+      tooltip.style.top  = `${r.top + r.height/2 - tooltip.offsetHeight/2}px`;
+    } else if (side === 'right') {
+      tooltip.style.left = `${r.right + pad}px`;
+      tooltip.style.top  = `${r.top + r.height/2 - tooltip.offsetHeight/2}px`;
+    } else if (side === 'top') {
+      tooltip.style.left = `${r.left + r.width/2 - tooltip.offsetWidth/2}px`;
+      tooltip.style.top  = `${r.top - tooltip.offsetHeight - pad}px`;
+    } else {
+      tooltip.style.left = `${r.left + r.width/2 - tooltip.offsetWidth/2}px`;
+      tooltip.style.top  = `${r.bottom + pad}px`;
+    }
+    tooltip.classList.add('show');
+  }
+  function hideTip(){ tooltip?.classList.remove('show') }
+
+  const map = {
+    '#node-appoint': { tip:'Books qualifying meetings from website and email', side:'top' },
+    '#node-support': { tip:'Answers support queries from your policies', side:'right' },
+    '#node-internal':{ tip:'Handles HR and Sales internal questions', side:'left' },
+    '#node-auto':    { tip:'Plans multi-step automations across your tools', side:'bottom' },
+  };
+
+  Object.entries(map).forEach(([sel, info]) => {
+    const el = document.querySelector(sel);
+    if (!el) return;
+    el.addEventListener('mouseenter', () => { showBeam(el); placeTip(el, info.tip, info.side) });
+    el.addEventListener('mouseleave', () => { hideBeam(); hideTip() });
+    el.addEventListener('click', () => {
+      const dlg = document.querySelector(sel + '-dialog');
+      dlg?.showModal?.();
+    });
+  });
 })();
