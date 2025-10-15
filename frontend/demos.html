@@ -1,84 +1,95 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>AI Agents — Demos</title>
-  <link rel="stylesheet" href="styles/main.css"/>
+  <meta charset="utf-8">
+  <title>AI Agents — Live Demos</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css">
 </head>
-<body>
-<canvas id="stars"></canvas>
-<canvas id="shooters"></canvas>
+<body id="live">
+  <canvas id="stars"></canvas>
+  <div class="glow"></div>
 
-<nav class="nav">
-  <div class="brand"><span class="spark"></span> AI Agents</div>
-  <div class="links">
-    <a class="link-chip" href="index.html">Home</a>
-    <a class="link-chip" href="demos.html">Demos</a>
-    <a class="link-chip" href="contact.html">Contact</a>
-  </div>
-</nav>
+  <nav class="nav">
+    <div class="brand"><span class="dot"></span> AI Agents</div>
+    <div class="links">
+      <a class="chip" href="index.html">Home</a>
+      <a class="chip" href="demos.html">Demos</a>
+      <a class="chip" href="contact.html">Contact</a>
+    </div>
+  </nav>
 
-<main class="page">
   <header class="page-head">
     <h1 class="page-title">Live Demos</h1>
-    <p class="page-sub">Hover to connect. Click to chat. Pause on a bot to see what it does.</p>
+    <p class="page-subtitle">Hover to connect. Click to chat. Pause on a bot to see what it does.</p>
   </header>
 
-  <section class="orbit-wrap">
-    <div class="orbit">
-      <div class="rings r1"></div>
-      <div class="rings r2"></div>
-      <div class="rings r3"></div>
-      <div class="axes"></div>
+  <section class="section section--orbit">
+    <div class="orbit-wrap" id="orbit">
+      <div class="rings">
+        <span class="ring r1"></span>
+        <span class="ring r2"></span>
+        <span class="ring r3"></span>
+        <span class="axis x"></span>
+        <span class="axis y"></span>
+      </div>
 
-      <div class="center-node"></div>
-      <div class="center-outline"></div>
-      <div class="center-label">Select<br/>your<br/>demo</div>
+      <div class="centre">
+        <div class="hex">
+          <div class="hex-1"></div><div class="hex-2"></div><div class="hex-3"></div>
+        </div>
+        <div class="centre-label">
+          <span>Select</span><span>your</span><span>demo</span>
+        </div>
+      </div>
 
-      <button class="pill" data-pos="top" data-bot="appt">Appointment Setter</button>
-      <button class="pill" data-pos="left" data-bot="internal">Internal Knowledge</button>
-      <button class="pill" data-pos="right" data-bot="support">Support Q&A</button>
-      <button class="pill" data-pos="bottom" data-bot="planner">Automation Planner</button>
+      <button class="pill top" data-bot="appt">
+        <span>Appointment Setter</span>
+      </button>
+      <button class="pill left" data-bot="internal">
+        <span>Internal Knowledge</span>
+      </button>
+      <button class="pill right" data-bot="support">
+        <span>Support Q&A</span>
+      </button>
+      <button class="pill bottom" data-bot="auto">
+        <span>Automation Planner</span>
+      </button>
 
-      <div class="beam" data-to="left"></div>
-      <div class="beam" data-to="right"></div>
-      <div class="beam" data-to="top"></div>
-      <div class="beam" data-to="bottom"></div>
-
-      <div class="tip left">Answers from your policies and docs</div>
-      <div class="tip right">Support that links to the right pages</div>
-      <div class="tip top">Books qualifying meetings</div>
-      <div class="tip bottom">Maps tasks and integrations</div>
+      <div id="tooltip" class="tooltip"></div>
+      <div id="ray" class="ray"></div>
     </div>
   </section>
 
   <footer class="footer">© 2025 AI Agents — Tailoured AI for Business</footer>
-</main>
 
-<div class="overlay" id="dlg">
-  <div class="dialog">
-    <div class="dialog-head">
-      <div>
-        <div class="dialog-title" id="dlg-title"></div>
-        <div class="dialog-sub" id="dlg-sub"></div>
+  <div id="overlay" class="overlay" aria-hidden="true">
+    <div class="dialog">
+      <div class="dialog-head">
+        <div>
+          <div class="title" id="dlg-title"></div>
+          <div class="subtitle" id="dlg-sub"></div>
+        </div>
+        <button class="close-btn" id="dlg-close">Close</button>
       </div>
-      <button class="link-chip ghost" id="dlg-close">Close</button>
-    </div>
-    <div class="dialog-body">
-      <div class="tips" id="dlg-tips"></div>
-      <div class="chat" id="dlg-chat"></div>
-      <div class="input-row" style="position:relative">
-        <input id="dlg-input" class="input" type="text" placeholder="Type your message…"/>
-        <button id="mic" class="mic" aria-pressed="false">🎙️</button>
-        <button id="send" class="send">Send</button>
+
+      <div class="dialog-body">
+        <div class="examples" id="chips"></div>
+        <div class="chat" id="chat"></div>
+
+        <div class="input-wrap">
+          <input id="dlg-input" placeholder="Type your message…" autocomplete="off">
+          <button id="mic" class="mic" aria-pressed="false" title="Speak"><span class="mic-led"></span></button>
+          <button id="send" class="btn primary">Send</button>
+          <div class="ghost" id="ghost"></div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<script src="js/site.js"></script>
-<script src="js/demos.js"></script>
-<script src="js/voice.js"></script>
+  <script src="js/site.js"></script>
+  <script src="js/voice.js"></script>
+  <script src="js/demos.js"></script>
 </body>
 </html>
