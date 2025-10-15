@@ -7,93 +7,85 @@
   <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
-  <div id="stars"></div>
+  <div class="sky"><canvas id="sky"></canvas><canvas id="shooting"></canvas></div>
+  <div class="page-glow"></div>
 
-  <nav class="nav">
-    <div class="brand"><span class="spark"></span> AI Agents</div>
-    <div class="links">
-      <a class="link-chip" href="index.html">Home</a>
-      <a class="link-chip" href="demos.html">Demos</a>
-      <a class="link-chip" href="contact.html">Contact</a>
-    </div>
-  </nav>
+  <div class="page">
+    <header class="nav">
+      <div class="brand"><span class="dot"></span> AI Agents</div>
+      <nav class="links">
+        <a class="chip" href="index.html">Home</a>
+        <a class="chip" href="demos.html">Demos</a>
+        <a class="chip" href="contact.html">Contact</a>
+      </nav>
+    </header>
 
-  <header class="page-head">
-    <h1 class="page-title">Live Demos</h1>
-    <p class="page-subtitle">Hover to connect. Click to chat. Pause on a bot to see what it does.</p>
-  </header>
-
-  <section class="section section--orbit">
-    <div class="orbit-wrap">
-      <svg id="orbits" viewBox="0 0 900 900" preserveAspectRatio="xMidYMid meet">
-        <defs>
-          <radialGradient id="coreGlow" cx="50%" cy="55%">
-            <stop offset="0%" stop-color="rgba(185,138,255,0.45)"/>
-            <stop offset="70%" stop-color="rgba(185,138,255,0.15)"/>
-            <stop offset="100%" stop-color="rgba(185,138,255,0)"/>
-          </radialGradient>
-        </defs>
-        <circle cx="450" cy="450" r="280" fill="none" stroke="rgba(255,255,255,0.12)" stroke-dasharray="8 12"/>
-        <circle cx="450" cy="450" r="200" fill="none" stroke="rgba(255,255,255,0.10)" stroke-dasharray="6 10"/>
-        <circle cx="450" cy="450" r="120" fill="none" stroke="rgba(255,255,255,0.08)" stroke-dasharray="4 8"/>
-        <line x1="90" y1="450" x2="810" y2="450" stroke="rgba(255,255,255,0.08)"/>
-        <line x1="450" y1="90" x2="450" y2="810" stroke="rgba(255,255,255,0.08)"/>
-        <circle cx="450" cy="560" r="110" fill="url(#coreGlow)">
-          <animate attributeName="opacity" values="0.7;1;0.7" dur="4s" repeatCount="indefinite"/>
-        </circle>
-      </svg>
-
-      <div class="hex-centre">
-        <div class="hex-glow"></div>
-        <div class="hex"></div>
-        <div class="centre-label">
-          <div>Select</div><div>your</div><div>demo</div>
-        </div>
+    <main>
+      <div class="page-head">
+        <h1>Live Demos</h1>
+        <p class="page-sub">Hover to connect. Click to chat. Pause on a bot to see what it does.</p>
       </div>
 
-      <button class="bot-pill top" data-bot="appointments" data-tip="Books calls from leads and hands them to your calendar.">Appointment Setter</button>
-      <button class="bot-pill right" data-bot="support" data-tip="Answers policy questions and links to the exact page.">Support Q&amp;A</button>
-      <button class="bot-pill left" data-bot="internal" data-tip="Answers HR and Sales questions clearly.">Internal Knowledge</button>
-      <button class="bot-pill bottom" data-bot="automation" data-tip="Plans cross-tool tasks, then runs them.">Automation Planner</button>
+      <section class="orbit" id="orbit">
+        <div class="ring" style="--scale:.35"></div>
+        <div class="ring" style="--scale:.66"></div>
+        <div class="ring" style="--scale:1"></div>
+        <div class="cross"></div>
 
-      <div id="orbit-beam"></div>
-      <div id="orbit-tooltip"></div>
-    </div>
-  </section>
-
-  <div id="dlg" class="overlay" aria-hidden="true">
-    <div class="dialog">
-      <div class="dialog-head">
-        <div>
-          <div class="title" id="dlg-title">Support Q&amp;A</div>
-          <div class="subtitle" id="dlg-sub">Answers from your policy and docs</div>
+        <div class="hex-wrap">
+          <div class="hex"></div>
+          <div class="hex-glow"></div>
+          <div class="centre-label">Select<br>your<br>demo</div>
         </div>
-        <button class="close-btn" id="dlg-close">Close</button>
-      </div>
 
-      <div class="dialog-body">
-        <div class="examples" id="dlg-examples"></div>
-        <div class="chat" id="dlg-chat"></div>
+        <div class="node top" id="node-appoint">Appointment Setter</div>
+        <div class="node right" id="node-support">Support Q&amp;A</div>
+        <div class="node left" id="node-internal">Internal Knowledge</div>
+        <div class="node bottom" id="node-auto">Automation Planner</div>
 
-        <div class="input-wrap">
-          <input id="dlg-input" type="text" placeholder="Type your message..." autocomplete="off">
-          <button id="dlg-mic" class="mic" aria-pressed="false" aria-label="Start voice input">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M12 3a3 3 0 0 1 3 3v5a3 3 0 1 1-6 0V6a3 3 0 0 1 3-3z" stroke="currentColor" stroke-width="2"/>
-              <path d="M5 11a7 7 0 0 0 14 0" stroke="currentColor" stroke-width="2"/>
-              <path d="M12 18v3" stroke="currentColor" stroke-width="2"/>
-            </svg>
-          </button>
-          <button id="dlg-send" class="btn primary">Send</button>
-          <div id="dlg-ghost" class="ghost"></div>
-        </div>
-      </div>
-    </div>
+        <div id="beam"></div>
+        <div class="tooltip" id="orbit-tip"></div>
+      </section>
+
+      <!-- A single clean modal skeleton to demonstrate mic + chat -->
+      <dialog id="node-support-dialog" class="dialog">
+        <form method="dialog" style="padding:18px 22px 22px;max-width:960px;width:min(92vw,720px)">
+          <header style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <div>
+              <div style="font-weight:800">Support Q&amp;A</div>
+              <div style="font-size:12px;color:#bfc1e9">Answers from your policy and docs</div>
+            </div>
+            <button class="btn ghost" value="close">Close</button>
+          </header>
+
+          <div id="chat-area" style="height:280px;overflow:auto;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px">
+            <div class="card" style="background:rgba(255,255,255,.06)">Hi — ask me about returns, shipping, warranty or support hours.</div>
+          </div>
+
+          <div class="input-row" style="position:relative">
+            <form id="chat-form"></form>
+            <div class="ghost-txt"></div>
+            <input id="chat-input" class="input" type="text" placeholder="Type your message..." form="chat-form">
+            <button class="mic-btn" aria-pressed="false" title="Speak" type="button">
+              <svg width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Zm-8-3a1 1 0 1 0-2 0a10 10 0 0 0 9 9.95V22a1 1 0 1 0 2 0v-1.05A10 10 0 0 0 20 11a1 1 0 1 0-2 0a8 8 0 0 1-16 0Z"/></svg>
+            </button>
+            <button class="send-btn" form="chat-form">Send</button>
+          </div>
+        </form>
+      </dialog>
+
+      <!-- stubs for the other nodes to open the same demo shell -->
+      <dialog id="node-appoint-dialog" class="dialog"><form method="dialog" style="padding:18px 22px 22px;max-width:960px;width:min(92vw,720px)"><header style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div><div style="font-weight:800">Appointment Setter</div><div style="font-size:12px;color:#bfc1e9">Books meetings from website or email</div></div><button class="btn ghost" value="close">Close</button></header><div style="height:280px;overflow:auto;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px"><div class="card" style="background:rgba(255,255,255,.06)">Hi — ask me about booking times and availability.</div></div><div class="input-row" style="position:relative"><form id="chat-form-a"></form><div class="ghost-txt"></div><input id="chat-input" class="input" type="text" placeholder="Type your message..." form="chat-form-a"><button class="mic-btn" aria-pressed="false" type="button"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Zm-8-3a1 1 0 1 0-2 0a10 10 0 0 0 9 9.95V22a1 1 0 1 0 2 0v-1.05A10 10 0 0 0 20 11a1 1 0 1 0-2 0a8 8 0 0 1-16 0Z"/></svg></button><button class="send-btn" form="chat-form-a">Send</button></div></form></dialog>
+
+      <dialog id="node-internal-dialog" class="dialog"><form method="dialog" style="padding:18px 22px 22px;max-width:960px;width:min(92vw,720px)"><header style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div><div style="font-weight:800">Internal Knowledge</div><div style="font-size:12px;color:#bfc1e9">Answers HR and Sales questions</div></div><button class="btn ghost" value="close">Close</button></header><div style="height:280px;overflow:auto;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px"><div class="card" style="background:rgba(255,255,255,.06)">Hi — ask me about policies, perks or product facts.</div></div><div class="input-row" style="position:relative"><form id="chat-form-b"></form><div class="ghost-txt"></div><input id="chat-input" class="input" type="text" placeholder="Type your message..." form="chat-form-b"><button class="mic-btn" aria-pressed="false" type="button"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Zm-8-3a1 1 0 1 0-2 0a10 10 0 0 0 9 9.95V22a1 1 0 1 0 2 0v-1.05A10 10 0 0 0 20 11a1 1 0 1 0-2 0a8 8 0 0 1-16 0Z"/></svg></button><button class="send-btn" form="chat-form-b">Send</button></div></form></dialog>
+
+      <dialog id="node-auto-dialog" class="dialog"><form method="dialog" style="padding:18px 22px 22px;max-width:960px;width:min(92vw,720px)"><header style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div><div style="font-weight:800">Automation Planner</div><div style="font-size:12px;color:#bfc1e9">Drafts multi-step flows across your tools</div></div><button class="btn ghost" value="close">Close</button></header><div style="height:280px;overflow:auto;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px"><div class="card" style="background:rgba(255,255,255,.06)">Hi — describe what you want to automate.</div></div><div class="input-row" style="position:relative"><form id="chat-form-c"></form><div class="ghost-txt"></div><input id="chat-input" class="input" type="text" placeholder="Type your message..." form="chat-form-c"><button class="mic-btn" aria-pressed="false" type="button"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Zm-8-3a1 1 0 1 0-2 0a10 10 0 0 0 9 9.95V22a1 1 0 1 0 2 0v-1.05A10 10 0 0 0 20 11a1 1 0 1 0-2 0a8 8 0 0 1-16 0Z"/></svg></button><button class="send-btn" form="chat-form-c">Send</button></div></form></dialog>
+    </main>
+
+    <footer class="footer">© 2025 AI Agents — Tailoured AI for Business</footer>
   </div>
 
-  <footer class="footer">© 2025 AI Agents — Tailoured AI for Business</footer>
-
-  <script src="js/config.js"></script>
+  <script src="js/site.js"></script>
   <script src="js/demos.js"></script>
   <script src="js/voice.js"></script>
 </body>
