@@ -1,86 +1,98 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>AI Agents — Live Demos</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/main.css">
 </head>
-<body>
+<body class="page page--demos">
   <canvas id="stars"></canvas>
 
   <nav class="nav">
-    <div class="brand"><span class="spark"></span>AI Agents</div>
-    <div class="links">
-      <a class="badge" href="index.html">Home</a>
-      <a class="badge" href="demos.html">Demos</a>
-      <a class="badge" href="contact.html">Contact</a>
+    <div class="brand"><span class="dot"></span>AI Agents</div>
+    <div class="nav-links">
+      <a href="index.html" class="pill">Home</a>
+      <a href="demos.html" class="pill">Demos</a>
+      <a href="contact.html" class="pill">Contact</a>
     </div>
   </nav>
 
-  <header class="hero">
-    <h2 class="page-title">Live Demos</h2>
-    <p class="page-subtitle">Hover to connect. Click to chat. Pause on a bot to see what it does.</p>
-  </header>
+  <main class="content">
+    <header class="page-head">
+      <h1>Live Demos</h1>
+      <p class="sub">Hover to connect. Click to chat. Pause on a bot to see what it does.</p>
+    </header>
 
-  <section class="section section--orbit">
-    <div class="orbit">
-      <div class="rings">
-        <div class="ring r1"></div>
-        <div class="ring r2"></div>
-        <div class="ring r3"></div>
+    <section class="orbital">
+      <div class="orbit" id="orbit">
+        <div class="ring ring--1"></div>
+        <div class="ring ring--2"></div>
+        <div class="ring ring--3"></div>
+
+        <div class="axes"></div>
+
+        <button class="node node--top" data-key="appt" data-desc="Books qualifying meetings from website and email">Appointment Setter</button>
+        <button class="node node--left" data-key="internal" data-desc="Answers from your policies and docs">Internal Knowledge</button>
+        <button class="node node--right" data-key="support" data-desc="Customer support Q&A with quick links">Support Q&A</button>
+        <button class="node node--bottom" data-key="planner" data-desc="Plans automations and hands them to your stack">Automation Planner</button>
+
+        <div class="hex-wrap">
+          <div class="hex">
+            <span class="hex-glow"></span>
+            <span class="hex-core"></span>
+            <span class="hex-text">Select<br>your<br>demo</span>
+          </div>
+        </div>
+
+        <div class="tooltip" id="tip"></div>
+        <div class="ray" id="ray"></div>
       </div>
+    </section>
+  </main>
 
-      <div class="axes">
-        <span class="ax x"></span>
-        <span class="ax y"></span>
-      </div>
-
-      <div class="hex-glow"></div>
-      <div class="hex wobble"></div>
-      <div class="centre-label">
-        <span>Select<br/>your<br/>demo</span>
-      </div>
-
-      <button class="bot b-top" data-id="booker" data-tip="Books qualifying meetings from website and email">Appointment Setter</button>
-      <button class="bot b-left" data-id="internal" data-tip="Answers from your internal knowledge and docs">Internal Knowledge</button>
-      <button class="bot b-right" data-id="support" data-tip="Support answers with links to policy pages">Support Q&amp;A</button>
-      <button class="bot b-bottom" data-id="planner" data-tip="Plans automations and hands them to your stack">Automation Planner</button>
-
-      <div class="beam"></div>
-      <div id="orbit-tip" class="tip"></div>
-    </div>
-  </section>
-
-  <div class="overlay" id="dlg">
+  <div class="overlay" id="overlay" hidden>
     <div class="dialog">
       <div class="dialog-head">
         <div>
-          <div class="title" id="dlg-title"></div>
-          <div class="subtitle" id="dlg-sub"></div>
+          <div class="title" id="dlg-title">Agent</div>
+          <div class="subtitle" id="dlg-sub">Live demo</div>
         </div>
-        <button id="dlg-close" class="close-btn">Close</button>
+        <button class="close" id="dlg-close">Close</button>
       </div>
 
       <div class="dialog-body">
-        <div class="examples" id="dlg-ex"></div>
-        <div id="dlg-chat" class="chat"></div>
+        <div class="hints">
+          <span class="hint-title">Try these:</span>
+          <button class="chip">What’s the returns window?</button>
+          <button class="chip">Do you ship to the UK?</button>
+          <button class="chip">Are weekend deliveries available?</button>
+        </div>
+
+        <div class="chat" id="chat">
+          <div class="bubble">Hi — ask me about appointment setter.</div>
+          <div class="bubble bubble--sys">Thanks — this is a static demo. In your build this would call the agent’s API.</div>
+        </div>
+
         <div class="input-row">
-          <input id="dlg-input" placeholder="Type your message..." />
-          <button id="dlg-mic" aria-pressed="false" title="Speak" class="mic">
-            <span class="mic-dot"></span>
+          <input id="msg" class="input" placeholder="Type your message…">
+          <button id="mic" class="mic" aria-pressed="false" title="Speak">
+            <svg viewBox="0 0 24 24" width="20" height="20">
+              <path d="M12 14a3 3 0 0 0 3-3V7a3 3 0 0 0-6 0v4a3 3 0 0 0 3 3zm-5-3a5 5 0 0 0 10 0h2a7 7 0 0 1-6 6.92V20h3v2H8v-2h3v-2.08A7 7 0 0 1 5 11h2z" fill="currentColor"/>
+            </svg>
           </button>
-          <button id="dlg-send" class="btn primary">Send</button>
+          <button id="send" class="btn btn--primary">Send</button>
         </div>
       </div>
     </div>
   </div>
 
-  <footer class="footer">© 2025 AI Agents — Tailoured AI for Business</footer>
-  <script src="js/site.js"></script>
-  <script src="js/voice.js"></script>
+  <footer class="footer">
+    <div>© 2025 AI Agents — Tailoured AI for Business</div>
+  </footer>
+
   <script src="js/demos.js"></script>
+  <script src="js/voice.js"></script>
+  <script src="js/site.js"></script>
 </body>
 </html>
