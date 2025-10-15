@@ -140,3 +140,9 @@ body{
 @keyframes liveShimmer{
   50%{ text-shadow:0 0 18px rgba(155,125,255,.55); }
 }
+
+/* ===== DEMOS page small tweaks (scoped) ===== */
+.starfield {background: radial-gradient(60% 40% at 50% 30%, rgba(110,80,200,.18), rgba(10,8,24,1) 60%) , #0b0a16}
+.topnav {position:sticky; top:0; backdrop-filter:saturate(120%) blur(6px)}
+.topnav .active {background:rgba(140,110,255,.18); border:1px solid rgba(160,130,255,.28)}
+
