@@ -1,41 +1,47 @@
-const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-let rec = null, silenceTimer = null;
+const micBtn = document.getElementById('mic');
+const msgInput = document.getElementById('msg');
 
-function useMic(inputEl, onFinal) {
-  if (!SR) return;
-  if (rec && rec.started) { rec.stop(); return; }
+let recognizing = false;
+let rec;
+try{
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(SR){
+    rec = new SR();
+    rec.continuous = true;
+    rec.interimResults = true;
+    rec.lang = 'en-GB';
+    rec.onresult = (e)=>{
+      let interim = '';
+      let final = '';
+      for(let i=e.resultIndex;i<e.results.length;i++){
+        const t = e.results[i][0].transcript;
+        if(e.results[i].isFinal) final += t; else interim += t;
+      }
+      if(interim){
+        msgInput.classList.add('live');
+        msgInput.setAttribute('data-live', interim.trim());
+      }else{
+        msgInput.classList.remove('live');
+        msgInput.removeAttribute('data-live');
+      }
+      if(final){
+        msgInput.value = (msgInput.value + ' ' + final).trim();
+      }
+    };
+    rec.onend = ()=>{ if(recognizing){ rec.start(); } };
+  }
+}catch{}
 
-  rec = new SR();
-  rec.lang = 'en-GB';
-  rec.interimResults = true;
-  rec.continuous = true;
-  rec.started = true;
-
-  const startSilence = () => {
-    clearTimeout(silenceTimer);
-    silenceTimer = setTimeout(() => { rec.stop(); }, 3500);
-  };
-
-  rec.onresult = e => {
-    let interim = '', final = '';
-    for (let i = e.resultIndex; i < e.results.length; i++) {
-      const t = e.results[i][0].transcript;
-      if (e.results[i].isFinal) final += t;
-      else interim += t;
-    }
-    inputEl.value = final || interim;
-    inputEl.style.backgroundImage = interim ? 'linear-gradient(90deg, rgba(174,144,255,.25), transparent)' : 'none';
-    startSilence();
-  };
-
-  rec.onend = () => {
-    rec.started = false;
-    clearTimeout(silenceTimer);
-    if (inputEl.value.trim()) onFinal(inputEl.value.trim());
-    inputEl.style.backgroundImage = 'none';
-  };
-
-  rec.start();
+function toggleMic(){
+  if(!rec) return;
+  recognizing = !recognizing;
+  micBtn.setAttribute('aria-pressed', recognizing ? 'true' : 'false');
+  if(recognizing){
+    rec.start();
+  }else{
+    rec.stop();
+    msgInput.classList.remove('live');
+    msgInput.removeAttribute('data-live');
+  }
 }
-
-window.Voice = { useMic };
+if(micBtn) micBtn.addEventListener('click', toggleMic);
