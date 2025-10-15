@@ -1,92 +1,123 @@
-const pills = [...document.querySelectorAll('.bot-pill')];
-const tooltip = document.getElementById('orbit-tooltip');
-const pointer = document.getElementById('pointer').querySelector('line');
-const centre = {x: window.innerWidth/2, y: document.querySelector('.orbit-wrap').getBoundingClientRect().top + 310};
+const orbit = (() => {
+  const wrap = document.querySelector('.orbit-wrap');
+  if(!wrap) return;
 
-function placeTooltip(el){
-  const rect = el.getBoundingClientRect();
-  tooltip.textContent = el.dataset.tip || '';
-  tooltip.style.display = 'block';
-  const side = el.classList.contains('left') ? 'left' :
-               el.classList.contains('right') ? 'right' :
-               el.classList.contains('top') ? 'top' : 'bottom';
-  const pad = 12;
-  let x=0,y=0;
-  if(side==='left'){ x = rect.left - tooltip.offsetWidth - pad; y = rect.top + rect.height/2 - tooltip.offsetHeight/2; }
-  if(side==='right'){ x = rect.right + pad; y = rect.top + rect.height/2 - tooltip.offsetHeight/2; }
-  if(side==='top'){ x = rect.left + rect.width/2 - tooltip.offsetWidth/2; y = rect.top - tooltip.offsetHeight - pad; }
-  if(side==='bottom'){ x = rect.left + rect.width/2 - tooltip.offsetWidth/2; y = rect.bottom + pad; }
-  tooltip.style.left = `${x}px`;
-  tooltip.style.top = `${y}px`;
+  const pills = [...wrap.querySelectorAll('.pill')];
+  const beams = {
+    left: wrap.querySelector('.beam[data-to="left"]'),
+    right: wrap.querySelector('.beam[data-to="right"]'),
+    top: wrap.querySelector('.beam[data-to="top"]'),
+    bottom: wrap.querySelector('.beam[data-to="bottom"]')
+  };
 
-  const end = {x: rect.left + rect.width/2, y: rect.top + rect.height/2};
-  pointer.setAttribute('x1', centre.x);
-  pointer.setAttribute('y1', centre.y);
-  pointer.setAttribute('x2', end.x);
-  pointer.setAttribute('y2', end.y);
-  pointer.parentElement.style.display='block';
-}
-function hideTooltip(){
-  tooltip.style.display='none';
-  pointer.parentElement.style.display='none';
-}
+  function placeBeams() {
+    const c = wrap.getBoundingClientRect();
+    const cx = c.left + c.width/2;
+    const cy = c.top + c.height/2;
+    function line(el, x2, y2) {
+      const dx = x2 - cx, dy = y2 - cy;
+      const len = Math.hypot(dx,dy);
+      const ang = Math.atan2(dy,dx);
+      el.style.left = cx+'px';
+      el.style.top = cy+'px';
+      el.style.width = len+'px';
+      el.style.transform = `rotate(${ang}rad)`;
+      el.style.opacity = 0;
+    }
+    const pTop = wrap.querySelector('.pill[data-pos="top"]').getBoundingClientRect();
+    const pLeft = wrap.querySelector('.pill[data-pos="left"]').getBoundingClientRect();
+    const pRight = wrap.querySelector('.pill[data-pos="right"]').getBoundingClientRect();
+    const pBottom = wrap.querySelector('.pill[data-pos="bottom"]').getBoundingClientRect();
+    line(beams.top, pTop.left+pTop.width/2, pTop.top+pTop.height/2);
+    line(beams.left, pLeft.left+pLeft.width/2, pLeft.top+pLeft.height/2);
+    line(beams.right, pRight.left+pRight.width/2, pRight.top+pRight.height/2);
+    line(beams.bottom, pBottom.left+pBottom.width/2, pBottom.top+pBottom.height/2);
+  }
 
-pills.forEach(p=>{
-  p.addEventListener('mouseenter', ()=>placeTooltip(p));
-  p.addEventListener('mouseleave', hideTooltip);
-});
+  placeBeams();
+  addEventListener('resize', placeBeams);
 
-const overlay = document.getElementById('dlg');
-const closeBtn = document.getElementById('dlg-close');
-const chat = document.getElementById('dlg-chat');
-const input = document.getElementById('dlg-input');
-const sendBtn = document.getElementById('send');
-const title = document.getElementById('dlg-title');
-const sub = document.getElementById('dlg-sub');
-
-const presets = {
-  appoint:{title:'Appointment Setter', sub:'Books meetings from website or email'},
-  support:{title:'Support Q&A', sub:'Answers from your policy and docs'},
-  internal:{title:'Internal Knowledge', sub:'Answers HR and Sales questions'},
-  planner:{title:'Automation Planner', sub:'Plans multi-step automations'}
-};
-
-function openDlg(key){
-  title.textContent = presets[key].title;
-  sub.textContent = presets[key].sub;
-  overlay.style.display='flex';
-  document.body.style.overflow='hidden';
-  input.focus();
-}
-function closeDlg(){
-  overlay.style.display='none';
-  document.body.style.overflow='';
-}
-
-pills.forEach(p=>{
-  p.addEventListener('click', ()=>{
-    openDlg(p.dataset.bot);
+  pills.forEach(p=>{
+    p.addEventListener('mouseenter', ()=> {
+      const pos = p.dataset.pos;
+      wrap.querySelector(`.beam[data-to="${pos}"]`).style.opacity = 1;
+    });
+    p.addEventListener('mouseleave', ()=> {
+      const pos = p.dataset.pos;
+      wrap.querySelector(`.beam[data-to="${pos}"]`).style.opacity = 0;
+    });
   });
-});
-closeBtn.addEventListener('click', closeDlg);
-overlay.addEventListener('click', e=>{ if(e.target===overlay) closeDlg(); });
 
-function appendBubble(text, me=false){
-  const b = document.createElement('div');
-  b.className = 'bubble' + (me?' me':'');
-  b.textContent = text;
-  chat.appendChild(b);
-  chat.scrollTop = chat.scrollHeight;
-}
-sendBtn.addEventListener('click', ()=>{
-  const v = input.value.trim();
-  if(!v) return;
-  appendBubble(v, true);
-  input.value='';
-  setTimeout(()=>appendBubble('Thanks — this is a static demo. In your build this would call the agent’s API.'), 500);
-});
-input.addEventListener('keydown', e=>{
-  if(e.key==='Enter'){ sendBtn.click(); }
-});
+  const specs = {
+    appt: {
+      title:'Appointment Setter',
+      sub:'Books meetings from website or email',
+      tips:['What’s your budget?','Can you do Tuesday 2–4pm?','Use alex@example.com for the invite.']
+    },
+    internal: {
+      title:'Internal Knowledge',
+      sub:'Answers from your docs and policies',
+      tips:['What’s the parental leave policy?','Who approves spend?','Where’s the brand toolkit?']
+    },
+    support: {
+      title:'Support Q&A',
+      sub:'Fast answers with policy links',
+      tips:['What’s the returns window?','Do you ship to the UK?','Weekend deliveries available?']
+    },
+    planner: {
+      title:'Automation Planner',
+      sub:'Maps tasks and integrations',
+      tips:['List my top manual tasks','Draft a Zapier flow','Show a weekly summary']
+    }
+  };
 
-initVoice('#mic', '#dlg-input', '#ghost', ()=>sendBtn.click());
+  const dlg = document.getElementById('dlg');
+  const title = document.getElementById('dlg-title');
+  const sub = document.getElementById('dlg-sub');
+  const tips = document.getElementById('dlg-tips');
+  const chat = document.getElementById('dlg-chat');
+  const input = document.getElementById('dlg-input');
+  const send = document.getElementById('send');
+
+  function open(spec) {
+    title.textContent = spec.title;
+    sub.textContent = spec.sub;
+    tips.innerHTML = '';
+    spec.tips.forEach(t=>{
+      const b = document.createElement('button');
+      b.className='tip-chip';
+      b.textContent=t;
+      b.onclick=()=> { input.value=t; send.click(); };
+      tips.appendChild(b);
+    });
+    chat.innerHTML = '';
+    pushBubble('Hi — ask me about '+spec.title.toLowerCase()+'.', false);
+    dlg.classList.add('show');
+    input.focus();
+  }
+
+  function pushBubble(text, me){
+    const div = document.createElement('div');
+    div.className = 'bubble'+(me?' me':'');
+    div.textContent = text;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  document.getElementById('dlg-close').onclick=()=>dlg.classList.remove('show');
+
+  pills.forEach(p=>{
+    p.addEventListener('click', ()=>{
+      const key = p.dataset.bot;
+      open(specs[key]);
+    });
+  });
+
+  send.addEventListener('click', ()=>{
+    const v = input.value.trim();
+    if(!v) return;
+    pushBubble(v,true);
+    input.value='';
+    setTimeout(()=>pushBubble('Thanks — this is a demo. In your build I would call the agent and reply with context.', false), 500);
+  });
+})();
