@@ -1,59 +1,41 @@
-const Voice = (() => {
-  let recogniser, micBtn, inputEl, ghostEl, silenceTimer, onFinish;
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null, silenceTimer = null;
 
-  function ensureGhost() {
-    if(!ghostEl) ghostEl = document.getElementById('ghost');
-  }
+function useMic(inputEl, onFinal) {
+  if (!SR) return;
+  if (rec && rec.started) { rec.stop(); return; }
 
-  function start() {
-    if(!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) return;
-    const R = window.SpeechRecognition || window.webkitSpeechRecognition;
-    recogniser = new R();
-    recogniser.lang = 'en-GB';
-    recogniser.interimResults = true;
-    recogniser.continuous = true;
-    recogniser.onresult = e => {
-      let interim = '', final = '';
-      for(let i=e.resultIndex; i<e.results.length; i++){
-        const t = e.results[i][0].transcript;
-        if(e.results[i].isFinal) final += t; else interim += t;
-      }
-      ensureGhost();
-      ghostEl.textContent = interim;
-      inputEl.value = final || inputEl.value;
-      restartSilence(interim || final);
-    };
-    recogniser.onend = () => { micBtn.setAttribute('aria-pressed','false'); };
-    recogniser.start();
-  }
+  rec = new SR();
+  rec.lang = 'en-GB';
+  rec.interimResults = true;
+  rec.continuous = true;
+  rec.started = true;
 
-  function restartSilence(text) {
+  const startSilence = () => {
     clearTimeout(silenceTimer);
-    if(!text.trim()) return;
-    silenceTimer = setTimeout(() => {
-      stop();
-      const combined = (inputEl.value + ' ' + ghostEl.textContent).trim();
-      ghostEl.textContent = '';
-      if(onFinish) onFinish(combined, true);
-    }, 3500);
-  }
+    silenceTimer = setTimeout(() => { rec.stop(); }, 3500);
+  };
 
-  function stop() {
-    try { recogniser && recogniser.stop(); } catch(e){}
+  rec.onresult = e => {
+    let interim = '', final = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const t = e.results[i][0].transcript;
+      if (e.results[i].isFinal) final += t;
+      else interim += t;
+    }
+    inputEl.value = final || interim;
+    inputEl.style.backgroundImage = interim ? 'linear-gradient(90deg, rgba(174,144,255,.25), transparent)' : 'none';
+    startSilence();
+  };
+
+  rec.onend = () => {
+    rec.started = false;
     clearTimeout(silenceTimer);
-    micBtn && micBtn.setAttribute('aria-pressed','false');
-  }
+    if (inputEl.value.trim()) onFinal(inputEl.value.trim());
+    inputEl.style.backgroundImage = 'none';
+  };
 
-  function bind(btn, input, done) {
-    micBtn = btn; inputEl = input; onFinish = done; ensureGhost();
-    ghostEl.textContent = '';
-    micBtn.onclick = () => {
-      const isOn = micBtn.getAttribute('aria-pressed') === 'true';
-      if(isOn) { stop(); }
-      else { micBtn.setAttribute('aria-pressed','true'); start(); }
-    };
-  }
-  function unbind(){ stop(); micBtn && (micBtn.onclick = null); }
+  rec.start();
+}
 
-  return { bind, unbind };
-})();
+window.Voice = { useMic };
