@@ -1,82 +1,73 @@
-(function () {
-  const input = document.getElementById('dlg-input');
-  const ghost = document.getElementById('dlg-ghost');
-  const mic = document.getElementById('dlg-mic');
-  const sendBtn = document.getElementById('dlg-send');
-  if (!input || !mic || !sendBtn) return;
+(function(){
+  let rec, ghost, input, sendBtn, micBtn, lastSpeechAt = 0, silenceTimer;
 
-  let rec, listening = false, silenceTimer, lastPartial = '';
+  function bind(){
+    input   = document.getElementById('dlg-input');
+    ghost   = document.getElementById('dlg-ghost');
+    sendBtn = document.getElementById('dlg-send');
+    micBtn  = document.getElementById('mic');
+    if(!input || !micBtn) return;
 
-  const canVoice = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
-  if (!canVoice) mic.style.display = 'none';
-
-  function setGhost(text) {
-    ghost.textContent = text || '';
-    ghost.style.display = text ? 'block' : 'none';
+    micBtn.addEventListener('click', toggleRec);
+    sendBtn.addEventListener('click', sendText);
+    input.addEventListener('keydown', e=>{
+      if(e.key==='Enter'){ e.preventDefault(); sendText(); }
+    });
   }
 
-  function start() {
-    if (listening) return;
+  function ensureRec(){
+    if(rec) return rec;
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(!SR) return null;
     rec = new SR();
-    rec.lang = 'en-GB';
-    rec.interimResults = true;
     rec.continuous = true;
-
-    rec.onstart = () => {
-      listening = true;
-      mic.setAttribute('aria-pressed', 'true');
-      setGhost('Listening… speak naturally');
-      clearTimeout(silenceTimer);
-    };
-
-    rec.onresult = (e) => {
-      let interim = '';
-      for (let i = e.resultIndex; i < e.results.length; i++) {
+    rec.interimResults = true;
+    rec.lang = 'en-GB';
+    rec.onresult = e=>{
+      let final='', interim='';
+      for(let i=e.resultIndex;i<e.results.length;i++){
         const r = e.results[i];
-        if (r.isFinal) {
-          input.value = input.value ? input.value + ' ' + r[0].transcript.trim() : r[0].transcript.trim();
-          setGhost('');
-          lastPartial = '';
-          scheduleAutoSend();
-        } else {
-          interim += r[0].transcript;
-        }
+        (r.isFinal?final:interim) += r[0].transcript;
       }
-      if (interim && interim !== lastPartial) {
-        lastPartial = interim;
-        setGhost(interim.trim());
-        scheduleAutoSend();
+      if(interim.trim()) ghost.textContent = interim.trim();
+      if(final.trim()){
+        ghost.textContent = '';
+        input.value = (input.value.trim()+' '+final.trim()).trim();
+        lastSpeechAt = Date.now();
+        resetSilenceWatch();
       }
     };
-
-    rec.onerror = stop;
-    rec.onend = stop;
-    rec.start();
+    rec.onstart = ()=>{ micBtn.setAttribute('aria-pressed','true'); ghost.style.display='block'; lastSpeechAt=Date.now(); resetSilenceWatch(); };
+    rec.onend   = ()=>{ micBtn.setAttribute('aria-pressed','false'); stopSilenceWatch(); ghost.textContent=''; };
+    return rec;
   }
 
-  function stop() {
-    if (!listening) return;
-    listening = false;
-    try { rec.stop(); } catch {}
-    mic.setAttribute('aria-pressed', 'false');
-    setGhost('');
-    clearTimeout(silenceTimer);
+  function toggleRec(){
+    const r = ensureRec();
+    if(!r) return;
+    if(micBtn.getAttribute('aria-pressed')==='true'){ r.stop(); }
+    else{ r.start(); }
   }
 
-  function scheduleAutoSend() {
-    clearTimeout(silenceTimer);
-    silenceTimer = setTimeout(() => {
-      if (ghost.textContent) {
-        input.value = input.value ? (input.value + ' ' + ghost.textContent) : ghost.textContent;
-        setGhost('');
+  function resetSilenceWatch(){
+    stopSilenceWatch();
+    silenceTimer = setInterval(()=>{
+      if(Date.now() - lastSpeechAt > 3500){
+        const r = ensureRec(); if(r) r.stop();
+        clearInterval(silenceTimer);
+        sendText();
       }
-      if (input.value.trim()) {
-        sendBtn.click();
-      }
-      stop();
-    }, 3200);
+    },400);
+  }
+  function stopSilenceWatch(){ if(silenceTimer){ clearInterval(silenceTimer); silenceTimer=null; } }
+
+  function sendText(){
+    const v = input.value.trim();
+    if(!v) return;
+    const evt = new CustomEvent('chat:send',{detail:v});
+    window.dispatchEvent(evt);
+    input.value=''; ghost.textContent='';
   }
 
-  mic.addEventListener('click', () => (listening ? stop() : start()));
+  document.addEventListener('DOMContentLoaded', bind);
 })();
