@@ -9,14 +9,12 @@
   *{box-sizing:border-box} html{-webkit-text-size-adjust:100%}
   html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
   a{color:inherit;text-decoration:none} button{font:inherit} img{max-width:100%;display:block} .muted{color:var(--muted)}
-  .container{max-width:1180px;margin:0 auto;padding:0 20px} .section{padding:56px 0}
+  .container{max-width:1200px;margin:0 auto;padding:0 24px} .section{padding:64px 0}
 
-  /* BG: aurora + orbs */
+  /* BG */
   .bg{position:fixed; inset:0; pointer-events:none; z-index:-1;
       background: radial-gradient(1200px 900px at 80% -10%, color-mix(in oklab, var(--accent) 50%, transparent), transparent 60%),
-                  radial-gradient(900px 700px at -10% 30%, color-mix(in oklab, var(--accent-2) 55%, transparent), transparent 60%);
-      filter:saturate(1.05);
-  }
+                  radial-gradient(900px 700px at -10% 30%, color-mix(in oklab, var(--accent-2) 55%, transparent), transparent 60%);}
   .orbs{position:fixed; inset:0; pointer-events:none; z-index:-1; overflow:hidden}
   .orb{position:absolute; width:22px; height:22px; border-radius:999px; background: color-mix(in oklab, var(--accent) 70%, #fff);
        box-shadow:0 0 24px color-mix(in oklab, var(--accent) 70%, #fff); opacity:.35; animation: float 14s ease-in-out infinite}
@@ -25,16 +23,14 @@
   .orb:nth-child(4){left:60%; top:80%; animation-duration:22s}
   @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-18px)}100%{transform:translateY(0)}}
 
-  /* NAV (simple) */
-  .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;position:sticky;top:0;z-index:10;background:rgba(11,12,18,.6);backdrop-filter:blur(8px);border-bottom:1px solid var(--edge)}
+  /* NAV */
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;position:sticky;top:0;z-index:10;background:rgba(11,12,18,.65);backdrop-filter:blur(8px);border-bottom:1px solid var(--edge)}
   .brand{display:flex;align-items:center;gap:12px}.brand svg{width:28px;height:28px}
-  .nav-links{display:flex;gap:14px}.nav-links a{padding:8px 10px;border-radius:10px;color:var(--muted)} .nav-links a.active,.nav-links a:hover{color:#fff;background:rgba(255,255,255,.06)}
-  .theme{color:var(--muted)}
+  .nav-links{display:flex;gap:14px}.nav-links a{padding:9px 12px;border-radius:12px;color:var(--muted)} .nav-links a.active,.nav-links a:hover{color:#fff;background:rgba(255,255,255,.06)}
 
   /* Dock + Stage */
-  .dock-and-stage{display:grid;grid-template-columns:1fr;gap:20px}
-  .dock{display:grid;grid-template-columns:1fr 1fr;gap:14px; animation: rise .4s ease-out both}
-  @keyframes rise{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .dock-and-stage{display:grid;grid-template-columns:1fr;gap:24px}
+  .dock{display:grid;grid-template-columns:1fr;gap:14px}
   .dock-item{display:flex;gap:12px;align-items:center;text-align:left;background:radial-gradient(120% 120% at 10% 0%,rgba(138,92,246,.12),rgba(255,255,255,.02)),var(--panel);border:1px solid var(--edge);border-radius:16px;padding:14px;cursor:pointer;transition:.18s ease}
   .dock-item:hover{transform:translateY(-2px); box-shadow:0 14px 30px rgba(0,0,0,.35), inset 0 0 0 1px color-mix(in oklab, var(--accent) 40%, transparent)}
   .dock-dot{width:10px;height:10px;border-radius:999px;background:var(--accent); box-shadow:0 0 10px var(--accent)}
@@ -57,10 +53,12 @@
   .icon-btn:active{transform:translateY(1px)}
   .mic.glow{box-shadow:0 0 0 2px color-mix(in oklab, var(--accent) 55%, transparent),0 0 26px 6px color-mix(in oklab, var(--accent) 55%, transparent),inset 0 0 12px color-mix(in oklab, var(--accent) 40%, transparent); border-color: color-mix(in oklab, var(--accent) 60%, transparent)}
 
-  .footer{padding:32px 16px;border-top:1px solid var(--edge)}
+  .footer{padding:40px 24px;border-top:1px solid var(--edge)}
   .footer-row{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
-  @media (min-width:768px){ .dock-and-stage{grid-template-columns:360px 1fr} .dock{grid-template-columns:1fr} }
+  @media (min-width:820px){
+    .dock-and-stage{grid-template-columns:360px 1fr}
+  }
 </style>
 </head>
 <body>
@@ -77,23 +75,23 @@
       <a class="active" href="demos.html">Demos</a>
       <a href="contact.html">Contact</a>
     </div>
-    <div class="theme muted">Voice & Chat</div>
+    <div class="muted">Voice & Chat</div>
   </nav>
 
   <main class="container section">
     <h2 style="margin:0 0 12px">Live demos</h2>
-    <p class="muted" style="margin:0 0 20px">Pick a card from the Dock. The Stage opens on the right. You can always jump back.</p>
+    <p class="muted" style="margin:0 0 20px">Our four flagship agents. Choose one from the Dock — the Stage opens on the right. Speak naturally; we’ll type what you say and send when you pause.</p>
 
     <div class="dock-and-stage">
+      <!-- Dock: only the 4 main bots -->
       <div class="dock">
-        <button class="dock-item" onclick="openChat('appointly')"><div class="dock-dot"></div><div><h4>Appointly</h4><small class="muted">Generic appointment setter</small></div></button>
+        <button class="dock-item" onclick="openChat('appointly')"><div class="dock-dot"></div><div><h4>Appointly</h4><small class="muted">Appointment booking</small></div></button>
         <button class="dock-item" onclick="openChat('realestate')"><div class="dock-dot"></div><div><h4>Property Qualifier</h4><small class="muted">Lead intake & viewings</small></div></button>
-        <button class="dock-item" onclick="openChat('salon')"><div class="dock-dot"></div><div><h4>Salon Booker</h4><small class="muted">Add-ons & upsells</small></div></button>
-        <button class="dock-item" onclick="openChat('carins')"><div class="dock-dot"></div><div><h4>Car Insurance</h4><small class="muted">Quick-qualify & schedule</small></div></button>
-        <button class="dock-item" onclick="openChat('support')"><div class="dock-dot"></div><div><h4>Support Triage</h4><small class="muted">Route & escalate</small></div></button>
-        <button class="dock-item" onclick="openChat('guardrails')"><div class="dock-dot"></div><div><h4>Off-topic Wrangler</h4><small class="muted">Stay on purpose</small></div></button>
+        <button class="dock-item" onclick="openChat('salon')"><div class="dock-dot"></div><div><h4>Salon Booker</h4><small class="muted">Services & add-ons</small></div></button>
+        <button class="dock-item" onclick="openChat('carins')"><div class="dock-dot"></div><div><h4>Car Insurance</h4><small class="muted">Quick-qualify & quote</small></div></button>
       </div>
 
+      <!-- Stage -->
       <div class="stage">
         <div class="stage-placeholder"><p>Select a demo from the Dock to start chatting.</p></div>
 
@@ -112,7 +110,7 @@
               <button id="sendBtn" class="icon-btn" title="Send">➤</button>
             </div>
           </div>
-          <small class="muted" style="display:block;margin-top:8px">Voice uses your browser’s Speech API. Auto-sends when you stop speaking.</small>
+          <small class="muted" style="display:block;margin-top:8px">Voice uses your browser’s Speech API. We’ll auto-send when you pause.</small>
         </section>
       </div>
     </div>
@@ -126,43 +124,103 @@
   </footer>
 
 <script>
-  // Demos logic + voice
-  const state={activeBot:null,bots:{appointly:{name:'Appointly (Generic Appointment Setter)'},realestate:{name:'Property Qualifier'},salon:{name:'Salon Booker'},carins:{name:'Car Insurance Quick-Qualifier'},support:{name:'Support Triage'},guardrails:{name:'Off-topic Wrangler'}}};
+  // 4 bots
+  const state={activeBot:null,bots:{
+    appointly:{name:'Appointly (Appointment booking)'},
+    realestate:{name:'Property Qualifier'},
+    salon:{name:'Salon Booker'},
+    carins:{name:'Car Insurance'}
+  }};
   const qs=s=>document.querySelector(s);
   function addMsg(role,text){const m=qs('.msgs'); if(!m) return; const d=document.createElement('div'); d.className='msg '+role; d.textContent=text; m.appendChild(d); m.scrollTop=m.scrollHeight;}
+
   function openChat(key){
     state.activeBot=key;
     qs('.stage-placeholder')?.remove();
     qs('.chat-wrap').style.display='block';
     qs('#chatBotName').textContent = state.bots[key].name;
     const m=qs('.msgs'); m.innerHTML='';
-    addMsg('bot',`Hi — I'm ${state.bots[key].name}. Ask me something or press the mic.`);
+    addMsg('bot',`Hi — I’m ${state.bots[key].name}. Ask me anything or press the mic to speak.`);
   }
   function backToDock(){
     qs('.chat-wrap').style.display='none';
     const st=qs('.stage'); if(!qs('.stage-placeholder')){const ph=document.createElement('div'); ph.className='stage-placeholder'; ph.innerHTML='<p>Select a demo from the Dock to start chatting.</p>'; st.prepend(ph);}
   }
+
+  // Simple placeholder responses (front-end only demo)
   function fakeAIResponse(input){
     const k=state.activeBot, low=input.toLowerCase();
-    if(k==='guardrails'&&(low.includes('politics')||low.includes('weather')||low.includes('joke'))) return "Let's park that — what service do you need?";
-    if(k==='appointly'&&low.includes('tuesday')) return "I can offer Tue 10:00 or 14:30. Which works?";
-    if(k==='carins'&&low.includes('quote')) return "Quick check: name, DOB, licence type, any claims in last 3 years?";
-    if(k==='salon'&&(low.includes('hair')||low.includes('cut'))) return "We can do a Cut & Finish. Want to add a scalp treatment today?";
-    if(k==='support'&&(low.includes('down')||low.includes('error'))) return "I can create a ticket. What's your email and a short description?";
-    if(k==='realestate'&&(low.includes('view')||low.includes('flat'))) return "Great — buy or rent, and budget range?";
-    return "Got it. Tell me a bit more and I’ll guide you.";
+    if(k==='appointly'&&low.includes('tuesday')) return "I can offer Tuesday at 10:00 or 14:30. What suits you best?";
+    if(k==='realestate'&&(low.includes('view')||low.includes('flat'))) return "Smashing — are you buying or renting, and what’s your budget range?";
+    if(k==='salon'&&(low.includes('cut')||low.includes('hair'))) return "We can book a Cut & Finish. Fancy adding a nourishing scalp treatment today?";
+    if(k==='carins'&&low.includes('quote')) return "No problem. I’ll need your name, date of birth, licence type, and any claims in the last 3 years.";
+    return "Got it. Tell me a little more and I’ll guide you from there.";
   }
-  function handleSend(){const i=qs('#chatInput'); const t=i.value.trim(); if(!t) return; addMsg('user',t); i.value=''; setTimeout(()=>addMsg('bot',fakeAIResponse(t)),400);}
-  document.addEventListener('DOMContentLoaded',()=>{qs('#sendBtn').addEventListener('click',handleSend); qs('#chatInput').addEventListener('keydown',e=>{if(e.key==='Enter') handleSend();});});
-  (function(){ let rec=null, listening=false; const mic=()=>qs('#micBtn'); const supported=()=>('SpeechRecognition'in window)||('webkitSpeechRecognition'in window);
-    function ensure(){ if(rec) return rec; const SR=window.SpeechRecognition||window.webkitSpeechRecognition; rec=new SR(); rec.lang='en-GB'; rec.continuous=false; rec.interimResults=false; return rec; }
+  function handleSend(){
+    const i=qs('#chatInput'); const t=i.value.trim(); if(!t) return;
+    addMsg('user',t); i.value='';
+    setTimeout(()=>addMsg('bot',fakeAIResponse(t)), 400);
+  }
+  document.addEventListener('DOMContentLoaded',()=>{
+    qs('#sendBtn').addEventListener('click',handleSend);
+    qs('#chatInput').addEventListener('keydown',e=>{if(e.key==='Enter') handleSend();});
+  });
+
+  // VOICE with interim typing + auto-send on silence
+  (function(){
+    let rec=null, listening=false, typingRAF=null, lastFinal="";
+    const mic=()=>qs('#micBtn');
+    const supported=()=>('SpeechRecognition'in window)||('webkitSpeechRecognition'in window);
+    function ensure(){ if(rec) return rec; const SR=window.SpeechRecognition||window.webkitSpeechRecognition; rec=new SR(); rec.lang='en-GB'; rec.continuous=false; rec.interimResults=true; return rec; }
     function glow(on){ mic().classList.toggle('glow', !!on); }
-    function toggleMic(){ if(!supported()){ addMsg('bot','Speech recognition isn’t supported in this browser.'); return; }
-      const r=ensure(); if(!listening){ listening=true; glow(true); r.start();
-        r.onresult=e=>{ const t=e.results[0][0].transcript; const i=qs('#chatInput'); i.value=t; if(i.value.trim()) handleSend(); };
+
+    // type into the input with a smooth animation
+    function typeIntoInput(targetText){
+      const input=qs('#chatInput'); if(!input) return;
+      const current=input.value;
+      if(current===targetText) return;
+      const start=performance.now();
+      const duration = Math.min(700, 50 * Math.max(1, targetText.length - current.length)); // quick but readable
+      const from=current; const to=targetText;
+      cancelAnimationFrame(typingRAF);
+      function step(t){
+        const p=Math.min(1, (t-start)/duration);
+        const cut=Math.round(from.length + (to.length - from.length)*p);
+        input.value = to.slice(0, cut);
+        if(p<1) typingRAF=requestAnimationFrame(step);
+      }
+      typingRAF=requestAnimationFrame(step);
+    }
+
+    function toggleMic(){
+      if(!supported()){ addMsg('bot','Speech recognition isn’t supported in this browser.'); return; }
+      const r=ensure();
+      if(!listening){
+        listening=true; glow(true); lastFinal="";
+        r.start();
+
+        r.onresult=(e)=>{
+          let finalText = "", interim = "";
+          for(let i=e.resultIndex;i<e.results.length;i++){
+            const tr = e.results[i][0].transcript;
+            if(e.results[i].isFinal) finalText += tr;
+            else interim += tr;
+          }
+          if(finalText){ lastFinal += finalText; typeIntoInput(lastFinal.trim()); }
+          else if(interim){ typeIntoInput((lastFinal + interim).trim()); }
+        };
+
         r.onerror=()=>{ listening=false; glow(false); addMsg('bot','Sorry — I couldn’t hear that. Try again?'); };
-        r.onend=()=>{ listening=false; glow(false); };
-      } else { r.stop(); listening=false; glow(false); } }
+        r.onend=()=>{ // silence => auto-send
+          listening=false; glow(false);
+          const i=qs('#chatInput'); const t=(i.value||"").trim();
+          if(t) handleSend();
+        };
+      }else{
+        r.stop(); listening=false; glow(false);
+      }
+    }
+
     document.addEventListener('DOMContentLoaded',()=>{ mic().addEventListener('click',toggleMic); });
   })();
 </script>
