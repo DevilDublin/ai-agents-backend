@@ -1,37 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Contact — Zypher</title>
-<link rel="icon" href="assets/zypher-logo.svg" />
-<link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact — Zypher</title>
+
+  <!-- same CSS as index, trimmed to what's needed -->
+  <style>
+    :root{--bg:#0b0c12;--panel:#0f111a;--elev:#11131d;--text:#e6e9f2;--muted:#a6adc8;--accent:#8a5cf6;--accent-2:#00d4ff}
+    *{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+    html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    a{color:inherit;text-decoration:none}button{font:inherit}.muted{color:var(--muted)}
+    .container{width:100%;max-width:1180px;margin:0 auto;padding:0 20px}.section{padding:56px 0}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;position:sticky;top:0;z-index:20;background:rgba(11,12,18,.75);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.06)}
+    .brand{display:flex;align-items:center;gap:12px}.brand-name{font-weight:700}
+    .nav-links{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+    .nav-links a{padding:8px 10px;border-radius:10px;color:var(--muted)} .nav-links a.active,.nav-links a:hover{color:#fff;background:rgba(255,255,255,.06)}
+    .nav-cta{display:flex;align-items:center;gap:10px}
+    .kbd{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--muted);padding:4px 8px;border:1px solid rgba(255,255,255,.12);border-radius:6px;background:rgba(255,255,255,.04)}
+    .btn{padding:10px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:linear-gradient(90deg,rgba(138,92,246,.18),rgba(0,212,255,.18));color:#fff;display:inline-block}
+    .form{display:grid;gap:14px;max-width:560px}
+    .form input,.form textarea{width:100%;background:rgba(255,255,255,.04);color:var(--text);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 12px;outline:none}
+    .footer{padding:32px 16px;border-top:1px solid rgba(255,255,255,.06)}.footer-row{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  </style>
 </head>
 <body>
-<nav class="nav">
-<div class="brand">
-<img src="assets/zypher-logo.svg" alt="Zypher logo" />
-<span class="brand-name">Zypher</span>
-</div>
-<div class="nav-links">
-<a href="index.html">Home</a>
-<a href="demos.html">Demos</a>
-<a class="active" href="contact.html">Contact</a>
-</div>
-<div class="nav-cta">
-<select id="themeSelect" class="kbd" aria-label="Theme">
-<option value="">Nebula</option>
-<option value="circuit">Circuit Neon</option>
-<option value="mono">Monochrome</option>
-</select>
-<a class="btn" href="demos.html">Try a Bot</a>
-</div>
-</nav>
+  <nav class="nav">
+    <div class="brand">
+      <svg width="28" height="28" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8A5CF6"/><stop offset="100%" stop-color="#00D4FF"/></linearGradient></defs>
+        <rect width="256" height="256" rx="40" fill="#0A0B10"/><path d="M176 32L96 144h56l-48 80 80-112h-56l48-80z" fill="url(#g)"/>
+      </svg>
+      <span class="brand-name">Zypher</span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="demos.html">Demos</a>
+      <a class="active" href="contact.html">Contact</a>
+    </div>
+    <div class="nav-cta">
+      <select id="themeSelect" class="kbd" aria-label="Theme">
+        <option value="">Nebula</option><option value="circuit">Circuit Neon</option><option value="mono">Monochrome</option>
+      </select>
+      <a class="btn" href="demos.html">Try a Bot</a>
+    </div>
+  </nav>
 
-<main class="container section">
-<h2>Let’s talk</h2>
-<p class="muted">Tell us about your use‑case. We’ll reply within 1 business day.</p>
-<form class="form" onsubmit="event.preventDefault(); alert('Thanks! We’ll be in touch.');">
-<input placeholder="Full name" required />
-<input placeholder="Work email" type="email" required />
+  <main class="container section">
+    <h2>Let’s talk</h2>
+    <p class="muted">Tell us about your use-case. We’ll reply within 1 business day.</p>
+    <form class="form" onsubmit="event.preventDefault(); alert('Thanks! We’ll be in touch.');">
+      <input placeholder="Full name" required />
+      <input placeholder="Work email" type="email" required />
+      <input placeholder="Company" />
+      <textarea rows="5" placeholder="What would you like to build?"></textarea>
+      <button class="btn" type="submit">Send</button>
+    </form>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-row">
+      <div>© 2025 Zypher — All rights reserved.</div>
+      <div class="muted">Built for speed • Privacy-first • UK/EU ready</div>
+    </div>
+  </footer>
+
+  <script>
+    (function(){const sel=document.querySelector('#themeSelect'); if(!sel) return;
+      sel.addEventListener('change',()=>{document.documentElement.setAttribute('data-theme', sel.value);localStorage.setItem('zy_theme', sel.value)});
+      const saved=localStorage.getItem('zy_theme'); if(saved){document.documentElement.setAttribute('data-theme', saved); sel.value=saved;}
+    })();
+  </script>
+</body>
 </html>
