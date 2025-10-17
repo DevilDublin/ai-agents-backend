@@ -7,206 +7,149 @@
 <meta name="description" content="Zypher builds voice & chat agents that book appointments, qualify leads and support customers — fast, on-brand and privacy-first.">
 
 <style>
-  /* ---------- THEME PALETTES ---------- */
-  :root{
-    --bg:#0b0c12; --panel:#0f111a; --elev:#11131d; --text:#e6e9f2; --muted:#a6adc8;
-    --accent:#8a5cf6; --accent-2:#00d4ff; --edge:rgba(255,255,255,.08);
-  }
+  /* THEME */
+  :root{ --bg:#0b0c12; --panel:#0f111a; --elev:#11131d; --text:#e6e9f2; --muted:#a6adc8; --edge:rgba(255,255,255,.09);
+         --accent:#8a5cf6; --accent-2:#00d4ff; }
   [data-theme="circuit"]{ --accent:#21d089; --accent-2:#15c0ff; }
-  [data-theme="mono"]{ --accent:#bdbdbd; --accent-2:#ffffff; }
-  [data-theme="cyber"]{ --accent:#00ffd0; --accent-2:#ff00e5; }
-  [data-theme="midnight"]{ --accent:#6ea8ff; --accent-2:#a975ff; }
-  [data-theme="sunrise"]{ --accent:#ff7ab6; --accent-2:#ffb86b; }
+  [data-theme="cyber"]  { --accent:#00ffd0; --accent-2:#ff00e5; }
+  [data-theme="mid"]    { --accent:#6ea8ff; --accent-2:#a975ff; }
+  [data-theme="sun"]    { --accent:#ff7ab6; --accent-2:#ffb86b; }
+  [data-theme="mono"]   { --accent:#bdbdbd; --accent-2:#ffffff; }
 
-  /* ---------- BASE ---------- */
+  /* BASE */
   *{box-sizing:border-box} html{-webkit-text-size-adjust:100%}
-  html,body{margin:0;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg)}
-  a{color:inherit;text-decoration:none} img{display:block;max-width:100%} button{font:inherit}
+  html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+  a{color:inherit;text-decoration:none} img{max-width:100%;display:block} button{font:inherit}
   .container{max-width:1200px;margin:0 auto;padding:0 24px}
   .section{padding:72px 0} .muted{color:var(--muted)}
-  .spacer{height:24px}
 
-  /* ---------- BACKGROUND: aurora + stars ---------- */
-  .bg, .stars{position:fixed; inset:0; pointer-events:none; z-index:-2}
-  .bg{
-    background:
-      radial-gradient(1400px 900px at 85% -10%, color-mix(in oklab, var(--accent) 55%, transparent), transparent 60%),
-      radial-gradient(1000px 800px at -10% 40%, color-mix(in oklab, var(--accent-2) 55%, transparent), transparent 60%),
-      radial-gradient(700px 700px at 120% 120%, rgba(255,255,255,.05), transparent 50%);
-    filter:saturate(1.05);
-  }
-  .aurora{position:fixed; inset:-20% -10% -15% -10%; z-index:-1; pointer-events:none; filter: blur(42px);
-    background: conic-gradient(from 180deg, color-mix(in oklab, var(--accent) 45%, transparent), color-mix(in oklab, var(--accent-2) 45%, transparent), transparent 60%);
-    animation: auroraMove 14s linear infinite; opacity:.55;
-  }
-  @keyframes auroraMove{0%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3%) rotate(7deg)}100%{transform:translateY(0) rotate(0)}}
+  /* FULL-SCREEN BACKGROUND CANVAS (tech lines) */
+  #bgCanvas{position:fixed;inset:0;z-index:-2;display:block}
+  .glowFog{position:fixed;inset:-10% -10% -10% -10%;z-index:-1;pointer-events:none;filter:blur(40px);
+           background:conic-gradient(from 180deg, color-mix(in oklab,var(--accent) 45%, transparent), color-mix(in oklab,var(--accent-2) 45%, transparent), transparent 60%);
+           opacity:.45;animation:floaty 14s linear infinite}
+  @keyframes floaty{0%{transform:translateY(0) rotate(0)}50%{transform:translateY(-2%) rotate(6deg)}100%{transform:translateY(0) rotate(0)}}
 
-  /* Subtle starfield */
-  .stars::before{
-    content:""; position:absolute; inset:0;
-    background-image: radial-gradient(#fff 1px, transparent 1px);
-    background-size: 2px 2px; opacity:.06; mix-blend:screen; mask-image: radial-gradient(circle at 50% 20%, black, transparent 65%);
-  }
-
-  /* ---------- NAV ---------- */
-  .nav{
-    display:flex; align-items:center; justify-content:space-between; gap:12px;
-    padding:12px 18px; position:sticky; top:0; z-index:20;
-    background:rgba(11,12,18,.65); backdrop-filter: blur(10px);
-    border-bottom:1px solid var(--edge);
-  }
-  .brand{display:flex;align-items:center;gap:12px}
-  .brand svg{width:28px;height:28px}
-  .brand-name{font-weight:700;letter-spacing:.2px}
-
-  .nav-links{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  /* NAV */
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;position:sticky;top:0;z-index:20;
+       background:rgba(11,12,18,.6);backdrop-filter:blur(10px);border-bottom:1px solid var(--edge)}
+  .brand{display:flex;align-items:center;gap:12px}.brand svg{width:28px;height:28px}.brand-name{font-weight:700}
+  .nav-links{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
   .nav-links a{padding:9px 12px;border-radius:12px;color:var(--muted)}
-  .nav-links a.active,.nav-links a:hover{color:#fff;background:rgba(255,255,255,.06)}
-
-  /* Futuristic theme dropdown */
-  .theme{position:relative; display:flex; align-items:center; gap:12px}
-  .theme button{
-    display:flex; align-items:center; gap:10px; cursor:pointer;
-    padding:8px 12px; border-radius:12px; border:1px solid var(--edge); color:#fff;
-    background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-  }
-  .dot{width:10px;height:10px;border-radius:999px;background:var(--accent); box-shadow:0 0 10px var(--accent)}
-  .menu{position:absolute; right:0; top:42px; min-width:190px; display:none;
-    background:rgba(15,17,26,.98); border:1px solid var(--edge); border-radius:14px; padding:6px; box-shadow:0 20px 40px rgba(0,0,0,.4)}
-  .menu.open{display:block; animation: pop .14s ease-out}
-  @keyframes pop{from{transform:translateY(-4px);opacity:0}to{transform:translateY(0);opacity:1}}
-  .item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;cursor:pointer}
-  .item:hover{background:rgba(255,255,255,.06)}
-  .swatch{width:14px;height:14px;border-radius:999px;box-shadow:0 0 12px currentColor}
-
+  .nav-links a.active,.nav-links a:hover{color:#fff;background:rgba(255,255,255,.07)}
+  .theme{position:relative;display:flex;align-items:center;gap:12px}
+  .theme button{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;border:1px solid var(--edge);background:rgba(255,255,255,.06);color:#fff}
+  .dot{width:10px;height:10px;border-radius:999px;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+  .menu{position:absolute;right:0;top:42px;display:none;min-width:200px;background:#0e1119;border:1px solid var(--edge);border-radius:14px;padding:6px;box-shadow:0 20px 40px rgba(0,0,0,.45)}
+  .menu.open{display:block;animation:pop .14s ease-out}@keyframes pop{from{transform:translateY(-4px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .item{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:10px;cursor:pointer}.item:hover{background:rgba(255,255,255,.06)}
+  .sw{width:14px;height:14px;border-radius:999px;box-shadow:0 0 10px currentColor}
   .btn{padding:12px 16px;border-radius:14px;border:1px solid var(--edge);
-    background:linear-gradient(90deg, color-mix(in oklab, var(--accent) 35%, transparent), color-mix(in oklab, var(--accent-2) 35%, transparent));
-    color:#fff; display:inline-block}
+       background:linear-gradient(90deg,color-mix(in oklab,var(--accent) 40%,transparent),color-mix(in oklab,var(--accent-2) 40%,transparent));color:#fff}
   .btn.ghost{background:transparent}
 
-  /* ---------- HERO ---------- */
+  /* HERO */
   .hero{padding:96px 0 48px}
-  .badge{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;border:1px solid var(--edge);
-    color:var(--accent-2); background:rgba(0,212,255,.08); font-size:12px; margin-bottom:18px}
-  .hero-title{
-    font-size: clamp(34px, 6.5vw, 70px); line-height:1.05; margin:0 0 14px;
-    background: linear-gradient(90deg, #fff, color-mix(in oklab, var(--accent) 40%, #fff), color-mix(in oklab, var(--accent-2) 40%, #fff), #fff);
-    background-size: 200% auto; -webkit-background-clip: text; background-clip:text; color: transparent;
-    animation: sheen 7s linear infinite;
-  }
-  @keyframes sheen{ 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+  .badge{display:inline-flex;gap:8px;align-items:center;padding:7px 12px;border-radius:999px;border:1px solid var(--edge);color:var(--accent-2);background:rgba(0,212,255,.08);font-size:12px;margin-bottom:18px}
+  .hero-title{font-size: clamp(34px, 6.5vw, 72px);line-height:1.05;margin:0 0 14px;
+              background:linear-gradient(90deg,#fff,color-mix(in oklab,var(--accent) 45%,#fff),color-mix(in oklab,var(--accent-2) 45%,#fff),#fff);
+              -webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% auto;animation:sheen 7s linear infinite}
+  @keyframes sheen{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
   .hero-sub{max-width:780px;color:var(--muted);font-size:18px;margin:0}
   .hero-actions{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
 
-  /* ---------- CARDS / CONTENT ---------- */
+  /* CARDS */
   .grid-3{display:grid;grid-template-columns:1fr;gap:18px}
   .card{background:linear-gradient(180deg,var(--panel),var(--elev));border:1px solid var(--edge);border-radius:18px;padding:20px}
-  .card h3{margin:0 0 6px;font-size:18px}
+  .card h3{margin:0 0 6px;font-size:18px;color:var(--text)}
   .card p{margin:4px 0 0;color:var(--muted)}
 
-  /* ---------- FOOTER ---------- */
+  /* FOOTER */
   .footer{padding:40px 24px;border-top:1px solid var(--edge)}
   .footer-row{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
-  /* ---------- BREAKPOINTS ---------- */
+  /* BREAKPOINTS */
   @media (min-width:768px){ .grid-3{grid-template-columns:repeat(3,1fr)} }
-  @media (min-width:992px){ .container{padding:0 28px} }
-  @media (min-width:1200px){ .hero-title{font-size:66px} }
 </style>
 </head>
 <body>
-  <div class="bg"></div><div class="aurora"></div><div class="stars"></div>
+<canvas id="bgCanvas"></canvas>
+<div class="glowFog" aria-hidden="true"></div>
 
-  <nav class="nav">
-    <div class="brand">
-      <!-- Inline logo -->
-      <svg viewBox="0 0 256 256" aria-hidden="true">
-        <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8A5CF6"/><stop offset="100%" stop-color="#00D4FF"/></linearGradient></defs>
-        <rect width="256" height="256" rx="40" fill="#0A0B10"/><path d="M176 32L96 144h56l-48 80 80-112h-56l48-80z" fill="url(#g)"/>
-      </svg>
-      <span class="brand-name">Zypher</span>
+<nav class="nav">
+  <div class="brand">
+    <svg viewBox="0 0 256 256" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8A5CF6"/><stop offset="100%" stop-color="#00D4FF"/></linearGradient></defs><rect width="256" height="256" rx="40" fill="#0A0B10"/><path d="M176 32L96 144h56l-48 80 80-112h-56l48-80z" fill="url(#g)"/></svg>
+    <span class="brand-name">Zypher</span>
+  </div>
+  <div class="nav-links">
+    <a class="active" href="index.html">Home</a><a href="demos.html">Demos</a><a href="contact.html">Contact</a>
+  </div>
+  <div class="theme">
+    <button id="themeBtn"><span class="dot"></span><span id="themeLabel">Nebula</span> ▾</button>
+    <div id="themeMenu" class="menu">
+      <div class="item" data-theme=""><span class="sw" style="color:#8a5cf6"></span> Nebula</div>
+      <div class="item" data-theme="circuit"><span class="sw" style="color:#21d089"></span> Circuit Neon</div>
+      <div class="item" data-theme="cyber"><span class="sw" style="color:#00ffd0"></span> Cyber Flux</div>
+      <div class="item" data-theme="mid"><span class="sw" style="color:#6ea8ff"></span> Midnight</div>
+      <div class="item" data-theme="sun"><span class="sw" style="color:#ff7ab6"></span> Sunrise</div>
+      <div class="item" data-theme="mono"><span class="sw" style="color:#bdbdbd"></span> Monochrome</div>
     </div>
+    <a class="btn" href="demos.html">Try a Bot</a>
+  </div>
+</nav>
 
-    <div class="nav-links">
-      <a class="active" href="index.html">Home</a>
-      <a href="demos.html">Demos</a>
-      <a href="contact.html">Contact</a>
-    </div>
+<header class="hero container">
+  <span class="badge">Futuristic by design • Practical by default</span>
+  <h1 class="hero-title">AI agents that <span style="color:var(--accent)">book</span>, <span style="color:var(--accent-2)">qualify</span> & <span style="color:var(--accent)">support</span>.</h1>
+  <p class="hero-sub">Meet <strong>Zypher</strong> — voice & chat agents that respect your brand and your customers. Plug into your calendar and CRM. Go live in days, not months.</p>
+  <div class="hero-actions"><a class="btn" href="demos.html">See live demos</a><a class="btn ghost" href="contact.html">Talk to us</a></div>
+</header>
 
-    <!-- Futuristic theme dropdown -->
-    <div class="theme">
-      <button id="themeBtn" aria-haspopup="true" aria-expanded="false">
-        <span class="dot"></span><span id="themeLabel">Nebula</span> ▾
-      </button>
-      <div id="themeMenu" class="menu" role="menu">
-        <div class="item" data-theme=""><span class="swatch" style="color:#8a5cf6"></span> Nebula</div>
-        <div class="item" data-theme="circuit"><span class="swatch" style="color:#21d089"></span> Circuit Neon</div>
-        <div class="item" data-theme="cyber"><span class="swatch" style="color:#00ffd0"></span> Cyber Flux</div>
-        <div class="item" data-theme="midnight"><span class="swatch" style="color:#6ea8ff"></span> Midnight</div>
-        <div class="item" data-theme="sunrise"><span class="swatch" style="color:#ff7ab6"></span> Sunrise</div>
-        <div class="item" data-theme="mono"><span class="swatch" style="color:#bdbdbd"></span> Monochrome</div>
-      </div>
-      <a class="btn" href="demos.html">Try a Bot</a>
-    </div>
-  </nav>
+<main>
+  <section class="container grid-3 section">
+    <div class="card"><h3>Voice & Phone</h3><p>Answer calls, qualify and book — 24/7. Natural speech with clear confirmations.</p></div>
+    <div class="card"><h3>Web Chat</h3><p>On-site chat that actually gets things done: capture, schedule, escalate.</p></div>
+    <div class="card"><h3>Workflow Ready</h3><p>Integrates with Google Calendar, HubSpot, Notion, Slack, make.com & more.</p></div>
+  </section>
 
-  <header class="hero container">
-    <span class="badge">Futuristic by design • Practical by default</span>
-    <h1 class="hero-title">AI agents that <span style="color:var(--accent)">book</span>, <span style="color:var(--accent-2)">qualify</span> & <span style="color:var(--accent)">support</span>.</h1>
-    <p class="hero-sub">Meet <strong>Zypher</strong> — voice & chat agents that respect your brand and your customers. Plug into your calendar and CRM. Go live in days, not months.</p>
-    <div class="hero-actions">
-      <a class="btn" href="demos.html">See live demos</a>
-      <a class="btn ghost" href="contact.html">Talk to us</a>
-    </div>
-  </header>
+  <section class="container section">
+    <div class="card"><h3>Why Zypher?</h3><p>Focused, on-rails agents. Guardrails keep conversations on task. Personalised prompts for your niche. Analytics to improve over time.</p></div>
+  </section>
+</main>
 
-  <main>
-    <section class="container grid-3 section" aria-label="Capabilities">
-      <div class="card"><h3>Voice & Phone</h3><p>Answer calls, qualify and book — 24/7. Natural speech with clear confirmations.</p></div>
-      <div class="card"><h3>Web Chat</h3><p>On-site chat that actually gets things done: capture, schedule, escalate.</p></div>
-      <div class="card"><h3>Workflow Ready</h3><p>Integrates with Google Calendar, HubSpot, Notion, Slack, make.com & more.</p></div>
-    </section>
-
-    <section class="container section">
-      <div class="card"><h3>Why Zypher?</h3><p>Focused, on-rails agents. Guardrails keep conversations on task. Personalised prompts for your niche. Analytics to improve over time.</p></div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <div class="container footer-row">
-      <div>© 2025 Zypher — All rights reserved.</div>
-      <div class="muted">Built for speed • Privacy-first • UK/EU ready</div>
-    </div>
-  </footer>
+<footer class="footer">
+  <div class="container footer-row">
+    <div>© 2025 Zypher — All rights reserved.</div>
+    <div class="muted">Built for speed • Privacy-first • UK/EU ready</div>
+  </div>
+</footer>
 
 <script>
-  // Futuristic theme dropdown (persists)
-  (function(){
-    const btn = document.getElementById('themeBtn');
-    const menu = document.getElementById('themeMenu');
-    const label = document.getElementById('themeLabel');
-    const saved = localStorage.getItem('zy_theme');
-    if(saved !== null){
-      document.documentElement.setAttribute('data-theme', saved);
-      const act = [...menu.querySelectorAll('.item')].find(i=>i.dataset.theme===saved);
-      if(act) label.textContent = act.textContent.trim();
+/* THEME DROPDOWN */
+(function(){
+  const btn=document.getElementById('themeBtn'), menu=document.getElementById('themeMenu'), label=document.getElementById('themeLabel');
+  const saved=localStorage.getItem('zy_theme'); if(saved!==null){document.documentElement.setAttribute('data-theme',saved); const a=[...menu.children].find(i=>i.dataset.theme===saved); if(a) label.textContent=a.textContent.trim();}
+  btn.addEventListener('click',()=>{menu.classList.toggle('open')}); document.addEventListener('click',e=>{if(!menu.contains(e.target)&&!btn.contains(e.target)) menu.classList.remove('open')});
+  menu.addEventListener('click',e=>{const it=e.target.closest('.item'); if(!it) return; const t=it.dataset.theme; document.documentElement.setAttribute('data-theme',t); localStorage.setItem('zy_theme',t); label.textContent=it.textContent.trim(); menu.classList.remove('open');});
+})();
+
+/* TECH-LINES BACKGROUND CANVAS */
+(function(){
+  const c=document.getElementById('bgCanvas'), d=c.getContext('2d'); let w=0,h=0, lines=[];
+  function resize(){ w= c.width = window.innerWidth * devicePixelRatio; h = c.height = window.innerHeight * devicePixelRatio; d.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0); lines=makeLines(); }
+  function makeLines(){ const arr=[]; const cols= Math.ceil(window.innerWidth/160)+2; const rows= Math.ceil(window.innerHeight/120)+2;
+    for(let x=0;x<cols;x++){ for(let y=0;y<rows;y++){ arr.push({x:(x-1)*160+Math.random()*20, y:(y-1)*120+Math.random()*20, t:Math.random()*100}); } } return arr; }
+  function tick(t){
+    d.clearRect(0,0,w,h);
+    for(const L of lines){ L.t+=0.004; const ox=Math.sin(L.t)*18, oy=Math.cos(L.t*1.3)*18;
+      const x=L.x+ox, y=L.y+oy; d.strokeStyle='rgba(138,92,246,.18)'; d.lineWidth=1; d.beginPath(); d.moveTo(x-40,y); d.lineTo(x+40,y); d.stroke();
+      d.strokeStyle='rgba(0,212,255,.18)'; d.beginPath(); d.moveTo(x,y-26); d.lineTo(x,y+26); d.stroke();
+      d.fillStyle='rgba(255,255,255,.07)'; d.fillRect(x-1,y-1,2,2);
     }
-    btn.addEventListener('click', ()=>{
-      const open = menu.classList.toggle('open');
-      btn.setAttribute('aria-expanded', String(open));
-    });
-    menu.addEventListener('click', (e)=>{
-      const item = e.target.closest('.item'); if(!item) return;
-      const theme = item.dataset.theme;
-      document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem('zy_theme', theme);
-      label.textContent = item.textContent.trim();
-      menu.classList.remove('open'); btn.setAttribute('aria-expanded','false');
-    });
-    document.addEventListener('click', (e)=>{
-      if(!menu.contains(e.target) && !btn.contains(e.target)) menu.classList.remove('open');
-    });
-  })();
+    requestAnimationFrame(tick);
+  }
+  window.addEventListener('resize', resize); resize(); requestAnimationFrame(tick);
+})();
 </script>
 </body>
 </html>
