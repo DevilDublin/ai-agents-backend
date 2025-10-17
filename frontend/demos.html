@@ -15,6 +15,10 @@ a{color:inherit;text-decoration:none}
 .brand{display:flex;gap:12px;align-items:center}.brand svg{width:28px;height:28px}
 .links{display:flex;gap:10px}.links a{padding:8px 12px;border-radius:12px;color:var(--muted)}.links a.active,.links a:hover{color:#fff;background:rgba(255,255,255,.08)}
 .section{padding:56px 0}.muted{color:var(--muted)}
+/* Instruction ribbon */
+.hint{display:inline-flex;align-items:center;gap:10px;color:#fff;background:linear-gradient(90deg, rgba(138,92,246,.18), rgba(0,212,255,.18));border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:8px 12px;margin:6px 0 18px 0;box-shadow:0 0 20px rgba(138,92,246,.18), inset 0 0 12px rgba(255,255,255,.04);font-size:14px}
+.hint .dot{width:8px;height:8px;border-radius:999px;background:#8a5cf6;box-shadow:0 0 12px #8a5cf6}
+.hint kbd{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-bottom-color:rgba(0,0,0,.35);padding:2px 6px;border-radius:6px}
 /* Orbit */
 .orbit-wrap{position:relative;height:600px;perspective:1200px;user-select:none}
 .orbit-plane{position:absolute;left:50%;top:50%;transform-style:preserve-3d;transform:translate(-50%,-50%);width:560px;height:560px;will-change:transform}
@@ -22,7 +26,8 @@ a{color:inherit;text-decoration:none}
 @keyframes hum{0%,100%{filter:drop-shadow(0 0 10px rgba(138,92,246,.3))}50%{filter:drop-shadow(0 0 24px rgba(0,212,255,.35))}}
 .hex{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotateZ(var(--rot,0deg)) translateY(-230px);width:220px;height:190px;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);background:radial-gradient(120% 120% at 10% 0%, rgba(138,92,246,.16), rgba(255,255,255,.02));border:1px solid var(--edge);display:grid;place-items:center;cursor:pointer;transition:transform .18s ease, box-shadow .18s ease, filter .18s ease;will-change:transform;z-index:1}
 .hex:hover{transform:translate(-50%,-50%) rotateZ(var(--rot,0deg)) translateY(-230px) scale(1.06);box-shadow:0 18px 36px rgba(0,0,0,.45), inset 0 0 0 1px rgba(138,92,246,.22)}
-.hex .label{text-align:center;width:78%}.hex h4{margin:0 0 4px}.dot{display:inline-block;width:10px;height:10px;border-radius:999px;background:var(--a);box-shadow:0 0 10px var(--a);margin-right:8px}
+.hex .label{text-align:center;width:78%}.hex h4{margin:0 0 4px;color:#fff}.hex small{color:#d4d9ea}
+@media (max-width:640px){.orbit-wrap{height:520px}.orbit-plane{width:420px;height:420px}.hex{width:180px;height:156px;transform:translate(-50%,-50%) rotateZ(var(--rot,0deg)) translateY(-170px)}}
 /* Modal chat */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:50}
 .modal.open{display:flex}
@@ -58,16 +63,16 @@ footer{padding:30px 24px;color:var(--muted);border-top:1px solid var(--edge)}
 
 <main class="container section">
   <h2 style="margin:0 0 8px">Live demos</h2>
-  <p class="muted" style="margin:0 0 12px">Hover or drag to spin. Tap a hex to start.</p>
+  <div class="hint"><span class="dot"></span><span>Hover or drag to spin. Tap a hex to start. Press <kbd>🎤</kbd> and speak — we’ll type as you talk and auto-send on pause.</span></div>
 
   <section class="orbit-wrap">
     <div class="orbit-plane" id="orbit">
       <div class="centre-tag"><small>select your demo</small></div>
 
-      <button class="hex" data-id="appointly"   style="--rot:  0deg"><div class="label"><h4><span class="dot"></span>Appointly</h4><small class="muted">Appointment booking</small></div></button>
-      <button class="hex" data-id="realestate"  style="--rot: 90deg"><div class="label"><h4><span class="dot"></span>Property Qualifier</h4><small class="muted">Lead intake & viewings</small></div></button>
-      <button class="hex" data-id="salon"       style="--rot:180deg"><div class="label"><h4><span class="dot"></span>Salon Booker</h4><small class="muted">Services & add-ons</small></div></button>
-      <button class="hex" data-id="carins"      style="--rot:270deg"><div class="label"><h4><span class="dot"></span>Car Insurance</h4><small class="muted">Quick-qualify & quote</small></div></button>
+      <button class="hex" data-id="appointly"   style="--rot:  0deg"><div class="label"><h4><span class="dot" style="width:10px;height:10px;border-radius:999px;background:#8a5cf6;box-shadow:0 0 10px #8a5cf6;margin-right:8px"></span>Appointly</h4><small>Appointment booking</small></div></button>
+      <button class="hex" data-id="realestate"  style="--rot: 90deg"><div class="label"><h4><span class="dot" style="width:10px;height:10px;border-radius:999px;background:#8a5cf6;box-shadow:0 0 10px #8a5cf6;margin-right:8px"></span>Property Qualifier</h4><small>Lead intake & viewings</small></div></button>
+      <button class="hex" data-id="salon"       style="--rot:180deg"><div class="label"><h4><span class="dot" style="width:10px;height:10px;border-radius:999px;background:#8a5cf6;box-shadow:0 0 10px #8a5cf6;margin-right:8px"></span>Salon Booker</h4><small>Services & add-ons</small></div></button>
+      <button class="hex" data-id="carins"      style="--rot:270deg"><div class="label"><h4><span class="dot" style="width:10px;height:10px;border-radius:999px;background:#8a5cf6;box-shadow:0 0 10px #8a5cf6;margin-right:8px"></span>Car Insurance</h4><small>Quick-qualify & quote</small></div></button>
     </div>
   </section>
 </main>
@@ -87,40 +92,40 @@ footer{padding:30px 24px;color:var(--muted);border-top:1px solid var(--edge)}
 <footer class="container">© 2025 Zypher — All rights reserved.</footer>
 </div>
 
+<!-- BACKGROUND v2 (same as Home) -->
 <script>
-/* BACKGROUND (same everywhere) */
-(()=>{const c=document.getElementById('bg'),x=c.getContext('2d');let r=devicePixelRatio||1,stars=[],shots=[],t=0;
-function size(){c.width=innerWidth*r;c.height=innerHeight*r;x.setTransform(r,0,0,r,0,0)}
-function make(){stars=[];const n=Math.floor(innerWidth*innerHeight/2200);for(let i=0;i<n;i++)stars.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*1.3+.2,a:.4+.4*Math.random()})}
-function spawn(){shots.push({x:-60,y:Math.random()*innerHeight*.9+10,vx:6+Math.random()*5})}
-setInterval(spawn,1200);
-function neb(){const r1=160+50*Math.sin(t*.8),r2=220+60*Math.cos(t*.6);
-x.fillStyle='rgb(14,16,25)';x.fillRect(0,0,innerWidth,innerHeight);
-let g=x.createRadialGradient(innerWidth*.2,innerHeight*.25,0,innerWidth*.2,innerHeight*.25,r1);
-g.addColorStop(0,'rgba(138,92,246,.22)');g.addColorStop(1,'rgba(138,92,246,0)');x.fillStyle=g;x.beginPath();x.arc(innerWidth*.2,innerHeight*.25,r1,0,7);x.fill();
-g=x.createRadialGradient(innerWidth*.8,innerHeight*.75,0,innerWidth*.8,innerHeight*.75,r2);
-g.addColorStop(0,'rgba(0,212,255,.20)');g.addColorStop(1,'rgba(0,212,255,0)');x.fillStyle=g;x.beginPath();x.arc(innerWidth*.8,innerHeight*.75,r2,0,7);x.fill();}
-function step(){t+=1/60;neb();for(const s of stars){x.globalAlpha=s.a;x.fillStyle='#fff';x.fillRect(s.x,s.y,s.s,s.s);s.x+=.03;if(s.x>innerWidth)s.x=0}x.globalAlpha=1;for(const sh of shots){x.strokeStyle='rgba(0,212,255,.5)';x.lineWidth=2;x.beginPath();x.moveTo(sh.x,sh.y);x.lineTo(sh.x+30,sh.y-6);x.stroke();x.strokeStyle='rgba(138,92,246,.45)';x.beginPath();x.moveTo(sh.x-18,sh.y+4);x.lineTo(sh.x+8,sh.y-1);x.stroke();sh.x+=sh.vx}shots=shots.filter(s=>s.x<innerWidth+80);requestAnimationFrame(step)}
-addEventListener('resize',()=>{size();make()},{passive:true});size();make();step()})();
+(()=>{const c=document.getElementById('bg');const x=c.getContext('2d');
+let DPR=Math.min(2, devicePixelRatio||1), W=0, H=0, T=0;
+let stars=[], comets=[], filaments=[];
+function size(){W=innerWidth;H=innerHeight;c.width=W*DPR;c.height=H*DPR;x.setTransform(DPR,0,0,DPR,0,0);}
+function rand(a,b){return a+Math.random()*(b-a)}
+function makeStars(){const n=Math.floor(W*H/1600);stars=new Array(n).fill(0).map(()=>({x:Math.random()*W,y:Math.random()*H,z:rand(.3,1.3),a:rand(.35,.9)}))}
+function spawnComet(){comets.push({x:-60,y:rand(10,H-20),vx:rand(7,12),life:1})}
+function makeFilaments(){const lanes=5;filaments=[];for(let i=0;i<lanes;i++){const y=H*(.18+.14*i)+rand(-20,20);const hue=i%2? 'rgba(0,212,255,.16)':'rgba(138,92,246,.16)';const speed=rand(.15,.4);filaments.push({y,hue,p:rand(0,1),speed});}}
+function aurora(t){const r1=200+60*Math.sin(t*.6), r2=260+70*Math.cos(t*.5);
+let g=x.createRadialGradient(W*.22,H*.26,0,W*.22,H*.26,r1);g.addColorStop(0,'rgba(138,92,246,.22)');g.addColorStop(1,'rgba(138,92,246,0)');x.fillStyle=g;x.beginPath();x.arc(W*.22,H*.26,r1,0,7);x.fill();
+g=x.createRadialGradient(W*.82,H*.78,0,W*.82,H*.78,r2);g.addColorStop(0,'rgba(0,212,255,.20)');g.addColorStop(1,'rgba(0,212,255,0)');x.fillStyle=g;x.beginPath();x.arc(W*.82,H*.78,r2,0,7);x.fill();
+const sweep=(t*0.08)%1;const dx=W*(sweep-.2), w=W*.35;const grd=x.createLinearGradient(dx,0,dx+w,H);
+grd.addColorStop(0,'rgba(255,255,255,0)');grd.addColorStop(.5,'rgba(170,210,255,.05)');grd.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=grd;x.fillRect(dx,0,w,H);}
+function drawFilaments(dt){filaments.forEach(f=>{f.p=(f.p+f.speed*dt*0.06)%1;const len=W*0.55, lead=f.p*W;x.strokeStyle=f.hue;x.lineWidth=1.5;x.beginPath();const y=f.y,k=20*Math.sin((T*0.9)+f.y*.01);x.moveTo(lead-len, y+k);x.bezierCurveTo(lead-len*.66, y-8, lead-len*.33, y+8, lead, y-k);x.stroke();x.fillStyle=f.hue.replace('.16','.45');x.beginPath();x.arc(lead, y-k, 2.2, 0, 7);x.fill();});}
+function drawStars(dt){for(const s of stars){x.globalAlpha=s.a;x.fillStyle='#fff';x.fillRect(s.x,s.y,s.z,s.z);s.x+=.06*s.z;if(s.x>W)s.x=0}x.globalAlpha=1;}
+function drawComets(dt){if(Math.random()<0.015) spawnComet();comets.forEach(cm=>{cm.x+=cm.vx;cm.life*=0.995;x.strokeStyle='rgba(0,212,255,.55)';x.lineWidth=2;x.beginPath();x.moveTo(cm.x-24,cm.y+6);x.lineTo(cm.x+8,cm.y-2);x.stroke();x.strokeStyle='rgba(138,92,246,.5)';x.beginPath();x.moveTo(cm.x-44,cm.y+10);x.lineTo(cm.x-6,cm.y+2);x.stroke();});comets=comets.filter(c=>c.x<W+80 && c.life>.2);}
+function frame(tms){const dt=Math.min(2,(tms-(frame._t||tms))/16);frame._t=tms;T+=dt;x.fillStyle='rgb(14,16,25)';x.fillRect(0,0,W,H);aurora(T);drawFilaments(dt);drawStars(dt);drawComets(dt);requestAnimationFrame(frame);}
+addEventListener('resize',()=>{size();makeStars();makeFilaments()},{passive:true});size();makeStars();makeFilaments();requestAnimationFrame(frame);})();
+</script>
 
-/* ORBIT — smooth, all hexes clickable, inertia + idle autorotate */
+<!-- Orbit + Chat + Voice -->
+<script>
 (()=>{const orbit=document.getElementById('orbit');let a=0, target=0, v=0, dragging=false, sx=0, lastT=0, idle=0;
 function apply(){orbit.style.transform=`translate(-50%,-50%) rotateZ(${a}deg)`;}
-function animate(ts){const dt=(ts-(lastT||ts))/16; lastT=ts; idle+=dt; // ease towards target with damping
-const diff=(target-a); v+=diff*0.08; v*=0.92; a+=v; apply(); requestAnimationFrame(animate);
-if(idle>120){target+=0.08;} // gentle autorotate when idle
-}
+function animate(ts){const dt=(ts-(lastT||ts))/16; lastT=ts; idle+=dt; const diff=(target-a); v+=diff*0.08; v*=0.92; a+=v; apply(); requestAnimationFrame(animate); if(idle>120){target+=0.08;}}
 orbit.addEventListener('pointerdown',e=>{dragging=true;sx=e.clientX;orbit.setPointerCapture(e.pointerId);idle=0;});
 orbit.addEventListener('pointermove',e=>{if(!dragging)return; const dx=e.clientX-sx; sx=e.clientX; target+=dx*0.35; idle=0;});
 orbit.addEventListener('pointerup',()=>{dragging=false;});
-document.querySelectorAll('.hex').forEach(h=>{
-  h.addEventListener('mouseenter',()=>{const rot=parseFloat(h.style.getPropertyValue('--rot')||'0'); target=-rot; idle=0;});
-  h.addEventListener('click',()=>openChat(h.dataset.id));
-});
+document.querySelectorAll('.hex').forEach(h=>{h.addEventListener('mouseenter',()=>{const rot=parseFloat(h.style.getPropertyValue('--rot')||'0'); target=-rot; idle=0;}); h.addEventListener('click',()=>openChat(h.dataset.id));});
 requestAnimationFrame(animate);
 })();
 
-/* MODAL CHAT — unchanged look/feel */
 const BOTS={appointly:'Appointly (Appointment booking)',realestate:'Property Qualifier',salon:'Salon Booker',carins:'Car Insurance'};
 const $=s=>document.querySelector(s);
 function add(role,text,typing=false){const d=document.createElement('div');d.className='msg '+role+(typing?' typing':'');d.textContent=text;$('#msgs').appendChild(d);$('#msgs').scrollTop=$('#msgs').scrollHeight;return d;}
@@ -128,7 +133,7 @@ const state={active:null,history:[]};
 function openChat(id){state.active=id;state.history=[];$('#botName').textContent=BOTS[id];$('#msgs').innerHTML='';add('bot',`Hi — I’m ${BOTS[id]}. Ask me anything or press the mic.`);$('#modal').classList.add('open');}
 $('#closeBtn').addEventListener('click',()=>$('#modal').classList.remove('open'));
 
-window.ZYPHER_API_BASE=""; // put your backend base URL to go live
+window.ZYPHER_API_BASE=""; // <- set your backend base URL to go live
 async function backend(messages){const base=window.ZYPHER_API_BASE;if(!base)throw new Error('no backend');const r=await fetch(base.replace(/\/$/,'')+'/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bot:state.active,messages})});if(!r.ok)throw new Error('HTTP '+r.status);const j=await r.json();return j.reply||'';}
 function local(t){const id=state.active,x=t.toLowerCase();if(/(politics|joke|song|poem)/.test(x))return "Let’s keep it on task — what would you like help with today?";if(id==='appointly'&&/(tue|tuesday|slot|book|appointment)/.test(x))return "I can do Tuesday at 10:00 or 14:30. Which suits you?";if(id==='realestate'&&/(view|flat|house|property)/.test(x))return "Smashing — are you buying or renting, and what’s your budget?";if(id==='salon'&&/(cut|hair|trim|colour|color)/.test(x))return "We can book a Cut & Finish. Fancy adding a nourishing scalp treatment?";if(id==='carins'&&/(quote|insurance|policy|premium)/.test(x))return "No problem. I’ll need your name, date of birth, licence type, and any claims in the last 3 years.";return "Got it. Tell me a little more and I’ll guide you.";}
 async function sendNow(t){if(!t.trim())return;add('user',t);state.history.push({role:'user',content:t});const typing=add('bot','…',true);let reply='';try{reply=await backend(state.history);}catch{reply=local(t);}typing.remove();add('bot',reply);state.history.push({role:'assistant',content:reply});}
