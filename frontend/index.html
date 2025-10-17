@@ -1,37 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Zypher — AI that books, qualifies & supports</title>
-<meta name="description" content="Zypher builds voice & chat agents that book appointments, qualify leads and support customers — fast, on-brand and privacy-first." />
-<link rel="icon" href="assets/zypher-logo.svg" />
-<link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Zypher — AI that books, qualifies & supports</title>
+  <meta name="description" content="Zypher builds voice & chat agents that book appointments, qualify leads and support customers — fast, on-brand and privacy-first." />
+
+  <style>
+    :root{--bg:#0b0c12;--panel:#0f111a;--elev:#11131d;--text:#e6e9f2;--muted:#a6adc8;--accent:#8a5cf6;--accent-2:#00d4ff}
+    [data-theme="circuit"]{--accent:#28d17c;--accent-2:#1ec8ff}
+    [data-theme="mono"]{--accent:#b0b0b0;--accent-2:#ffffff}
+    *{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+    html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    a{color:inherit;text-decoration:none}img{max-width:100%;display:block}button{font:inherit}
+    .container{width:100%;max-width:1180px;margin:0 auto;padding:0 20px}.section{padding:56px 0}.muted{color:var(--muted)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;position:sticky;top:0;z-index:20;background:rgba(11,12,18,.75);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.06)}
+    .brand{display:flex;align-items:center;gap:12px}.brand-name{font-weight:700}
+    .nav-links{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+    .nav-links a{padding:8px 10px;border-radius:10px;color:var(--muted)}
+    .nav-links a.active,.nav-links a:hover{color:#fff;background:rgba(255,255,255,.06)}
+    .nav-cta{display:flex;align-items:center;gap:10px}
+    .kbd{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--muted);padding:4px 8px;border:1px solid rgba(255,255,255,.12);border-radius:6px;background:rgba(255,255,255,.04)}
+    .btn{padding:10px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:linear-gradient(90deg,rgba(138,92,246,.18),rgba(0,212,255,.18));color:#fff;display:inline-block}
+    .btn.ghost{background:transparent;border-color:rgba(255,255,255,.2)}
+    .hero{padding:72px 0 40px}.hero-title{font-size:clamp(28px,6vw,56px);line-height:1.05;margin:0 0 12px}
+    .a1{color:var(--accent)}.a2{color:var(--accent-2)}.hero-sub{max-width:680px;color:var(--muted);font-size:18px;margin:0}
+    .hero-actions{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
+    .badge{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.08);color:var(--accent-2);background:rgba(0,212,255,.08);font-size:12px;margin-bottom:18px}
+    .grid-3{display:grid;grid-template-columns:1fr;gap:16px}
+    .card{background:linear-gradient(180deg,var(--panel),var(--elev));border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:18px}
+    .card h3{margin:0 0 6px;font-size:18px}.card p{margin:4px 0 0;color:var(--muted);font-size:14px}
+    .footer{padding:32px 16px;border-top:1px solid rgba(255,255,255,.06)}.footer-row{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+    @media (min-width:768px){.grid-3{grid-template-columns:repeat(3,1fr)}}
+    @media (min-width:992px){.container{padding:0 24px}.hero{padding:90px 0 56px}}
+    @media (min-width:1200px){.hero-title{font-size:64px}}
+  </style>
 </head>
 <body>
-<nav class="nav">
-<div class="brand">
-<img src="assets/zypher-logo.svg" alt="Zypher logo" />
-<span class="brand-name">Zypher</span>
-</div>
-<div class="nav-links">
-<a class="active" href="index.html">Home</a>
-<a href="demos.html">Demos</a>
-<a href="contact.html">Contact</a>
-</div>
-<div class="nav-cta">
-<select id="themeSelect" class="kbd" aria-label="Theme">
-<option value="">Nebula</option>
-<option value="circuit">Circuit Neon</option>
-<option value="mono">Monochrome</option>
-</select>
-<a class="btn" href="demos.html">Try a Bot</a>
-</div>
-</nav>
+  <nav class="nav">
+    <div class="brand">
+      <!-- Inline Zypher logo (no file path needed) -->
+      <svg width="28" height="28" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8A5CF6"/><stop offset="100%" stop-color="#00D4FF"/></linearGradient>
+        </defs>
+        <rect width="256" height="256" rx="40" fill="#0A0B10"/>
+        <path d="M176 32L96 144h56l-48 80 80-112h-56l48-80z" fill="url(#g)"/>
+      </svg>
+      <span class="brand-name">Zypher</span>
+    </div>
+    <div class="nav-links">
+      <a class="active" href="index.html">Home</a>
+      <a href="demos.html">Demos</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="nav-cta">
+      <select id="themeSelect" class="kbd" aria-label="Theme">
+        <option value="">Nebula</option>
+        <option value="circuit">Circuit Neon</option>
+        <option value="mono">Monochrome</option>
+      </select>
+      <a class="btn" href="demos.html">Try a Bot</a>
+    </div>
+  </nav>
 
-<header class="hero container">
-<span class="badge">Futuristic by design • Practical by default</span>
-<h1 class="hero-title">AI agents that <span class="a1">book</span>, <span class="a2">qualify</span> & <span class="a1">support</span>.</h1>
-<p class="hero-sub">Meet <strong>Zypher</strong> — voice & chat agents that respect your brand and your customers. Plug into your calendar and CRM. Go live in days, not months.</p>
-<div class="hero-actions">
+  <header class="hero container">
+    <span class="badge">Futuristic by design • Practical by default</span>
+    <h1 class="hero-title">AI agents that <span class="a1">book</span>, <span class="a2">qualify</span> & <span class="a1">support</span>.</h1>
+    <p class="hero-sub">Meet <strong>Zypher</strong> — voice & chat agents that respect your brand and your customers. Plug into your calendar and CRM. Go live in days, not months.</p>
+    <div class="hero-actions">
+      <a class="btn" href="demos.html">See live demos</a>
+      <a class="btn ghost" href="contact.html">Talk to us</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="container grid-3 section">
+      <div class="card"><h3>Voice & Phone</h3><p>Answer calls, qualify and book — 24/7. Natural speech, clear confirmations.</p></div>
+      <div class="card"><h3>Web Chat</h3><p>On-site chat that actually gets things done: capture, schedule, escalate.</p></div>
+      <div class="card"><h3>Workflow Ready</h3><p>Integrates with Google Calendar, HubSpot, Notion, Slack, make.com & more.</p></div>
+    </section>
+
+    <section class="container section">
+      <div class="card"><h3>Why Zypher?</h3><p>Focused, on-rails agents. Guardrails keep conversations on task. Personalised prompts for your niche. Analytics to improve over time.</p></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-row">
+      <div>© 2025 Zypher — All rights reserved.</div>
+      <div class="muted">Built for speed • Privacy-first • UK/EU ready</div>
+    </div>
+  </footer>
+
+  <script>
+    // Theme toggle (works without external JS)
+    (function(){
+      const sel=document.querySelector('#themeSelect');
+      if(!sel) return;
+      sel.addEventListener('change',()=>{document.documentElement.setAttribute('data-theme', sel.value);localStorage.setItem('zy_theme', sel.value)});
+      const saved=localStorage.getItem('zy_theme'); if(saved){document.documentElement.setAttribute('data-theme', saved); sel.value=saved;}
+    })();
+  </script>
+</body>
 </html>
