@@ -9,10 +9,10 @@
   *{box-sizing:border-box} html{-webkit-text-size-adjust:100%}
   html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
   a{color:inherit;text-decoration:none} button{font:inherit} .muted{color:var(--muted)}
-  .container{max-width:980px;margin:0 auto;padding:0 20px} .section{padding:56px 0}
-  .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;position:sticky;top:0;z-index:10;background:rgba(11,12,18,.65);backdrop-filter:blur(8px);border-bottom:1px solid var(--edge)}
+  .container{max-width:980px;margin:0 auto;padding:0 24px} .section{padding:72px 0}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;position:sticky;top:0;z-index:10;background:rgba(11,12,18,.65);backdrop-filter:blur(8px);border-bottom:1px solid var(--edge)}
   .brand{display:flex;align-items:center;gap:12px}.brand svg{width:28px;height:28px}
-  .nav-links{display:flex;gap:14px}.nav-links a{padding:8px 10px;border-radius:10px;color:var(--muted)} .nav-links a.active,.nav-links a:hover{color:#fff;background:rgba(255,255,255,.06)}
+  .nav-links{display:flex;gap:14px}.nav-links a{padding:9px 12px;border-radius:12px;color:var(--muted)} .nav-links a.active,.nav-links a:hover{color:#fff;background:rgba(255,255,255,.06)}
 
   .intro{margin-bottom:22px}
   .glass{background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)); border:1px solid var(--edge); border-radius:18px; padding:20px; backdrop-filter: blur(6px);}
@@ -22,7 +22,7 @@
   .btn{padding:12px 14px; border-radius:12px; border:1px solid var(--edge); color:#fff; cursor:pointer;
        background: linear-gradient(90deg, var(--accent), var(--accent-2)); background-size: 200% auto; animation: pulse 5s linear infinite;}
   @keyframes pulse{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-  .footer{padding:32px 16px;border-top:1px solid var(--edge)}
+  .footer{padding:40px 24px;border-top:1px solid var(--edge)}
   .footer-row{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 </style>
 </head>
@@ -47,7 +47,7 @@
       <p class="muted">Email: <a href="mailto:Zypheragent25@gmail.com">Zypheragent25@gmail.com</a></p>
     </div>
 
-    <form class="glass form" onsubmit="event.preventDefault(); alert('Thanks! We’ll be in touch at the email you provided.');">
+    <form class="glass form" onsubmit="event.preventDefault(); alert('Thanks — we’ll be in touch by email shortly.');">
       <input placeholder="Full name" required />
       <input placeholder="Work email" type="email" required />
       <input placeholder="Company" />
