@@ -1,181 +1,120 @@
-const chipsByBot = {
-  appointments: [
-    "What’s the returns window?",
-    "Do you ship to the UK?",
-    "Are weekend deliveries available?"
-  ],
-  support: [
-    "Where can I track my order?",
-    "How do I reset my password?",
-    "Can I change my delivery address?"
-  ],
-  internal: [
-    "What’s the travel policy?",
-    "Where’s the brand tone guide?",
-    "How do I raise a purchase order?"
-  ],
-  automation: [
-    "Can you plan a Slack → CRM handoff?",
-    "Draft a Zap for inbound leads",
-    "Show me the approval workflow"
-  ]
-};
-
-const titles = {
-  appointments: ["Appointment Setter", "Books meetings from website or email"],
-  support: ["Support Q&A", "Answers from your policy and docs"],
-  internal: ["Internal Knowledge", "Answers from your policy and docs"],
-  automation: ["Automation Planner", "Plans automations and hands them to your stack"]
-};
-
-const orbit = document.getElementById("orbit");
-const modal = document.getElementById("chatModal");
-const closeBtn = document.getElementById("closeModal");
-const msgs = document.getElementById("msgs");
-const textInput = document.getElementById("textInput");
-const interimBox = document.getElementById("interim");
-const micBtn = document.getElementById("micBtn");
-const sendBtn = document.getElementById("sendBtn");
-const chipsWrap = document.getElementById("promptChips");
-const titleEl = document.getElementById("modalTitle");
-const descEl = document.getElementById("modalDesc");
-const inputRow = document.getElementById("inputRow");
-
-let currentBot = null;
-
-/* open modal from chip click */
-orbit.addEventListener("click", e => {
-  const btn = e.target.closest(".demo-chip");
-  if (!btn) return;
-  const bot = btn.dataset.bot;
-  currentBot = bot;
-
-  titleEl.textContent = titles[bot][0];
-  descEl.textContent = titles[bot][1];
-  chipsWrap.innerHTML = "";
-  chipsByBot[bot].forEach(t => {
-    const b = document.createElement("button");
-    b.textContent = t;
-    b.addEventListener("click", () => textInput.value = t);
-    chipsWrap.appendChild(b);
-  });
-
-  msgs.innerHTML = `
-    <div class="bubble bot">Hi — ask me about ${titles[bot][0].toLowerCase()}.</div>
-    <div class="bubble bot">Thanks — this is a static demo. In your build this would call the agent’s API.</div>
-  `;
-  textInput.value = "";
-  interimBox.innerHTML = "";
-  modal.classList.add("open");
-  modal.setAttribute("aria-hidden", "false");
-  textInput.focus();
-});
-
-closeBtn.addEventListener("click", () => {
-  modal.classList.remove("open");
-  modal.setAttribute("aria-hidden", "true");
-});
-
-/* sending helper */
-function sendMessage(text) {
-  if (!text.trim()) return;
-  const me = document.createElement("div");
-  me.className = "bubble user";
-  me.textContent = text.trim();
-  msgs.appendChild(me);
-  msgs.scrollTop = msgs.scrollHeight;
-  textInput.value = "";
-  interimBox.innerHTML = "";
-}
-
-/* buttons */
-sendBtn.addEventListener("click", () => sendMessage(textInput.value));
-textInput.addEventListener("keydown", e => {
-  if (e.key === "Enter") sendMessage(textInput.value);
-});
-
-/* Speech recognition with interim typing + auto send after silence */
-let recognition = null;
-let silenceTimer = null;
-let listening = false;
-
-function supportsSpeech() {
-  return "webkitSpeechRecognition" in window || "SpeechRecognition" in window;
-}
-
-function startListening() {
-  if (!supportsSpeech()) return;
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recognition = new SR();
-  recognition.lang = "en-GB";
-  recognition.interimResults = true;
-  recognition.continuous = true;
-
-  listening = true;
-  micBtn.classList.add("active");
-  inputRow.classList.add("listening");
-  interimBox.innerHTML = "";
-  textInput.value = "";
-
-  recognition.onresult = (event) => {
-    let finalText = "";
-    let interimText = "";
-    for (let i = event.resultIndex; i < event.results.length; i++) {
-      const t = event.results[i][0].transcript;
-      if (event.results[i].isFinal) finalText += t + " ";
-      else interimText += t;
+(function () {
+  const state = {
+    activeBot: null,
+    bots: {
+      appointly: { name: "Appointly (Generic Appointment Setter)", sys: "Concise UK appointment assistant." },
+      realestate: { name: "Property Qualifier", sys: "Qualify buyers/sellers and book viewings." },
+      salon: { name: "Salon Booker", sys: "Hair & beauty bookings, suggest add-ons." },
+      carins: { name: "Car Insurance Quick-Qualifier", sys: "Pre-qualify drivers and schedule a consult." },
+      support: { name: "Support Triage", sys: "Triage issues and route to KB/human." },
+      guardrails: { name: "Off-topic Wrangler", sys: "Politely steer irrelevant queries back on task." }
     }
-    if (interimText) {
-      // animated interim
-      interimBox.innerHTML = "";
-      interimText.split("").forEach((ch, i) => {
-        const span = document.createElement("span");
-        span.style.animationDelay = `${i * 0.01}s`;
-        span.textContent = ch;
-        interimBox.appendChild(span);
-      });
-    } else {
-      interimBox.innerHTML = "";
-    }
-    if (finalText) {
-      textInput.value = (textInput.value + " " + finalText).trim();
-    }
-    resetSilenceTimer();
   };
 
-  recognition.onend = () => {
-    stopListening(false);
+  // ---------- DOM helpers ----------
+  function qs(sel) { return document.querySelector(sel); }
+  function show(el) { if (el) el.style.display = "block"; }
+  function hide(el) { if (el) el.style.display = "none"; }
+
+  // ---------- Chat helpers ----------
+  function addMsg(role, text) {
+    const msgs = qs(".msgs");
+    if (!msgs) return;
+    const div = document.createElement("div");
+    div.className = "msg " + role;
+    div.textContent = text;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function fakeAIResponse(input) {
+    const k = state.activeBot;
+    const low = input.toLowerCase();
+
+    if (k === "guardrails" && (low.includes("politics") || low.includes("weather") || low.includes("joke"))) {
+      return "Let's park that for now — to help you quicker, what service do you need? I can book you in.";
+    }
+    if (k === "appointly" && low.includes("tuesday")) {
+      return "I can offer Tue 10:00 or 14:30. Which works?";
+    }
+    if (k === "carins" && low.includes("quote")) {
+      return "Quick check: name, DOB, licence type, any claims in last 3 years?";
+    }
+    if (k === "salon" && (low.includes("hair") || low.includes("cut"))) {
+      return "We can do a Cut & Finish. Want to add a scalp treatment today?";
+    }
+    if (k === "support" && (low.includes("down") || low.includes("error"))) {
+      return "I can create a ticket. What's your email and a short description?";
+    }
+    if (k === "realestate" && (low.includes("view") || low.includes("flat"))) {
+      return "Great — are you looking to buy or rent, and what budget range?";
+    }
+    return "Got it. Tell me a bit more and I’ll guide you.";
+  }
+
+  function handleSend() {
+    const input = qs("#chatInput");
+    if (!input) return;
+    const text = input.value.trim();
+    if (!text) return;
+
+    addMsg("user", text);
+    input.value = "";
+    // Simulated latency
+    setTimeout(() => addMsg("bot", fakeAIResponse(text)), 400);
+  }
+
+  // Called by voice.js when speech ends
+  function setTranscriptAndSend(text) {
+    const input = qs("#chatInput");
+    if (!input) return;
+    input.value = text || "";
+    if (input.value.trim()) handleSend();
+  }
+
+  // ---------- Orbit / Chat panel ----------
+  function openChat(botKey) {
+    state.activeBot = botKey;
+
+    const orbit = qs(".orbit");
+    const chatWrap = qs(".chat-wrap");
+    const title = qs("#chatBotName");
+
+    if (title) title.textContent = state.bots[botKey]?.name || "Bot";
+    if (orbit) orbit.classList.add("hidden");
+    show(chatWrap);
+
+    const msgs = qs(".msgs");
+    if (msgs) msgs.innerHTML = "";
+    addMsg("bot", `Hi — I'm ${state.bots[botKey].name}. Ask me something or press the mic to speak.`);
+  }
+
+  function backToOrbit() {
+    const orbit = qs(".orbit");
+    const chatWrap = qs(".chat-wrap");
+    if (orbit) orbit.classList.remove("hidden");
+    hide(chatWrap);
+  }
+
+  // ---------- Init bindings ----------
+  function init() {
+    // Only run on demos page
+    if (!qs(".orbit") && !qs(".chat")) return;
+
+    const sendBtn = qs("#sendBtn");
+    const input = qs("#chatInput");
+    if (sendBtn) sendBtn.addEventListener("click", handleSend);
+    if (input) input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") handleSend();
+    });
+  }
+
+  // Expose API for inline HTML handlers and voice.js
+  window.Demo = {
+    openChat, backToOrbit, handleSend, setTranscriptAndSend, addMsg
   };
+  window.openChat = openChat;     // for onclick in HTML
+  window.backToOrbit = backToOrbit;
 
-  recognition.start();
-  resetSilenceTimer();
-}
-
-function stopListening(cancelAutoSend) {
-  try { recognition && recognition.stop(); } catch {}
-  listening = false;
-  micBtn.classList.remove("active");
-  inputRow.classList.remove("listening");
-  clearTimeout(silenceTimer);
-  if (!cancelAutoSend && textInput.value.trim()) {
-    sendMessage(textInput.value);
-  }
-}
-
-function resetSilenceTimer() {
-  clearTimeout(silenceTimer);
-  silenceTimer = setTimeout(() => stopListening(false), 3200); // ~3.2s quiet → send
-}
-
-micBtn.addEventListener("click", () => {
-  if (listening) stopListening(true);
-  else startListening();
-});
-
-/* click outside sheet closes modal */
-modal.addEventListener("click", (e) => {
-  if (e.target === modal) {
-    modal.classList.remove("open");
-    modal.setAttribute("aria-hidden", "true");
-  }
-});
+  document.addEventListener("DOMContentLoaded", init);
+})();
