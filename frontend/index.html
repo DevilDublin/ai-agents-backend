@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Zypher — AI that books, qualifies & supports</title>
 <style>
-:root{--bg:#0b0c12;--panel:#0f111a;--elev:#11131d;--text:#e8ebf5;--muted:#a6adc8;--edge:rgba(255,255,255,.10);--a:#8a5cf6;--b:#00d4ff}
+:root{--panel:#0f111a;--elev:#11131d;--text:#e8ebf5;--muted:#a6adc8;--edge:rgba(255,255,255,.10);--a:#8a5cf6;--b:#00d4ff}
 *{box-sizing:border-box} html{-webkit-text-size-adjust:100%}
-html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
-#bg{position:fixed;inset:0;z-index:-2} .vign{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(120% 120% at 50% 15%,transparent 0 60%,rgba(0,0,0,.35) 85%,rgba(0,0,0,.6) 100%)}
+html,body{margin:0;height:100%;background:transparent;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+#bg{position:fixed;inset:0;z-index:0;display:block;pointer-events:none}
+.site{position:relative;z-index:1;min-height:100%}
+.vign{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(120% 120% at 50% 15%,transparent 0 60%,rgba(0,0,0,.35) 85%,rgba(0,0,0,.6) 100%)}
 a{color:inherit;text-decoration:none}
 .container{max-width:1200px;margin:0 auto;padding:0 24px}
-.nav{position:sticky;top:0;z-index:10;background:rgba(11,12,18,.62);backdrop-filter:blur(10px);border-bottom:1px solid var(--edge);display:flex;align-items:center;justify-content:space-between;padding:10px 18px}
+.nav{position:sticky;top:0;z-index:5;background:rgba(11,12,18,.62);backdrop-filter:blur(10px);border-bottom:1px solid var(--edge);display:flex;align-items:center;justify-content:space-between;padding:10px 18px}
 .brand{display:flex;gap:12px;align-items:center}.brand svg{width:28px;height:28px}
 .links{display:flex;gap:10px}.links a{padding:8px 12px;border-radius:12px;color:var(--muted)}.links a.active,.links a:hover{color:#fff;background:rgba(255,255,255,.08)}
 .btn{padding:10px 16px;border-radius:14px;border:1px solid var(--edge);color:#fff;background:linear-gradient(90deg,color-mix(in oklab,var(--a)45%,transparent),color-mix(in oklab,var(--b)45%,transparent))}
@@ -30,6 +31,7 @@ footer{padding:34px 24px;border-top:1px solid var(--edge);color:var(--muted)}
 </head>
 <body>
 <canvas id="bg"></canvas><div class="vign" aria-hidden="true"></div>
+<div class="site">
 
 <nav class="nav">
   <div class="brand">
@@ -43,7 +45,7 @@ footer{padding:34px 24px;border-top:1px solid var(--edge);color:var(--muted)}
 <header>
   <div class="container">
     <span class="badge">Futuristic by design • Practical by default</span>
-    <h1>AI agents that <span style="color:var(--a)">book</span>, <span style="color:var(--b)">qualify</span> & <span style="color:var(--a)">support</span>.</h1>
+    <h1>AI agents that <span style="color:#a993ff">book</span>, <span style="color:#7be1ff">qualify</span> & <span style="color:#a993ff">support</span>.</h1>
     <p class="sub">Meet <strong>Zypher</strong> — voice & chat agents that respect your brand and your customers. Plug into your calendar and CRM. Go live in days, not months.</p>
     <div class="cta"><a class="btn" href="demos.html">See live demos</a><a class="btn" style="background:transparent" href="contact.html">Talk to us</a></div>
   </div>
@@ -62,15 +64,26 @@ footer{padding:34px 24px;border-top:1px solid var(--edge);color:var(--muted)}
 
 <footer><div class="container row"><span>© 2025 Zypher — All rights reserved.</span><span>Built for speed • Privacy-first • UK/EU ready</span></div></footer>
 
+</div>
 <script>
-/* Background (stars + cyber lines) */
-(()=>{const c=document.getElementById('bg'),x=c.getContext('2d');let stars=[],shots=[],r=window.devicePixelRatio||1;
-function sz(){c.width=innerWidth*r;c.height=innerHeight*r;x.setTransform(r,0,0,r,0,0);mk()}
-function mk(){stars=[];const n=Math.floor(innerWidth*innerHeight/2200);for(let i=0;i<n;i++)stars.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*1.3+.2,a:.55*Math.random()+.25})}
-function spawn(){shots.push({x:-80,y:Math.random()*innerHeight*.8+10,vx:6+Math.random()*5,life:1})}
+/* FULL-SCREEN BACKGROUND (visible everywhere) */
+(()=>{const c=document.getElementById('bg'),x=c.getContext('2d');let r=devicePixelRatio||1,stars=[],shots=[],t=0;
+function size(){c.width=innerWidth*r;c.height=innerHeight*r;x.setTransform(r,0,0,r,0,0)}
+function make(){stars=[];const n=Math.floor(innerWidth*innerHeight/2200);for(let i=0;i<n;i++)stars.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*1.3+.2,a:.4+.4*Math.random()})}
+function spawn(){shots.push({x:-60,y:Math.random()*innerHeight*.9+10,vx:6+Math.random()*5})}
 setInterval(spawn,1200);
-function step(){x.clearRect(0,0,innerWidth,innerHeight);for(const s of stars){x.globalAlpha=s.a;x.fillStyle='#fff';x.fillRect(s.x,s.y,s.s,s.s);s.x+=.03;if(s.x>innerWidth)s.x=0}x.globalAlpha=1;for(const sh of shots){x.strokeStyle='rgba(0,212,255,.5)';x.lineWidth=2;x.beginPath();x.moveTo(sh.x,sh.y);x.lineTo(sh.x+30,sh.y-6);x.stroke();x.strokeStyle='rgba(138,92,246,.45)';x.beginPath();x.moveTo(sh.x-18,sh.y+4);x.lineTo(sh.x+8,sh.y-1);x.stroke();sh.x+=sh.vx;sh.life-=.02}shots=shots.filter(s=>s.x<innerWidth+70&&s.life>0);requestAnimationFrame(step)}
-addEventListener('resize',sz,{passive:true});sz();step()})();
+function neb(u,v){const g=x.createLinearGradient(0,0,innerWidth,innerHeight);g.addColorStop(0,`rgba(14,16,25,1)`);g.addColorStop(.5,`rgba(14,16,25,1)`);g.addColorStop(1,`rgba(14,16,25,1)`);x.fillStyle=g;x.fillRect(0,0,innerWidth,innerHeight);
+const r1=160+50*Math.sin(u*.8),r2=220+60*Math.cos(v*.6);
+const g1=x.createRadialGradient(innerWidth*.2,innerHeight*.25,0,innerWidth*.2,innerHeight*.25,r1);
+g1.addColorStop(0,'rgba(138,92,246,.22)');g1.addColorStop(1,'rgba(138,92,246,0)');
+x.fillStyle=g1;x.beginPath();x.arc(innerWidth*.2,innerHeight*.25,r1,0,Math.PI*2);x.fill();
+const g2=x.createRadialGradient(innerWidth*.8,innerHeight*.75,0,innerWidth*.8,innerHeight*.75,r2);
+g2.addColorStop(0,'rgba(0,212,255,.20)');g2.addColorStop(1,'rgba(0,212,255,0)');
+x.fillStyle=g2;x.beginPath();x.arc(innerWidth*.8,innerHeight*.75,r2,0,Math.PI*2);x.fill();}
+function step(ts){t+=1/60;neb(t,t*.7);for(const s of stars){x.globalAlpha=s.a;x.fillStyle='#fff';x.fillRect(s.x,s.y,s.s,s.s);s.x+=.03;if(s.x>innerWidth)s.x=0}
+x.globalAlpha=1;for(const sh of shots){x.strokeStyle='rgba(0,212,255,.5)';x.lineWidth=2;x.beginPath();x.moveTo(sh.x,sh.y);x.lineTo(sh.x+30,sh.y-6);x.stroke();x.strokeStyle='rgba(138,92,246,.45)';x.beginPath();x.moveTo(sh.x-18,sh.y+4);x.lineTo(sh.x+8,sh.y-1);x.stroke();sh.x+=sh.vx}
+shots=shots.filter(s=>s.x<innerWidth+80);requestAnimationFrame(step)}
+addEventListener('resize',()=>{size();make()},{passive:true});size();make();step()})();
 </script>
 </body>
 </html>
