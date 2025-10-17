@@ -1,54 +1,83 @@
-// Mic + Speech-to-Text with live overlay text and shimmer animation
-const micBtn = document.getElementById('mic');
-const msgInput = document.getElementById('msg');
-const liveText = document.getElementById('liveText');
+(function () {
+  let recognition = null;
+  let listening = false;
 
-let recognizing = false;
-let rec;
+  function micBtn() { return document.querySelector("#micBtn"); }
 
-(function initSTT(){
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!SR){ return; }
-  rec = new SR();
-  rec.continuous = true;
-  rec.interimResults = true;
-  rec.lang = 'en-GB';
+  function supported() {
+    return "SpeechRecognition" in window || "webkitSpeechRecognition" in window;
+  }
 
-  rec.onresult = (e)=>{
-    let interim = '', final = '';
-    for(let i=e.resultIndex;i<e.results.length;i++){
-      const t = e.results[i][0].transcript;
-      if(e.results[i].isFinal) final += t; else interim += t;
-    }
-    if(interim){
-      liveText.textContent = interim.trim();
-      liveText.classList.add('shimmer');
-    }else{
-      liveText.textContent = '';
-      liveText.classList.remove('shimmer');
-    }
-    if(final){
-      msgInput.value = (msgInput.value + ' ' + final).trim();
-    }
-  };
+  function ensureRecognition() {
+    if (recognition) return recognition;
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SR();
+    recognition.lang = (window.ZYPHER_CONFIG && window.ZYPHER_CONFIG.speechLocale) || "en-GB";
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    return recognition;
+  }
 
-  rec.onend = ()=>{
-    if(recognizing){ try{ rec.start(); }catch{} }
-    else{
-      liveText.textContent = '';
-      liveText.classList.remove('shimmer');
+  function glow(on) {
+    const mic = micBtn();
+    if (!mic) return;
+    if (on) mic.classList.add("glow");
+    else mic.classList.remove("glow");
+  }
+
+  function toggleMic() {
+    const mic = micBtn();
+    if (!mic) return;
+
+    if (!supported()) {
+      if (window.Demo && typeof window.Demo.addMsg === "function") {
+        window.Demo.addMsg("bot", "Speech recognition isn’t supported in this browser.");
+      }
+      return;
     }
-  };
+
+    const rec = ensureRecognition();
+
+    if (!listening) {
+      listening = true;
+      glow(true);
+      rec.start();
+
+      rec.onresult = (e) => {
+        const transcript = (e.results[0] && e.results[0][0] && e.results[0][0].transcript) || "";
+        // Hand off to demos.js to insert + send
+        if (window.Demo && typeof window.Demo.setTranscriptAndSend === "function") {
+          window.Demo.setTranscriptAndSend(transcript);
+        }
+      };
+
+      rec.onerror = () => {
+        listening = false;
+        glow(false);
+        if (window.Demo && typeof window.Demo.addMsg === "function") {
+          window.Demo.addMsg("bot", "Sorry — I couldn’t hear that. Try again?");
+        }
+      };
+
+      rec.onend = () => {
+        // Auto-stop glow when user finishes talking
+        listening = false;
+        glow(false);
+      };
+    } else {
+      rec.stop();
+      listening = false;
+      glow(false);
+    }
+  }
+
+  function init() {
+    const mic = micBtn();
+    if (mic) mic.addEventListener("click", toggleMic);
+  }
+
+  // Expose if you prefer inline onclick
+  window.toggleMic = toggleMic;
+
+  document.addEventListener("DOMContentLoaded", init);
 })();
-
-function toggleMic(){
-  if(!rec) return;
-  recognizing = !recognizing;
-  micBtn.setAttribute('aria-pressed', recognizing ? 'true' : 'false');
-  try{
-    if(recognizing){ rec.start(); }
-    else{ rec.stop(); }
-  }catch{}
-}
-
-if(micBtn) micBtn.addEventListener('click', toggleMic);
