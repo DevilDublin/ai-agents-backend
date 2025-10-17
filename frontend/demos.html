@@ -1,179 +1,37 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Live Demos — AI Agents</title>
-  <link rel="stylesheet" href="styles/main.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    /* Page-scoped extras so Home/Contact remain untouched */
-    .demos-page {min-height: 100vh; display:flex; flex-direction:column;}
-    .demos-hero {text-align:center; padding:8rem 1.5rem 2rem;}
-    .demos-hero h1 {font-family:"Space Grotesk",system-ui; font-weight:700; font-size:clamp(2.2rem,4.5vw,3.8rem); letter-spacing:.02em; text-shadow:0 0 36px rgba(153,97,255,.35);}
-    .demos-hero p {opacity:.85; max-width:900px; margin:.75rem auto 0;}
-
-    .orbit-wrap {position:relative; margin:0 auto; width:min(1200px,90vw); aspect-ratio:1/0.62; display:flex; align-items:center; justify-content:center;}
-    .orbit {position:relative; width:min(78vmin,980px); aspect-ratio:1/1; border-radius:50%;}
-    .orbit svg {position:absolute; inset:0;}
-    .ring {stroke:#7c5fe0; stroke-dasharray:6 10; stroke-opacity:.35; fill:none}
-    .axis {stroke:#7c5fe0; stroke-opacity:.25}
-
-    .center-hex {position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:min(16vmin,220px); height:min(16vmin,220px);}
-    .hex-core {position:absolute; inset:0; filter:drop-shadow(0 0 40px rgba(132,90,255,.45));}
-    .hex-core::before {content:""; position:absolute; inset:0; background:
-      radial-gradient(60% 60% at 50% 60%, rgba(164,120,255,.55), rgba(164,120,255,0) 70%);
-      mask: polygon(25% 6%, 75% 6%, 100% 50%, 75% 94%, 25% 94%, 0% 50%);
-      animation: hex-sway 6.2s ease-in-out infinite;
-    }
-    @keyframes hex-sway {0%,100%{transform:rotate(-6deg) translateY(-4px)} 50%{transform:rotate(6deg) translateY(4px)}}
-
-    .center-label {position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); text-align:center; font-weight:700; line-height:1.1; text-shadow:0 0 22px rgba(255,255,255,.35)}
-    .center-label span {display:block}
-
-    .demo-chip {position:absolute; padding:.6rem 1.15rem; border-radius:999px; background:rgba(53,49,88,.7); backdrop-filter:blur(6px); border:1px solid rgba(160,132,255,.18); font-weight:600}
-    .demo-chip:hover {box-shadow:0 0 0 6px rgba(148,115,255,.08)}
-    .chip-top    {left:50%; top:6%; transform:translateX(-50%)}
-    .chip-left   {left:0; top:50%; transform:translate(-10%,-50%)}
-    .chip-right  {right:0; top:50%; transform:translate(10%,-50%)}
-    .chip-bottom {left:50%; bottom:6%; transform:translateX(-50%)}
-
-    .tip {position:absolute; padding:.55rem .8rem; border-radius:12px; border:1px solid rgba(173,145,255,.25); background:rgba(43,40,70,.9); font-size:.9rem; opacity:0; transform:translateY(4px); transition:.18s; pointer-events:none; white-space:nowrap}
-    .demo-chip:hover + .tip {opacity:1; transform:translateY(0)}
-
-    .tip-top    {left:50%; transform:translate(-50%,4px)}
-    .demo-chip:hover + .tip-top {transform:translate(-50%,0)}
-    .tip-left   {right:100%; margin-right:.6rem}
-    .tip-right  {left:100%; margin-left:.6rem}
-    .tip-bottom {left:50%; top:100%; transform:translate(-50%,6px)}
-    .demo-chip:hover + .tip-bottom {transform:translate(-50%,2px)}
-
-    /* Modal */
-    .modal {position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:40}
-    .modal.open {display:flex}
-    .modal::before {content:""; position:absolute; inset:-10%; background:radial-gradient(55% 40% at 50% 55%, rgba(126,96,255,.24), rgba(15,12,30,.88) 70%); filter:blur(30px)}
-    .sheet {position:relative; width:min(980px,92vw); border-radius:18px; background:rgba(20,18,35,.9); border:1px solid rgba(155,132,255,.2); box-shadow:0 40px 120px rgba(60,20,140,.35), inset 0 0 0 1px rgba(255,255,255,.02)} 
-    .sheet-head {display:flex; align-items:center; justify-content:space-between; padding:1.1rem 1.2rem .35rem}
-    .sheet-title {font-weight:700}
-    .sheet-desc {opacity:.7; font-size:.95rem; margin:.25rem 0 0}
-    .close-btn {border:1px solid rgba(200,180,255,.25); background:rgba(30,28,52,.8); padding:.45rem .8rem; border-radius:12px}
-
-    .chat {padding:0 1rem 1rem}
-    .chips {display:flex; gap:.6rem; padding:.1rem .2rem .8rem; flex-wrap:wrap}
-    .chips button {padding:.45rem .75rem; border-radius:999px; border:1px solid rgba(150,130,255,.22); background:rgba(36,33,60,.72)}
-    .msgs {height:min(48vh,460px); overflow:auto; padding:1rem .5rem; border-radius:12px; background:rgba(19,17,35,.6); border:1px solid rgba(120,100,210,.18)}
-    .bubble {max-width:70%; margin:.4rem 0; padding:.65rem .9rem; border-radius:12px}
-    .bot    {background:rgba(60,54,100,.7); border:1px solid rgba(130,110,230,.18)}
-    .user   {margin-left:auto; background:#7a5cff; color:#0d0a1c; font-weight:600; box-shadow:0 0 0 8px rgba(122,92,255,.12)}
-
-    .input-row {display:flex; align-items:center; gap:.6rem; padding:.9rem .2rem 0}
-    .text-wrap {flex:1; position:relative}
-    .text {width:100%; padding:1rem 1.1rem; border-radius:14px; border:1px solid rgba(160,140,255,.25); background:linear-gradient(90deg, rgba(46,40,80,.85), rgba(30,27,56,.9)); box-shadow:0 0 0 0 rgba(140,110,255,0); transition:.2s}
-    .text:focus {outline:none; border-color:rgba(184,160,255,.48)}
-    .listening .text {box-shadow:0 0 0 10px rgba(130,100,255,.12), 0 0 50px rgba(140,110,255,.25)}
-    .mic {width:46px; height:46px; border-radius:12px; display:grid; place-items:center; background:rgba(36,33,62,.85); border:1px solid rgba(170,150,255,.25)}
-    .mic svg {width:18px; height:18px}
-    .mic.active {box-shadow:0 0 0 10px rgba(130,100,255,.12)}
-    .send {height:46px; padding:0 18px; border-radius:12px; background:#8b6bff; color:#0d0a1b; font-weight:700; border:none}
-
-    /* typing animation for interim speech */
-    .interim {position:absolute; inset:0; padding:1rem 1.1rem; color:#d9cfff; pointer-events:none; opacity:.65}
-    .interim span {display:inline-block; animation: pop .035s linear both}
-    @keyframes pop {from{transform:translateY(6px); opacity:.1} to{transform:none; opacity:.65}}
-
-    @media (max-width:720px){
-      .chip-left{transform:translate(-4%,-50%)}
-      .chip-right{transform:translate(4%,-50%)}
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Demos — ZypherAgents</title>
+<link rel="icon" href="assets/zypher-logo.svg"/>
+<link rel="stylesheet" href="styles.css"/>
 </head>
-<body class="demos-page starfield">
-  <header class="topnav">
-    <div class="brand">AI Agents</div>
-    <nav>
-      <a href="index.html">Home</a>
-      <a class="active" href="demos.html">Demos</a>
-      <a href="contact.html">Contact</a>
-    </nav>
-  </header>
-
-  <main>
-    <section class="demos-hero">
-      <h1>Live Demos</h1>
-      <p>Hover to connect. Click to chat. Pause on a bot to see what it does.</p>
-    </section>
-
-    <section class="orbit-wrap">
-      <div class="orbit" id="orbit">
-        <svg viewBox="0 0 100 100" aria-hidden="true">
-          <circle class="ring" cx="50" cy="50" r="46"/>
-          <circle class="ring" cx="50" cy="50" r="32"/>
-          <circle class="ring" cx="50" cy="50" r="18"/>
-          <line class="axis" x1="50" y1="0" x2="50" y2="100"/>
-          <line class="axis" x1="0" y1="50" x2="100" y2="50"/>
-        </svg>
-
-        <div class="center-hex">
-          <div class="hex-core"></div>
-        </div>
-        <div class="center-label" aria-hidden="true">
-          <span>Select</span><span>your</span><span>demo</span>
-        </div>
-
-        <button class="demo-chip chip-top" data-bot="appointments">Appointment Setter</button>
-        <div class="tip tip-top">Books qualifying meetings from website and email</div>
-
-        <button class="demo-chip chip-left" data-bot="internal">Internal Knowledge</button>
-        <div class="tip tip-left">Answers from your policy and docs</div>
-
-        <button class="demo-chip chip-right" data-bot="support">Support Q&amp;A</button>
-        <div class="tip tip-right">Fast answers with helpful links</div>
-
-        <button class="demo-chip chip-bottom" data-bot="automation">Automation Planner</button>
-        <div class="tip tip-bottom">Plans automations and hands them to your stack</div>
-      </div>
-    </section>
-  </main>
-
-  <!-- Chat modal -->
-  <div id="chatModal" class="modal" aria-hidden="true">
-    <div class="sheet">
-      <div class="sheet-head">
-        <div>
-          <div class="sheet-title" id="modalTitle">Agent</div>
-          <p class="sheet-desc" id="modalDesc">Live demo</p>
-        </div>
-        <button class="close-btn" id="closeModal">Close</button>
-      </div>
-
-      <div class="chat">
-        <div class="chips" id="promptChips"></div>
-
-        <div class="msgs" id="msgs">
-          <div class="bubble bot">Hi — ask me about appointment setter.</div>
-          <div class="bubble bot">Thanks — this is a static demo. In your build this would call the agent’s API.</div>
-        </div>
-
-        <div class="input-row" id="inputRow">
-          <div class="text-wrap">
-            <input id="textInput" class="text" type="text" placeholder="Type your message…">
-            <div id="interim" class="interim" aria-hidden="true"></div>
-          </div>
-          <button class="mic" id="micBtn" aria-label="Start voice input">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#dcd4ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"/>
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-              <line x1="12" y1="19" x2="12" y2="22"/>
-              <line x1="8" y1="22" x2="16" y2="22"/>
-            </svg>
-          </button>
-          <button class="send" id="sendBtn">Send</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script src="js/demos.js"></script>
-</body>
+<body>
+<nav>
+<div class="brand">
+<img src="assets/zypher-logo.svg" alt="ZypherAgents logo"/>
+<span class="name">ZypherAgents</span>
+</div>
+<div class="nav-links">
+<a href="index.html" class="">Home</a>
+<a href="demos.html" class="active">Demos</a>
+<a href="contact.html" class="">Contact</a>
+</div>
+<div style="display:flex;align-items:center;gap:10px;">
+<select id="themeSelect" class="kbd">
+<option value="">Nebula</option>
+<option value="circuit">Circuit Neon</option>
+<option value="mono">Monochrome</option>
+</select>
+<a class="cta-btn" href="demos.html">Try a Bot</a>
+</div>
+</nav>
+<section class="container section">
+<div class="demo-hero">
+<div>
+<h2 style="margin:0 0 10px;">Pick a demo</h2>
+<p style="color:var(--muted)">Start with the orbit below. Click a card to open the chat. You can return to the orbit any time — the page does <em>not</em> lock you into a bot.</p>
+<div class="orbit">
+<div class="bot" onclick="openChat('appointly')">
 </html>
