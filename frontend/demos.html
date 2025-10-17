@@ -1,39 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Demos — Zypher</title>
 <style>
-  :root{--bg:#0b0c12;--panel:#0f111a;--elev:#11131d;--text:#e6e9f2;--muted:#a6adc8;--edge:rgba(255,255,255,.09);--accent:#8a5cf6;--accent-2:#00d4ff}
+  :root{--bg:#0b0c12;--panel:#0f111a;--elev:#11131d;--text:#e8ebf5;--muted:#a6adc8;--edge:rgba(255,255,255,.09);--accent:#8a5cf6;--accent2:#00d4ff}
   *{box-sizing:border-box} html{-webkit-text-size-adjust:100%}
   html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
   a{color:inherit;text-decoration:none} button{font:inherit}
-  .container{max-width:1200px;margin:0 auto;padding:0 24px}
-  .section{padding:56px 0} .muted{color:var(--muted)}
+  .container{max-width:1200px;margin:0 auto;padding:0 24px} .muted{color:var(--muted)} .section{padding:56px 0}
 
-  #bgCanvas{position:fixed;inset:0;z-index:-2} .rays{position:fixed;inset:-12% -12% -12% -12%;z-index:-1;filter:blur(36px);pointer-events:none;background:conic-gradient(from 180deg, color-mix(in oklab,var(--accent) 45%, transparent), color-mix(in oklab,var(--accent-2) 48%, transparent), transparent 62%);opacity:.45;animation:rays 18s linear infinite}
-  @keyframes rays{to{transform:rotate(360deg)}}
+  #bg{position:fixed;inset:0;z-index:-2} .rays{position:fixed;inset:-12%;z-index:-1;filter:blur(36px);pointer-events:none;background:conic-gradient(from 180deg, color-mix(in oklab,var(--accent) 45%, transparent), color-mix(in oklab,var(--accent2) 48%, transparent), transparent 62%);opacity:.45;animation:spin 22s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
 
-  .nav{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:rgba(11,12,18,.62);backdrop-filter:blur(10px);border-bottom:1px solid var(--edge)}
+  .nav{position:sticky;top:0;z-index:10;background:rgba(11,12,18,.62);backdrop-filter:blur(10px);border-bottom:1px solid var(--edge);display:flex;align-items:center;justify-content:space-between;padding:10px 18px}
   .brand{display:flex;gap:12px;align-items:center}.brand svg{width:28px;height:28px}
   .links{display:flex;gap:12px}.links a{padding:8px 12px;border-radius:12px;color:var(--muted)} .links a.active,.links a:hover{color:#fff;background:rgba(255,255,255,.08)}
 
-  .layout{position:relative;z-index:1;display:grid;grid-template-columns:1fr;gap:22px}
-  @media (min-width:900px){ .layout{grid-template-columns:420px 1fr} }
+  /* —— Hex Carousel —— */
+  .hexwrap{position:relative;perspective:1200px;margin:18px 0}
+  .hex-stage{position:relative;height:360px;transform-style:preserve-3d}
+  .centre-hex{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:160px;height:138px;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);
+              background:radial-gradient(120% 120% at 50% 0%,rgba(138,92,246,.25),rgba(255,255,255,.02));
+              border:1px solid var(--edge);box-shadow:0 0 24px rgba(138,92,246,.25), inset 0 0 0 1px rgba(138,92,246,.25);display:grid;place-items:center;animation:humm 5s ease-in-out infinite}
+  .centre-hex span{opacity:.9}
+  @keyframes humm{0%,100%{filter:drop-shadow(0 0 10px rgba(138,92,246,.3))}50%{filter:drop-shadow(0 0 24px rgba(0,212,255,.35))}}
 
-  /* Bot Capsules (buttons to guarantee clickability) */
-  .capsules{display:grid;gap:14px;z-index:3}
-  .cap{appearance:none;border:none;background:radial-gradient(120% 120% at 8% 0%, rgba(138,92,246,.15), rgba(255,255,255,.02)), var(--panel);border:1px solid var(--edge);border-radius:18px;padding:16px;width:100%;text-align:left;cursor:pointer;transition:.16s ease;position:relative;will-change:transform,box-shadow}
-  .cap:hover{transform:translateY(-2px);box-shadow:0 18px 36px rgba(0,0,0,.4), inset 0 0 0 1px rgba(138,92,246,.22)}
-  .cap:active{transform:translateY(0)}
-  .title{display:flex;align-items:center;gap:10px;margin:0 0 4px;color:var(--text)}
-  .dot{width:10px;height:10px;border-radius:999px;background:var(--accent);box-shadow:0 0 10px var(--accent)}
-  .subtitle{margin:0;color:var(--muted);font-size:14px}
+  .orbit{position:absolute;left:50%;top:50%;transform-style:preserve-3d;animation:orbit 24s linear infinite}
+  @keyframes orbit{to{transform:translate(-50%,-50%) rotateZ(360deg)}}
 
-  /* Stage */
-  .stage{position:relative;z-index:2}
-  .placeholder{display:grid;place-items:center;height:560px;border:1px dashed var(--edge);border-radius:18px;color:var(--muted)}
+  .hex-btn{appearance:none;border:none;cursor:pointer;color:var(--text);background:radial-gradient(120% 120% at 10% 0%, rgba(138,92,246,.16), rgba(255,255,255,.02));
+           border:1px solid var(--edge); width:220px;height:190px;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);
+           position:absolute;transform:translate(-50%,-50%); transition:transform .18s ease, box-shadow .18s ease}
+  .hex-btn:hover{transform:translate(-50%,-50%) scale(1.035); box-shadow:0 18px 36px rgba(0,0,0,.45), inset 0 0 0 1px rgba(138,92,246,.22)}
+  .hex-label{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;width:70%}
+  .hex-label h4{margin:0 0 4px}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:999px;background:var(--accent);box-shadow:0 0 10px var(--accent);margin-right:8px}
+
+  /* —— Responsive fall-back —— */
+  @media (max-width:880px){
+    .hex-stage{height:auto}
+    .orbit{position:static;transform:none;animation:none}
+    .centre-hex{display:none}
+    .hex-grid{display:grid;grid-template-columns:1fr;gap:14px}
+    .hex-btn{position:static;transform:none;width:100%;height:auto;clip-path:none;border-radius:16px}
+    .hex-label{position:static;transform:none;padding:16px 14px}
+  }
+
+  /* —— Stage chat —— */
+  .demo-layout{display:grid;grid-template-columns:1fr;gap:22px}
+  @media (min-width:980px){ .demo-layout{grid-template-columns:520px 1fr} }
   .chat{display:none;height:560px;background:var(--panel);border:1px solid var(--edge);border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
   .hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--edge)}
   .pill{font-size:12px;padding:4px 8px;border-radius:999px;background:rgba(138,92,246,.18);border:1px solid color-mix(in oklab,var(--accent) 55%, transparent)}
@@ -47,46 +64,71 @@
   .bar input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-size:16px}
   .icon{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;border:1px solid var(--edge);background:rgba(255,255,255,.04);cursor:pointer}
   .icon:active{transform:translateY(1px)}
-  .mic.glow{box-shadow:0 0 0 2px color-mix(in oklab,var(--accent) 55%, transparent),0 0 26px 6px color-mix(in oklab,var(--accent) 55%, transparent),inset 0 0 12px color-mix(in oklab,var(--accent) 40%, transparent); border-color: color-mix(in oklab, var(--accent) 60%, transparent)}
+  .mic.glow{box-shadow:0 0 0 2px color-mix(in oklab,var(--accent) 55%, transparent),0 0 26px 6px color-mix(in oklab,var(--accent) 55%, transparent),inset 0 0 12px color-mix(in oklab,var(--accent) 40%, transparent); border-color: color-mix(in oklab, var(--accent) 60%, transparent) }
 </style>
 </head>
 <body>
-<canvas id="bgCanvas"></canvas><div class="rays" aria-hidden="true"></div>
+<canvas id="bg"></canvas><div class="rays" aria-hidden="true"></div>
 
 <nav class="nav">
   <div class="brand">
     <svg viewBox="0 0 256 256" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8A5CF6"/><stop offset="100%" stop-color="#00D4FF"/></linearGradient></defs><rect width="256" height="256" rx="40" fill="#0A0B10"/><path d="M176 32L96 144h56l-48 80 80-112h-56l48-80z" fill="url(#g)"/></svg>
-    <span>Zypher</span>
+    <strong>Zypher</strong>
   </div>
   <div class="links"><a href="index.html">Home</a><a class="active" href="demos.html">Demos</a><a href="contact.html">Contact</a></div>
   <div class="muted">Voice & Chat</div>
 </nav>
 
 <main class="container section">
-  <h2 style="margin:0 0 8px">Live demos</h2>
-  <p class="muted" style="margin:0 0 16px">Our four flagship agents. Tap a Capsule — the Stage opens on the right. Speak naturally; we’ll type what you say and send when you pause.</p>
+  <h2 style="margin:0 0 6px">Live demos</h2>
+  <p class="muted" style="margin:0 0 6px">Select your demo.</p>
 
-  <div class="layout">
-    <!-- Capsules -->
-    <div class="capsules">
-      <button class="cap" type="button" onclick="openChat('appointly')"><h4 class="title"><span class="dot"></span> Appointly</h4><p class="subtitle">Appointment booking</p></button>
-      <button class="cap" type="button" onclick="openChat('realestate')"><h4 class="title"><span class="dot"></span> Property Qualifier</h4><p class="subtitle">Lead intake & viewings</p></button>
-      <button class="cap" type="button" onclick="openChat('salon')"><h4 class="title"><span class="dot"></span> Salon Booker</h4><p class="subtitle">Services & add-ons</p></button>
-      <button class="cap" type="button" onclick="openChat('carins')"><h4 class="title"><span class="dot"></span> Car Insurance</h4><p class="subtitle">Quick-qualify & quote</p></button>
-    </div>
+  <div class="demo-layout">
+    <!-- HEX CAROUSEL -->
+    <section>
+      <div class="hexwrap">
+        <div class="hex-stage" id="hexStage">
+          <div class="centre-hex"><span>select your demo</span></div>
 
-    <!-- Stage -->
-    <section class="stage">
-      <div class="placeholder"><p>Select a demo to begin.</p></div>
-      <div class="chat">
-        <div class="hdr"><div><span class="pill" id="botName">Bot</span></div><div><button class="icon" onclick="backToCaps()" title="Back">⟲</button></div></div>
-        <div class="msgs"></div>
-        <div class="tools">
-          <div class="bar"><input id="chatInput" placeholder="Say something…" /><button id="micBtn" class="icon mic" title="Voice">🎤</button></div>
-          <button id="sendBtn" class="icon" title="Send">➤</button>
+          <div class="orbit" id="orbit" style="transform:translate(-50%,-50%) rotateZ(0deg)">
+            <!-- Positions around a circle -->
+            <button class="hex-btn" type="button" style="left:50%; top:-40px" data-key="appointly">
+              <div class="hex-label"><h4><span class="dot"></span>Appointly</h4><small class="muted">Appointment booking</small></div>
+            </button>
+            <button class="hex-btn" type="button" style="left:100%; top:160px" data-key="realestate">
+              <div class="hex-label"><h4><span class="dot"></span>Property Qualifier</h4><small class="muted">Lead intake & viewings</small></div>
+            </button>
+            <button class="hex-btn" type="button" style="left:50%; top:360px" data-key="salon">
+              <div class="hex-label"><h4><span class="dot"></span>Salon Booker</h4><small class="muted">Services & add-ons</small></div>
+            </button>
+            <button class="hex-btn" type="button" style="left:0%; top:160px" data-key="carins">
+              <div class="hex-label"><h4><span class="dot"></span>Car Insurance</h4><small class="muted">Quick-qualify & quote</small></div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile fallback tiles -->
+        <div class="hex-grid" id="hexGrid" hidden>
+          <button class="hex-btn" data-key="appointly"><div class="hex-label"><h4><span class="dot"></span>Appointly</h4><small class="muted">Appointment booking</small></div></button>
+          <button class="hex-btn" data-key="realestate"><div class="hex-label"><h4><span class="dot"></span>Property Qualifier</h4><small class="muted">Lead intake & viewings</small></div></button>
+          <button class="hex-btn" data-key="salon"><div class="hex-label"><h4><span class="dot"></span>Salon Booker</h4><small class="muted">Services & add-ons</small></div></button>
+          <button class="hex-btn" data-key="carins"><div class="hex-label"><h4><span class="dot"></span>Car Insurance</h4><small class="muted">Quick-qualify & quote</small></div></button>
         </div>
       </div>
-      <small class="muted" style="display:block;margin-top:6px">Using British English. We’ll auto-send when you pause.</small>
+      <small class="muted">Hover or drag horizontally to spin. Tap a hex to start.</small>
+    </section>
+
+    <!-- STAGE CHAT -->
+    <section>
+      <div class="chat" id="chat">
+        <div class="hdr"><div><span class="pill" id="botName">Bot</span></div><div><button class="icon" id="backBtn" title="Back">⟲</button></div></div>
+        <div class="msgs" id="msgs"></div>
+        <div class="tools">
+          <div class="bar"><input id="chatInput" placeholder="Say something…" /><button id="micBtn" class="icon mic">🎤</button></div>
+          <button id="sendBtn" class="icon">➤</button>
+        </div>
+      </div>
+      <small class="muted" style="display:block;margin-top:8px">British English. Auto-send on pause.</small>
     </section>
   </div>
 </main>
@@ -94,78 +136,49 @@
 <footer class="container" style="padding:30px 0;color:var(--muted);border-top:1px solid var(--edge)">© 2025 Zypher — All rights reserved.</footer>
 
 <script>
-/* BACKGROUND (same as Home) */
-(()=>{const c=document.getElementById('bgCanvas'),x=c.getContext('2d');function r(){c.width=innerWidth*devicePixelRatio;c.height=innerHeight*devicePixelRatio;x.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);m();}let pts=[];function m(){pts=[];const n=Math.min(120,Math.floor(innerWidth/12));for(let i=0;i<n;i++)pts.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*0.3,vy:(Math.random()-.5)*0.3});}function s(){x.clearRect(0,0,innerWidth,innerHeight);for(const p of pts){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>innerWidth)p.vx*=-1;if(p.y<0||p.y>innerHeight)p.vy*=-1;x.fillStyle='rgba(255,255,255,.06)';x.fillRect(p.x,p.y,2,2);}for(let i=0;i<pts.length;i++){for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.hypot(dx,dy);if(d<110){x.strokeStyle=`rgba(138,92,246,${(1-d/110)*.18})`;x.lineWidth=1;x.beginPath();x.moveTo(pts[i].x,pts[i].y);x.lineTo(pts[j].x,pts[j].y);x.stroke();if(d<70){x.strokeStyle=`rgba(0,212,255,${(1-d/70)*.18})`;x.beginPath();x.moveTo(pts[i].x,pts[i].y);x.lineTo((pts[i].x+pts[j].x)/2,(pts[i].y+pts[j].y)/2);x.stroke();}}}}requestAnimationFrame(s);}addEventListener('resize',r,{passive:true});r();s();})();
+/* Background reused (stars + cyber lines) */
+(()=>{const c=document.getElementById('bg'),x=c.getContext('2d');let stars=[],shots=[],W,H,ratio=window.devicePixelRatio||1;
+function resize(){W=c.width=innerWidth*ratio;H=c.height=innerHeight*ratio;x.setTransform(ratio,0,0,ratio,0,0);make();}
+function make(){stars=[];const n=Math.floor(innerWidth*innerHeight/2600);for(let i=0;i<n;i++){stars.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*1.2+0.2,a:Math.random()*0.5+0.3});}}
+function spawn(){const y=Math.random()*innerHeight*0.7+20;shots.push({x:-80,y,vx:6+Math.random()*4,life:1});}
+setInterval(spawn,1400);
+function step(){x.clearRect(0,0,innerWidth,innerHeight);
+  for(const s of stars){x.globalAlpha=s.a;x.fillStyle='#fff';x.fillRect(s.x,s.y,s.s,s.s);s.x+=0.02;if(s.x>innerWidth)s.x=0;}
+  x.globalAlpha=1;for(const sh of shots){x.strokeStyle='rgba(0,212,255,.4)';x.lineWidth=2;x.beginPath();x.moveTo(sh.x,sh.y);x.lineTo(sh.x+26,sh.y-6);x.stroke();
+    x.strokeStyle='rgba(138,92,246,.35)';x.beginPath();x.moveTo(sh.x-18,sh.y+4);x.lineTo(sh.x+10,sh.y-2);x.stroke();sh.x+=sh.vx;sh.life-=0.02;}
+  shots=shots.filter(s=>s.x<innerWidth+60 && s.life>0); requestAnimationFrame(step);
+}
+addEventListener('resize',resize,{passive:true});resize();make();step();})();
 
-/* CONFIG: hook to your backend if you want real ChatGPT replies */
-window.ZYPHER_API_BASE = ""; // e.g., "https://api.zypheragents.com"
+/* Backend toggle (fill this to use your API) */
+window.ZYPHER_API_BASE = ""; // e.g. "https://api.zypheragents.com"
 
-/* DEMO STATE */
-const state={active:null, msgs:[], bots:{
-  appointly:{name:'Appointly (Appointment booking)'},
-  realestate:{name:'Property Qualifier'},
-  salon:{name:'Salon Booker'},
-  carins:{name:'Car Insurance'}
-}};
+/* HEX CAROUSEL INTERACTION */
+(()=>{const stage=document.getElementById('hexStage'); const orbit=document.getElementById('orbit'); const grid=document.getElementById('hexGrid');
+const isMobile=matchMedia('(max-width: 880px)').matches; if(isMobile){ grid.hidden=false; stage.style.display='none'; }
+let angle=0, dragging=false, startX=0, startAngle=0;
+function setAngle(a){angle=a; orbit.style.transform=`translate(-50%,-50%) rotateZ(${angle}deg)`;}
+stage.addEventListener('pointerdown',e=>{dragging=true;startX=e.clientX;startAngle=angle; stage.setPointerCapture(e.pointerId);});
+stage.addEventListener('pointermove',e=>{if(!dragging)return; const dx=e.clientX-startX; setAngle(startAngle+dx*0.2);});
+stage.addEventListener('pointerup',()=>dragging=false);
+[...document.querySelectorAll('.hex-btn')].forEach(b=>b.addEventListener('click',()=>openChat(b.dataset.key)));})();
+
+/* CHAT */
+const state={active:null,bots:{appointly:{name:'Appointly (Appointment booking)'},realestate:{name:'Property Qualifier'},salon:{name:'Salon Booker'},carins:{name:'Car Insurance'}},history:[]};
 const $=s=>document.querySelector(s);
-function add(role,text,typing=false){const d=document.createElement('div');d.className='msg '+role+(typing?' typing':'');d.textContent=text;$('.msgs').appendChild(d);$('.msgs').scrollTop=$('.msgs').scrollHeight;return d;}
+function add(role,text,typing=false){const d=document.createElement('div');d.className='msg '+role+(typing?' typing':'');d.textContent=text;$('#msgs').appendChild(d);$('#msgs').scrollTop=$('#msgs').scrollHeight;return d;}
+function openChat(key){state.active=key;state.history=[];$('#chat').style.display='flex';$('#botName').textContent=state.bots[key].name;$('#msgs').innerHTML='';add('bot',`Hi — I’m ${state.bots[key].name}. Ask me anything or press the mic.`);}
+document.getElementById('backBtn').addEventListener('click',()=>{$('#chat').style.display='none';});
+async function backend(bot, messages){const base=window.ZYPHER_API_BASE;if(!base)throw new Error('no backend');const r=await fetch(base.replace(/\\/$/,'')+'/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bot,messages})});if(!r.ok)throw new Error('HTTP '+r.status);const j=await r.json();return j.reply||'';}
+function local(bot,t){const x=t.toLowerCase();if(/(politics|joke|song|poem)/.test(x))return "Let’s keep it on task — what would you like help with today?";if(bot==='appointly'&&/(tue|tuesday|slot|book|appointment)/.test(x))return "I can do Tuesday at 10:00 or 14:30. Which suits you?";if(bot==='realestate'&&/(view|flat|house|property)/.test(x))return "Smashing — are you buying or renting, and what’s your budget?";if(bot==='salon'&&/(cut|hair|trim|colour|color)/.test(x))return "We can book a Cut & Finish. Fancy adding a nourishing scalp treatment?";if(bot==='carins'&&/(quote|insurance|policy|premium)/.test(x))return "No problem. I’ll need your name, date of birth, licence type, and any claims in the last 3 years.";return "Got it. Tell me a little more and I’ll guide you.";}
+async function sendNow(t){if(!t.trim())return;add('user',t);state.history.push({role:'user',content:t});const typing=add('bot','…',true);let reply='';try{reply=await backend(state.active,state.history);}catch{reply=local(state.active,t);}typing.remove();add('bot',reply);state.history.push({role:'assistant',content:reply});}
+function handleSend(){const i=$('#chatInput');const t=i.value.trim();if(!t)return;i.value='';sendNow(t);}$('#sendBtn').addEventListener('click',handleSend);$('#chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')handleSend();});
 
-function openChat(key){
-  state.active=key; state.msgs=[];
-  $('.placeholder')?.remove();
-  $('.chat').style.display='flex';
-  $('#botName').textContent=state.bots[key].name;
-  $('.msgs').innerHTML='';
-  add('bot',`Hi — I’m ${state.bots[key].name}. Ask me anything or press the mic to speak.`);
-}
-function backToCaps(){ $('.chat').style.display='none'; const st=document.querySelector('.stage'); if(!$('.placeholder')){ const p=document.createElement('div'); p.className='placeholder'; p.innerHTML='<p>Select a demo to begin.</p>'; st.prepend(p); }}
-
-/* BACKEND with graceful fallback + guardrails */
-async function backend(bot, messages){
-  const base=window.ZYPHER_API_BASE; if(!base) throw new Error('No backend');
-  const res=await fetch(base.replace(/\\/$/,'')+'/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bot, messages})});
-  if(!res.ok) throw new Error('HTTP '+res.status); const data=await res.json(); return data.reply||'';
-}
-function local(bot,text){
-  const t=text.toLowerCase();
-  if(/(politics|weather|joke|song|poem)/.test(t)) return "Let’s keep it on task — what would you like help with today?";
-  if(bot==='appointly'&&/(tue|tuesday|slot|book|appointment)/.test(t)) return "I can do Tuesday at 10:00 or 14:30. Which suits you?";
-  if(bot==='realestate'&&/(view|flat|house|property)/.test(t)) return "Smashing — are you buying or renting, and what’s your budget range?";
-  if(bot==='salon'&&/(cut|hair|trim|colour|color)/.test(t)) return "We can book a Cut & Finish. Fancy adding a nourishing scalp treatment?";
-  if(bot==='carins'&&/(quote|insurance|policy|premium)/.test(t)) return "No problem. I’ll need your name, date of birth, licence type, and any claims in the last 3 years.";
-  return "Got it. Tell me a little more and I’ll guide you.";
-}
-async function sendNow(text){
-  if(!text.trim()) return;
-  add('user',text);
-  state.msgs.push({role:'user',content:text});
-  const typing=add('bot','…',true);
-  let reply='';
-  try{ reply=await backend(state.active,state.msgs); }catch{ reply=local(state.active,text); }
-  typing.remove(); add('bot',reply); state.msgs.push({role:'assistant',content:reply});
-}
-function handleSend(){ const i=$('#chatInput'); const t=i.value.trim(); if(!t) return; i.value=''; sendNow(t); }
-$('#sendBtn').addEventListener('click',handleSend);
-$('#chatInput').addEventListener('keydown',e=>{ if(e.key==='Enter') handleSend(); });
-
-/* VOICE: en-GB, interim typing animation, auto-send on silence */
-(()=>{let rec=null,listening=false,lastFinal="";const mic=()=>$('#micBtn');const ok=()=>('SpeechRecognition'in window)||('webkitSpeechRecognition'in window);
-function ensure(){ if(rec) return rec; const SR=window.SpeechRecognition||window.webkitSpeechRecognition; rec=new SR(); rec.lang='en-GB'; rec.continuous=false; rec.interimResults=true; return rec; }
-function glow(on){ mic().classList.toggle('glow',!!on); }
-let raf; function typeInto(to){const i=$('#chatInput');cancelAnimationFrame(raf);const from=i.value,start=performance.now(),dur=Math.min(800,18*to.length);function step(t){const p=Math.min(1,(t-start)/dur);i.value=to.slice(0,Math.round(from.length+(to.length-from.length)*p)); if(p<1) raf=requestAnimationFrame(step);}raf=requestAnimationFrame(step);}
-function toggle(){
-  if(!ok()){ add('bot','Speech recognition isn’t supported in this browser.'); return; }
-  const r=ensure();
-  if(!listening){
-    listening=true; glow(true); lastFinal=""; r.start();
-    r.onresult=e=>{ let fin="",int=""; for(let i=e.resultIndex;i<e.results.length;i++){const tr=e.results[i][0].transcript; if(e.results[i].isFinal) fin+=tr; else int+=tr;}
-      if(fin){ lastFinal+=fin; typeInto(lastFinal.trim()); } else if(int){ typeInto((lastFinal+int).trim()); } };
-    r.onerror=()=>{ listening=false; glow(false); add('bot','Sorry — I couldn’t hear that. Try again?'); };
-    r.onend=()=>{ listening=false; glow(false); const i=$('#chatInput'); const t=(i.value||'').trim(); if(t){ i.value=''; sendNow(t); } };
-  } else { r.stop(); listening=false; glow(false); }
-}
-mic().addEventListener('click',toggle);
-})();
+/* VOICE en-GB, interim typing + auto-send */
+(()=>{let rec=null,listening=false,last="";const mic=()=>$('#micBtn');const ok=()=>('SpeechRecognition'in window)||('webkitSpeechRecognition'in window);
+function ensure(){if(rec)return rec;const SR=window.SpeechRecognition||window.webkitSpeechRecognition;rec=new SR();rec.lang='en-GB';rec.continuous=false;rec.interimResults=true;return rec;}
+function glow(on){mic().classList.toggle('glow',!!on)} let raf;function typeInto(to){const i=$('#chatInput');cancelAnimationFrame(raf);const from=i.value,st=performance.now(),dur=Math.min(800,18*to.length);function step(t){const p=Math.min(1,(t-st)/dur);i.value=to.slice(0,Math.round(from.length+(to.length-from.length)*p));if(p<1)raf=requestAnimationFrame(step);}raf=requestAnimationFrame(step);}
+mic().addEventListener('click',()=>{if(!ok()){add('bot','Speech recognition isn’t supported in this browser.');return;}const r=ensure();if(!listening){listening=true;glow(true);last="";r.start();r.onresult=e=>{let fin="",int="";for(let i=e.resultIndex;i<e.results.length;i++){const tr=e.results[i][0].transcript;if(e.results[i].isFinal)fin+=tr;else int+=tr;} if(fin){last+=fin;typeInto(last.trim());}else if(int){typeInto((last+int).trim());}};r.onerror=()=>{listening=false;glow(false);add('bot','Sorry — I couldn’t hear that. Try again?');};r.onend=()=>{listening=false;glow(false);const i=$('#chatInput');const t=(i.value||'').trim();if(t){i.value='';sendNow(t);} };}else{r.stop();listening=false;glow(false);} });})();
 </script>
 </body>
 </html>
