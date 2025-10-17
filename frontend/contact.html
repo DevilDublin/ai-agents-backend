@@ -1,37 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Contact — ZypherAgents</title>
-<link rel="icon" href="assets/zypher-logo.svg"/>
-<link rel="stylesheet" href="styles.css"/>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Contact — Zypher</title>
+<link rel="icon" href="assets/zypher-logo.svg" />
+<link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<nav>
+<nav class="nav">
 <div class="brand">
-<img src="assets/zypher-logo.svg" alt="ZypherAgents logo"/>
-<span class="name">ZypherAgents</span>
+<img src="assets/zypher-logo.svg" alt="Zypher logo" />
+<span class="brand-name">Zypher</span>
 </div>
 <div class="nav-links">
-<a href="index.html" class="">Home</a>
-<a href="demos.html" class="">Demos</a>
+<a href="index.html">Home</a>
+<a href="demos.html">Demos</a>
 <a href="contact.html" class="active">Contact</a>
 </div>
-<div style="display:flex;align-items:center;gap:10px;">
+<div class="nav-cta">
 <select id="themeSelect" class="kbd">
 <option value="">Nebula</option>
 <option value="circuit">Circuit Neon</option>
 <option value="mono">Monochrome</option>
 </select>
-<a class="cta-btn" href="demos.html">Try a Bot</a>
+<a class="btn" href="demos.html">Try a Bot</a>
 </div>
 </nav>
-<section class="container section">
+
+<main class="container section">
 <h2>Let’s talk</h2>
-<p style="color:var(--muted)">Tell us about your use-case. We’ll reply within 1 business day.</p>
+<p class="muted">Tell us about your use‑case. We’ll reply within 1 business day.</p>
 <form class="form" onsubmit="event.preventDefault(); alert('Thanks! We’ll be in touch.');">
-<input placeholder="Full name" required/>
-<input placeholder="Work email" type="email" required/>
-<input placeholder="Company"/>
+<input placeholder="Full name" required />
+<input placeholder="Work email" type="email" required />
 </html>
