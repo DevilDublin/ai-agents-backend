@@ -5,83 +5,78 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Zypher — AI that books, qualifies & supports</title>
 <meta name="description" content="Zypher builds voice & chat agents that book appointments, qualify leads and support customers — fast, on-brand and privacy-first.">
-
 <style>
-  /* THEME */
   :root{ --bg:#0b0c12; --panel:#0f111a; --elev:#11131d; --text:#e6e9f2; --muted:#a6adc8; --edge:rgba(255,255,255,.09);
          --accent:#8a5cf6; --accent-2:#00d4ff; }
-  [data-theme="circuit"]{ --accent:#21d089; --accent-2:#15c0ff; }
-  [data-theme="cyber"]  { --accent:#00ffd0; --accent-2:#ff00e5; }
-  [data-theme="mid"]    { --accent:#6ea8ff; --accent-2:#a975ff; }
-  [data-theme="sun"]    { --accent:#ff7ab6; --accent-2:#ffb86b; }
-  [data-theme="mono"]   { --accent:#bdbdbd; --accent-2:#ffffff; }
+  [data-theme="circuit"]{ --accent:#21d089; --accent-2:#15c0ff }
+  [data-theme="cyber"]  { --accent:#00ffd0; --accent-2:#ff00e5 }
+  [data-theme="mid"]    { --accent:#6ea8ff; --accent-2:#a975ff }
+  [data-theme="sun"]    { --accent:#ff7ab6; --accent-2:#ffb86b }
+  [data-theme="mono"]   { --accent:#bdbdbd; --accent-2:#ffffff }
 
-  /* BASE */
   *{box-sizing:border-box} html{-webkit-text-size-adjust:100%}
   html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
-  a{color:inherit;text-decoration:none} img{max-width:100%;display:block} button{font:inherit}
+  a{color:inherit;text-decoration:none} button{font:inherit}
   .container{max-width:1200px;margin:0 auto;padding:0 24px}
-  .section{padding:72px 0} .muted{color:var(--muted)}
+  .section{padding:56px 0} .muted{color:var(--muted)}
 
-  /* FULL-SCREEN BACKGROUND CANVAS (tech lines) */
+  /* FULLSCREEN BACKGROUND (constellations + rays) */
   #bgCanvas{position:fixed;inset:0;z-index:-2;display:block}
-  .glowFog{position:fixed;inset:-10% -10% -10% -10%;z-index:-1;pointer-events:none;filter:blur(40px);
-           background:conic-gradient(from 180deg, color-mix(in oklab,var(--accent) 45%, transparent), color-mix(in oklab,var(--accent-2) 45%, transparent), transparent 60%);
-           opacity:.45;animation:floaty 14s linear infinite}
-  @keyframes floaty{0%{transform:translateY(0) rotate(0)}50%{transform:translateY(-2%) rotate(6deg)}100%{transform:translateY(0) rotate(0)}}
+  .rays{position:fixed;inset:-12% -12% -12% -12%;z-index:-1;pointer-events:none;filter:blur(36px);
+        background:conic-gradient(from 180deg, color-mix(in oklab,var(--accent) 45%, transparent), color-mix(in oklab,var(--accent-2) 48%, transparent), transparent 62%);
+        opacity:.45;animation:rays 18s linear infinite}
+  @keyframes rays{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
 
   /* NAV */
-  .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;position:sticky;top:0;z-index:20;
-       background:rgba(11,12,18,.6);backdrop-filter:blur(10px);border-bottom:1px solid var(--edge)}
+  .nav{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:12px;
+       padding:10px 18px;background:rgba(11,12,18,.62);backdrop-filter:blur(10px);border-bottom:1px solid var(--edge)}
   .brand{display:flex;align-items:center;gap:12px}.brand svg{width:28px;height:28px}.brand-name{font-weight:700}
-  .nav-links{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-  .nav-links a{padding:9px 12px;border-radius:12px;color:var(--muted)}
-  .nav-links a.active,.nav-links a:hover{color:#fff;background:rgba(255,255,255,.07)}
+  .links{display:flex;gap:12px;align-items:center}
+  .links a{padding:8px 12px;border-radius:12px;color:var(--muted)}
+  .links a.active,.links a:hover{color:#fff;background:rgba(255,255,255,.08)}
   .theme{position:relative;display:flex;align-items:center;gap:12px}
-  .theme button{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;border:1px solid var(--edge);background:rgba(255,255,255,.06);color:#fff}
-  .dot{width:10px;height:10px;border-radius:999px;background:var(--accent);box-shadow:0 0 12px var(--accent)}
-  .menu{position:absolute;right:0;top:42px;display:none;min-width:200px;background:#0e1119;border:1px solid var(--edge);border-radius:14px;padding:6px;box-shadow:0 20px 40px rgba(0,0,0,.45)}
+  .theme button{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:12px;border:1px solid var(--edge);background:rgba(255,255,255,.06);color:#fff}
+  .dot{width:10px;height:10px;border-radius:999px;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+  .menu{position:absolute;right:0;top:42px;display:none;min-width:190px;background:#0e1119;border:1px solid var(--edge);border-radius:14px;padding:6px;box-shadow:0 20px 40px rgba(0,0,0,.45)}
   .menu.open{display:block;animation:pop .14s ease-out}@keyframes pop{from{transform:translateY(-4px);opacity:0}to{transform:translateY(0);opacity:1}}
   .item{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:10px;cursor:pointer}.item:hover{background:rgba(255,255,255,.06)}
   .sw{width:14px;height:14px;border-radius:999px;box-shadow:0 0 10px currentColor}
-  .btn{padding:12px 16px;border-radius:14px;border:1px solid var(--edge);
+  .btn{padding:10px 16px;border-radius:14px;border:1px solid var(--edge);
        background:linear-gradient(90deg,color-mix(in oklab,var(--accent) 40%,transparent),color-mix(in oklab,var(--accent-2) 40%,transparent));color:#fff}
   .btn.ghost{background:transparent}
 
-  /* HERO */
-  .hero{padding:96px 0 48px}
-  .badge{display:inline-flex;gap:8px;align-items:center;padding:7px 12px;border-radius:999px;border:1px solid var(--edge);color:var(--accent-2);background:rgba(0,212,255,.08);font-size:12px;margin-bottom:18px}
-  .hero-title{font-size: clamp(34px, 6.5vw, 72px);line-height:1.05;margin:0 0 14px;
-              background:linear-gradient(90deg,#fff,color-mix(in oklab,var(--accent) 45%,#fff),color-mix(in oklab,var(--accent-2) 45%,#fff),#fff);
-              -webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% auto;animation:sheen 7s linear infinite}
+  /* HERO (pushed up) */
+  .hero{padding:72px 0 24px}
+  .badge{display:inline-flex;gap:8px;align-items:center;padding:6px 12px;border-radius:999px;border:1px solid var(--edge);color:var(--accent-2);background:rgba(0,212,255,.08);font-size:12px;margin-bottom:14px}
+  .title{font-size: clamp(36px, 6.6vw, 74px);line-height:1.02;margin:0 0 10px;
+         background:linear-gradient(90deg,#fff,color-mix(in oklab,var(--accent) 45%,#fff),color-mix(in oklab,var(--accent-2) 45%,#fff),#fff);
+         -webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% auto;animation:sheen 7s linear infinite}
   @keyframes sheen{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-  .hero-sub{max-width:780px;color:var(--muted);font-size:18px;margin:0}
-  .hero-actions{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
+  .sub{max-width:780px;color:var(--muted);font-size:18px;margin:0}
+  .cta{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
 
   /* CARDS */
-  .grid-3{display:grid;grid-template-columns:1fr;gap:18px}
-  .card{background:linear-gradient(180deg,var(--panel),var(--elev));border:1px solid var(--edge);border-radius:18px;padding:20px}
-  .card h3{margin:0 0 6px;font-size:18px;color:var(--text)}
-  .card p{margin:4px 0 0;color:var(--muted)}
+  .grid{display:grid;grid-template-columns:1fr;gap:16px}
+  .card{background:linear-gradient(180deg,var(--panel),var(--elev));border:1px solid var(--edge);border-radius:18px;padding:18px}
+  .card h3{margin:0 0 6px} .card p{margin:4px 0 0;color:var(--muted)}
 
   /* FOOTER */
-  .footer{padding:40px 24px;border-top:1px solid var(--edge)}
-  .footer-row{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  footer{padding:32px 24px;border-top:1px solid var(--edge);color:var(--muted)}
+  .row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 
-  /* BREAKPOINTS */
-  @media (min-width:768px){ .grid-3{grid-template-columns:repeat(3,1fr)} }
+  @media (min-width:768px){ .grid{grid-template-columns:repeat(3,1fr)} }
 </style>
 </head>
 <body>
 <canvas id="bgCanvas"></canvas>
-<div class="glowFog" aria-hidden="true"></div>
+<div class="rays" aria-hidden="true"></div>
 
 <nav class="nav">
   <div class="brand">
     <svg viewBox="0 0 256 256" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8A5CF6"/><stop offset="100%" stop-color="#00D4FF"/></linearGradient></defs><rect width="256" height="256" rx="40" fill="#0A0B10"/><path d="M176 32L96 144h56l-48 80 80-112h-56l48-80z" fill="url(#g)"/></svg>
     <span class="brand-name">Zypher</span>
   </div>
-  <div class="nav-links">
+  <div class="links">
     <a class="active" href="index.html">Home</a><a href="demos.html">Demos</a><a href="contact.html">Contact</a>
   </div>
   <div class="theme">
@@ -100,56 +95,33 @@
 
 <header class="hero container">
   <span class="badge">Futuristic by design • Practical by default</span>
-  <h1 class="hero-title">AI agents that <span style="color:var(--accent)">book</span>, <span style="color:var(--accent-2)">qualify</span> & <span style="color:var(--accent)">support</span>.</h1>
-  <p class="hero-sub">Meet <strong>Zypher</strong> — voice & chat agents that respect your brand and your customers. Plug into your calendar and CRM. Go live in days, not months.</p>
-  <div class="hero-actions"><a class="btn" href="demos.html">See live demos</a><a class="btn ghost" href="contact.html">Talk to us</a></div>
+  <h1 class="title">AI agents that <span style="color:var(--accent)">book</span>, <span style="color:var(--accent-2)">qualify</span> & <span style="color:var(--accent)">support</span>.</h1>
+  <p class="sub">Meet <strong>Zypher</strong> — voice & chat agents that respect your brand and your customers. Plug into your calendar and CRM. Go live in days, not months.</p>
+  <div class="cta"><a class="btn" href="demos.html">See live demos</a><a class="btn ghost" href="contact.html">Talk to us</a></div>
 </header>
 
 <main>
-  <section class="container grid-3 section">
+  <section class="container grid section">
     <div class="card"><h3>Voice & Phone</h3><p>Answer calls, qualify and book — 24/7. Natural speech with clear confirmations.</p></div>
     <div class="card"><h3>Web Chat</h3><p>On-site chat that actually gets things done: capture, schedule, escalate.</p></div>
     <div class="card"><h3>Workflow Ready</h3><p>Integrates with Google Calendar, HubSpot, Notion, Slack, make.com & more.</p></div>
   </section>
-
-  <section class="container section">
-    <div class="card"><h3>Why Zypher?</h3><p>Focused, on-rails agents. Guardrails keep conversations on task. Personalised prompts for your niche. Analytics to improve over time.</p></div>
-  </section>
+  <section class="container section"><div class="card"><h3>Why Zypher?</h3><p>Focused, on-rails agents. Guardrails keep conversations on task. Personalised prompts for your niche. Analytics to improve over time.</p></div></section>
 </main>
 
-<footer class="footer">
-  <div class="container footer-row">
-    <div>© 2025 Zypher — All rights reserved.</div>
-    <div class="muted">Built for speed • Privacy-first • UK/EU ready</div>
-  </div>
-</footer>
+<footer><div class="container row"><span>© 2025 Zypher — All rights reserved.</span><span>Built for speed • Privacy-first • UK/EU ready</span></div></footer>
 
 <script>
-/* THEME DROPDOWN */
-(function(){
-  const btn=document.getElementById('themeBtn'), menu=document.getElementById('themeMenu'), label=document.getElementById('themeLabel');
-  const saved=localStorage.getItem('zy_theme'); if(saved!==null){document.documentElement.setAttribute('data-theme',saved); const a=[...menu.children].find(i=>i.dataset.theme===saved); if(a) label.textContent=a.textContent.trim();}
-  btn.addEventListener('click',()=>{menu.classList.toggle('open')}); document.addEventListener('click',e=>{if(!menu.contains(e.target)&&!btn.contains(e.target)) menu.classList.remove('open')});
-  menu.addEventListener('click',e=>{const it=e.target.closest('.item'); if(!it) return; const t=it.dataset.theme; document.documentElement.setAttribute('data-theme',t); localStorage.setItem('zy_theme',t); label.textContent=it.textContent.trim(); menu.classList.remove('open');});
-})();
+/* Theme dropdown */
+(()=>{const b=document.getElementById('themeBtn'),m=document.getElementById('themeMenu'),l=document.getElementById('themeLabel');const s=localStorage.getItem('zy_theme');if(s!==null){document.documentElement.setAttribute('data-theme',s);const a=[...m.children].find(i=>i.dataset.theme===s);if(a)l.textContent=a.textContent.trim();}b.addEventListener('click',()=>m.classList.toggle('open'));document.addEventListener('click',e=>{if(!m.contains(e.target)&&!b.contains(e.target))m.classList.remove('open')});m.addEventListener('click',e=>{const it=e.target.closest('.item');if(!it)return;const t=it.dataset.theme;document.documentElement.setAttribute('data-theme',t);localStorage.setItem('zy_theme',t);l.textContent=it.textContent.trim();m.classList.remove('open');});})();
 
-/* TECH-LINES BACKGROUND CANVAS */
-(function(){
-  const c=document.getElementById('bgCanvas'), d=c.getContext('2d'); let w=0,h=0, lines=[];
-  function resize(){ w= c.width = window.innerWidth * devicePixelRatio; h = c.height = window.innerHeight * devicePixelRatio; d.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0); lines=makeLines(); }
-  function makeLines(){ const arr=[]; const cols= Math.ceil(window.innerWidth/160)+2; const rows= Math.ceil(window.innerHeight/120)+2;
-    for(let x=0;x<cols;x++){ for(let y=0;y<rows;y++){ arr.push({x:(x-1)*160+Math.random()*20, y:(y-1)*120+Math.random()*20, t:Math.random()*100}); } } return arr; }
-  function tick(t){
-    d.clearRect(0,0,w,h);
-    for(const L of lines){ L.t+=0.004; const ox=Math.sin(L.t)*18, oy=Math.cos(L.t*1.3)*18;
-      const x=L.x+ox, y=L.y+oy; d.strokeStyle='rgba(138,92,246,.18)'; d.lineWidth=1; d.beginPath(); d.moveTo(x-40,y); d.lineTo(x+40,y); d.stroke();
-      d.strokeStyle='rgba(0,212,255,.18)'; d.beginPath(); d.moveTo(x,y-26); d.lineTo(x,y+26); d.stroke();
-      d.fillStyle='rgba(255,255,255,.07)'; d.fillRect(x-1,y-1,2,2);
-    }
-    requestAnimationFrame(tick);
-  }
-  window.addEventListener('resize', resize); resize(); requestAnimationFrame(tick);
-})();
+/* Constellations + rays canvas */
+(()=>{const c=document.getElementById('bgCanvas'),x=c.getContext('2d');let W,H,pts=[];
+function resize(){W=c.width=window.innerWidth*devicePixelRatio;H=c.height=window.innerHeight*devicePixelRatio;x.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);make();}
+function make(){pts=[];const n=Math.min(120, Math.floor(window.innerWidth/12));for(let i=0;i<n;i++){pts.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,vx:(Math.random()-.5)*0.3,vy:(Math.random()-.5)*0.3});}}
+function step(){x.clearRect(0,0,window.innerWidth,window.innerHeight);for(const p of pts){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>window.innerWidth)p.vx*=-1;if(p.y<0||p.y>window.innerHeight)p.vy*=-1;x.fillStyle='rgba(255,255,255,.06)';x.fillRect(p.x,p.y,2,2);}
+for(let i=0;i<pts.length;i++){for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.hypot(dx,dy);if(d<110){x.strokeStyle=`rgba(138,92,246,${(1-d/110)*.18})`;x.lineWidth=1;x.beginPath();x.moveTo(pts[i].x,pts[i].y);x.lineTo(pts[j].x,pts[j].y);x.stroke();if(d<70){x.strokeStyle=`rgba(0,212,255,${(1-d/70)*.18})`;x.beginPath();x.moveTo(pts[i].x,pts[i].y);x.lineTo((pts[i].x+pts[j].x)/2,(pts[i].y+pts[j].y)/2);x.stroke();}}}}
+requestAnimationFrame(step);}window.addEventListener('resize',resize,{passive:true});resize();step();})();
 </script>
 </body>
 </html>
