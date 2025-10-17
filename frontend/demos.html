@@ -8,47 +8,34 @@
   :root{--bg:#0b0c12;--panel:#0f111a;--elev:#11131d;--text:#e6e9f2;--muted:#a6adc8;--edge:rgba(255,255,255,.09);--accent:#8a5cf6;--accent-2:#00d4ff}
   *{box-sizing:border-box} html{-webkit-text-size-adjust:100%}
   html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
-  a{color:inherit;text-decoration:none} button{font:inherit} .muted{color:var(--muted)}
-  .container{max-width:1200px;margin:0 auto;padding:0 24px} .section{padding:64px 0}
+  a{color:inherit;text-decoration:none} button{font:inherit}
+  .container{max-width:1200px;margin:0 auto;padding:0 24px}
+  .section{padding:56px 0} .muted{color:var(--muted)}
 
-  /* Background lines (same as home) */
-  #bgCanvas{position:fixed;inset:0;z-index:-2;display:block}
-  .glowFog{position:fixed;inset:-10% -10% -10% -10%;z-index:-1;pointer-events:none;filter:blur(40px);
-           background:conic-gradient(from 180deg,color-mix(in oklab,var(--accent) 45%,transparent),color-mix(in oklab,var(--accent-2) 45%,transparent),transparent 60%);
-           opacity:.45;animation:floaty 14s linear infinite}
-  @keyframes floaty{0%{transform:translateY(0) rotate(0)}50%{transform:translateY(-2%) rotate(6deg)}100%{transform:translateY(0) rotate(0)}}
+  #bgCanvas{position:fixed;inset:0;z-index:-2} .rays{position:fixed;inset:-12% -12% -12% -12%;z-index:-1;filter:blur(36px);pointer-events:none;background:conic-gradient(from 180deg, color-mix(in oklab,var(--accent) 45%, transparent), color-mix(in oklab,var(--accent-2) 48%, transparent), transparent 62%);opacity:.45;animation:rays 18s linear infinite}
+  @keyframes rays{to{transform:rotate(360deg)}}
 
-  .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;position:sticky;top:0;z-index:10;background:rgba(11,12,18,.6);backdrop-filter:blur(10px);border-bottom:1px solid var(--edge)}
-  .brand{display:flex;align-items:center;gap:12px}.brand svg{width:28px;height:28px}
-  .nav-links{display:flex;gap:12px}.nav-links a{padding:9px 12px;border-radius:12px;color:var(--muted)} .nav-links a.active,.nav-links a:hover{color:#fff;background:rgba(255,255,255,.07)}
+  .nav{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:rgba(11,12,18,.62);backdrop-filter:blur(10px);border-bottom:1px solid var(--edge)}
+  .brand{display:flex;gap:12px;align-items:center}.brand svg{width:28px;height:28px}
+  .links{display:flex;gap:12px}.links a{padding:8px 12px;border-radius:12px;color:var(--muted)} .links a.active,.links a:hover{color:#fff;background:rgba(255,255,255,.08)}
 
-  .layout{display:grid;grid-template-columns:1fr;gap:24px}
-  @media (min-width:860px){ .layout{grid-template-columns:420px 1fr} }
+  .layout{position:relative;z-index:1;display:grid;grid-template-columns:1fr;gap:22px}
+  @media (min-width:900px){ .layout{grid-template-columns:420px 1fr} }
 
-  /* HOLOCARDS (3D tilt) */
-  .holo{display:grid;gap:16px}
-  .card{
-    color:var(--text);
-    background: radial-gradient(120% 120% at 10% 0%, rgba(138,92,246,.14), rgba(255,255,255,.02)), var(--panel);
-    border:1px solid var(--edge); border-radius:18px; padding:16px; cursor:pointer; transform-style:preserve-3d;
-    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
-  }
-  .card:hover{ transform: perspective(800px) rotateX(4deg) rotateY(-4deg) translateY(-2px);
-               box-shadow:0 18px 36px rgba(0,0,0,.4), inset 0 0 0 1px rgba(138,92,246,.22) }
-  .card h4{margin:2px 0 6px; color:var(--text)}         /* <- fixed: titles inherit light colour */
-  .card small{color:var(--muted)}
-  .dot{width:10px;height:10px;border-radius:999px;background:var(--accent);box-shadow:0 0 10px var(--accent);display:inline-block;margin-right:8px}
+  /* Bot Capsules (buttons to guarantee clickability) */
+  .capsules{display:grid;gap:14px;z-index:3}
+  .cap{appearance:none;border:none;background:radial-gradient(120% 120% at 8% 0%, rgba(138,92,246,.15), rgba(255,255,255,.02)), var(--panel);border:1px solid var(--edge);border-radius:18px;padding:16px;width:100%;text-align:left;cursor:pointer;transition:.16s ease;position:relative;will-change:transform,box-shadow}
+  .cap:hover{transform:translateY(-2px);box-shadow:0 18px 36px rgba(0,0,0,.4), inset 0 0 0 1px rgba(138,92,246,.22)}
+  .cap:active{transform:translateY(0)}
+  .title{display:flex;align-items:center;gap:10px;margin:0 0 4px;color:var(--text)}
+  .dot{width:10px;height:10px;border-radius:999px;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+  .subtitle{margin:0;color:var(--muted);font-size:14px}
 
-  /* Stage + neon ring spotlight */
-  .stage{position:relative}
-  .ring{position:absolute;inset:12px 12px auto auto; width:180px; height:180px; border-radius:999px;
-        border:2px dashed rgba(255,255,255,.12); filter:drop-shadow(0 0 24px color-mix(in oklab,var(--accent) 55%, transparent));
-        pointer-events:none; transform:translate(20px,-60px); opacity:.25; animation:spin 18s linear infinite}
-  @keyframes spin{to{transform:translate(20px,-60px) rotate(360deg)}}
-
+  /* Stage */
+  .stage{position:relative;z-index:2}
   .placeholder{display:grid;place-items:center;height:560px;border:1px dashed var(--edge);border-radius:18px;color:var(--muted)}
-  .chat{height:560px;background:var(--panel);border:1px solid var(--edge);border-radius:18px;display:flex;flex-direction:column;overflow:hidden}
-  .chat-header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--edge)}
+  .chat{display:none;height:560px;background:var(--panel);border:1px solid var(--edge);border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+  .hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--edge)}
   .pill{font-size:12px;padding:4px 8px;border-radius:999px;background:rgba(138,92,246,.18);border:1px solid color-mix(in oklab,var(--accent) 55%, transparent)}
   .msgs{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
   .msg{max-width:80%;padding:10px 12px;border-radius:12px;line-height:1.35}
@@ -56,61 +43,50 @@
   .msg.user{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);align-self:flex-end}
   .typing{opacity:.75}
   .tools{display:flex;gap:10px;padding:10px;border-top:1px solid var(--edge);align-items:center}
-  .input-bar{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid var(--edge);border-radius:14px;padding:8px;flex:1}
-  .input-bar input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-size:16px}
-  .icon-btn{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;border:1px solid var(--edge);background:rgba(255,255,255,.04);cursor:pointer}
-  .icon-btn:active{transform:translateY(1px)}
-  .mic.glow{box-shadow:0 0 0 2px color-mix(in oklab, var(--accent) 55%, transparent),0 0 26px 6px color-mix(in oklab, var(--accent) 55%, transparent),inset 0 0 12px color-mix(in oklab, var(--accent) 40%, transparent); border-color: color-mix(in oklab, var(--accent) 60%, transparent)}
+  .bar{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid var(--edge);border-radius:14px;padding:8px;flex:1}
+  .bar input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-size:16px}
+  .icon{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;border:1px solid var(--edge);background:rgba(255,255,255,.04);cursor:pointer}
+  .icon:active{transform:translateY(1px)}
+  .mic.glow{box-shadow:0 0 0 2px color-mix(in oklab,var(--accent) 55%, transparent),0 0 26px 6px color-mix(in oklab,var(--accent) 55%, transparent),inset 0 0 12px color-mix(in oklab,var(--accent) 40%, transparent); border-color: color-mix(in oklab, var(--accent) 60%, transparent)}
 </style>
 </head>
 <body>
-<canvas id="bgCanvas"></canvas>
-<div class="glowFog" aria-hidden="true"></div>
+<canvas id="bgCanvas"></canvas><div class="rays" aria-hidden="true"></div>
 
 <nav class="nav">
   <div class="brand">
     <svg viewBox="0 0 256 256" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8A5CF6"/><stop offset="100%" stop-color="#00D4FF"/></linearGradient></defs><rect width="256" height="256" rx="40" fill="#0A0B10"/><path d="M176 32L96 144h56l-48 80 80-112h-56l48-80z" fill="url(#g)"/></svg>
     <span>Zypher</span>
   </div>
-  <div class="nav-links">
-    <a href="index.html">Home</a><a class="active" href="demos.html">Demos</a><a href="contact.html">Contact</a>
-  </div>
+  <div class="links"><a href="index.html">Home</a><a class="active" href="demos.html">Demos</a><a href="contact.html">Contact</a></div>
   <div class="muted">Voice & Chat</div>
 </nav>
 
 <main class="container section">
-  <h2 style="margin:0 0 10px">Live demos</h2>
-  <p class="muted" style="margin:0 0 18px">Our four flagship agents. Choose one from the HoloCards — the Stage opens on the right. Speak naturally; we’ll type what you say and send when you pause.</p>
+  <h2 style="margin:0 0 8px">Live demos</h2>
+  <p class="muted" style="margin:0 0 16px">Our four flagship agents. Tap a Capsule — the Stage opens on the right. Speak naturally; we’ll type what you say and send when you pause.</p>
 
   <div class="layout">
-    <!-- HOLOCARDS -->
-    <div class="holo">
-      <div class="card" onclick="openChat('appointly')"><span class="dot"></span><div><h4>Appointly</h4><small>Appointment booking</small></div></div>
-      <div class="card" onclick="openChat('realestate')"><span class="dot"></span><div><h4>Property Qualifier</h4><small>Lead intake & viewings</small></div></div>
-      <div class="card" onclick="openChat('salon')"><span class="dot"></span><div><h4>Salon Booker</h4><small>Services & add-ons</small></div></div>
-      <div class="card" onclick="openChat('carins')"><span class="dot"></span><div><h4>Car Insurance</h4><small>Quick-qualify & quote</small></div></div>
+    <!-- Capsules -->
+    <div class="capsules">
+      <button class="cap" type="button" onclick="openChat('appointly')"><h4 class="title"><span class="dot"></span> Appointly</h4><p class="subtitle">Appointment booking</p></button>
+      <button class="cap" type="button" onclick="openChat('realestate')"><h4 class="title"><span class="dot"></span> Property Qualifier</h4><p class="subtitle">Lead intake & viewings</p></button>
+      <button class="cap" type="button" onclick="openChat('salon')"><h4 class="title"><span class="dot"></span> Salon Booker</h4><p class="subtitle">Services & add-ons</p></button>
+      <button class="cap" type="button" onclick="openChat('carins')"><h4 class="title"><span class="dot"></span> Car Insurance</h4><p class="subtitle">Quick-qualify & quote</p></button>
     </div>
 
-    <!-- STAGE -->
+    <!-- Stage -->
     <section class="stage">
-      <div class="ring" aria-hidden="true"></div>
       <div class="placeholder"><p>Select a demo to begin.</p></div>
-
-      <div class="chat" style="display:none">
-        <div class="chat-header">
-          <div class="chat-title"><span class="pill" id="chatBotName">Bot</span></div>
-          <div class="chat-actions"><button class="icon-btn" onclick="backToCards()" title="Back">⟲</button></div>
-        </div>
+      <div class="chat">
+        <div class="hdr"><div><span class="pill" id="botName">Bot</span></div><div><button class="icon" onclick="backToCaps()" title="Back">⟲</button></div></div>
         <div class="msgs"></div>
         <div class="tools">
-          <div class="input-bar">
-            <input id="chatInput" placeholder="Say something…" />
-            <button id="micBtn" class="icon-btn mic" title="Voice input">🎤</button>
-          </div>
-          <button id="sendBtn" class="icon-btn" title="Send">➤</button>
+          <div class="bar"><input id="chatInput" placeholder="Say something…" /><button id="micBtn" class="icon mic" title="Voice">🎤</button></div>
+          <button id="sendBtn" class="icon" title="Send">➤</button>
         </div>
       </div>
-      <small class="muted" style="display:block;margin-top:8px">Using British English. We’ll auto-send when you pause.</small>
+      <small class="muted" style="display:block;margin-top:6px">Using British English. We’ll auto-send when you pause.</small>
     </section>
   </div>
 </main>
@@ -118,110 +94,77 @@
 <footer class="container" style="padding:30px 0;color:var(--muted);border-top:1px solid var(--edge)">© 2025 Zypher — All rights reserved.</footer>
 
 <script>
-/* CONFIG: set this to your backend base to enable real ChatGPT replies (keeps local fallback if unreachable) */
-window.ZYPHER_API_BASE = "";   // e.g. "https://api.zypheragents.com"; endpoint assumed POST `${base}/chat` with JSON {bot, messages:[{role,content}]}
+/* BACKGROUND (same as Home) */
+(()=>{const c=document.getElementById('bgCanvas'),x=c.getContext('2d');function r(){c.width=innerWidth*devicePixelRatio;c.height=innerHeight*devicePixelRatio;x.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);m();}let pts=[];function m(){pts=[];const n=Math.min(120,Math.floor(innerWidth/12));for(let i=0;i<n;i++)pts.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*0.3,vy:(Math.random()-.5)*0.3});}function s(){x.clearRect(0,0,innerWidth,innerHeight);for(const p of pts){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>innerWidth)p.vx*=-1;if(p.y<0||p.y>innerHeight)p.vy*=-1;x.fillStyle='rgba(255,255,255,.06)';x.fillRect(p.x,p.y,2,2);}for(let i=0;i<pts.length;i++){for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.hypot(dx,dy);if(d<110){x.strokeStyle=`rgba(138,92,246,${(1-d/110)*.18})`;x.lineWidth=1;x.beginPath();x.moveTo(pts[i].x,pts[i].y);x.lineTo(pts[j].x,pts[j].y);x.stroke();if(d<70){x.strokeStyle=`rgba(0,212,255,${(1-d/70)*.18})`;x.beginPath();x.moveTo(pts[i].x,pts[i].y);x.lineTo((pts[i].x+pts[j].x)/2,(pts[i].y+pts[j].y)/2);x.stroke();}}}}requestAnimationFrame(s);}addEventListener('resize',r,{passive:true});r();s();})();
 
-/* BG tech lines (same as home) */
-(function(){
-  const c=document.getElementById('bgCanvas'), d=c.getContext('2d'); let w=0,h=0, lines=[];
-  function resize(){ w= c.width = window.innerWidth * devicePixelRatio; h = c.height = window.innerHeight * devicePixelRatio; d.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0); lines=makeLines(); }
-  function makeLines(){ const arr=[]; const cols= Math.ceil(window.innerWidth/160)+2; const rows= Math.ceil(window.innerHeight/120)+2;
-    for(let x=0;x<cols;x++){ for(let y=0;y<rows;y++){ arr.push({x:(x-1)*160+Math.random()*20, y:(y-1)*120+Math.random()*20, t:Math.random()*100}); } } return arr; }
-  function tick(){
-    d.clearRect(0,0,w,h);
-    for(const L of lines){ L.t+=0.004; const ox=Math.sin(L.t)*18, oy=Math.cos(L.t*1.3)*18;
-      const x=L.x+ox, y=L.y+oy; d.strokeStyle='rgba(138,92,246,.18)'; d.lineWidth=1; d.beginPath(); d.moveTo(x-40,y); d.lineTo(x+40,y); d.stroke();
-      d.strokeStyle='rgba(0,212,255,.18)'; d.beginPath(); d.moveTo(x,y-26); d.lineTo(x,y+26); d.stroke();
-      d.fillStyle='rgba(255,255,255,.07)'; d.fillRect(x-1,y-1,2,2);
-    }
-    requestAnimationFrame(tick);
-  }
-  window.addEventListener('resize', resize); resize(); requestAnimationFrame(tick);
-})();
+/* CONFIG: hook to your backend if you want real ChatGPT replies */
+window.ZYPHER_API_BASE = ""; // e.g., "https://api.zypheragents.com"
 
-/* DEMOS: state + UI */
-const state={activeBot:null, messages:[], bots:{
+/* DEMO STATE */
+const state={active:null, msgs:[], bots:{
   appointly:{name:'Appointly (Appointment booking)'},
   realestate:{name:'Property Qualifier'},
   salon:{name:'Salon Booker'},
   carins:{name:'Car Insurance'}
 }};
-const qs=s=>document.querySelector(s);
-function addMsg(role,text,isTyping=false){const m=qs('.msgs'); const d=document.createElement('div'); d.className='msg '+role+(isTyping?' typing':''); d.textContent=text; m.appendChild(d); m.scrollTop=m.scrollHeight; return d;}
+const $=s=>document.querySelector(s);
+function add(role,text,typing=false){const d=document.createElement('div');d.className='msg '+role+(typing?' typing':'');d.textContent=text;$('.msgs').appendChild(d);$('.msgs').scrollTop=$('.msgs').scrollHeight;return d;}
+
 function openChat(key){
-  state.activeBot=key; state.messages=[];
-  qs('.placeholder')?.remove(); qs('.chat').style.display='flex';
-  qs('#chatBotName').textContent = state.bots[key].name;
-  qs('.msgs').innerHTML='';
-  addMsg('bot',`Hi — I’m ${state.bots[key].name}. Ask me anything or press the mic to speak.`);
+  state.active=key; state.msgs=[];
+  $('.placeholder')?.remove();
+  $('.chat').style.display='flex';
+  $('#botName').textContent=state.bots[key].name;
+  $('.msgs').innerHTML='';
+  add('bot',`Hi — I’m ${state.bots[key].name}. Ask me anything or press the mic to speak.`);
 }
-function backToCards(){ qs('.chat').style.display='none'; const st=document.querySelector('.stage'); if(!qs('.placeholder')){ const p=document.createElement('div'); p.className='placeholder'; p.innerHTML='<p>Select a demo to begin.</p>'; st.prepend(p); }}
+function backToCaps(){ $('.chat').style.display='none'; const st=document.querySelector('.stage'); if(!$('.placeholder')){ const p=document.createElement('div'); p.className='placeholder'; p.innerHTML='<p>Select a demo to begin.</p>'; st.prepend(p); }}
 
-/* BACKEND CALL (ChatGPT) with graceful fallback */
-async function callBackend(bot, messages){
-  const base=window.ZYPHER_API_BASE; if(!base){ throw new Error('No backend configured'); }
-  const res= await fetch(base.replace(/\\/$/,'') + '/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({bot, messages}) });
-  if(!res.ok) throw new Error('HTTP '+res.status); const data= await res.json();
-  // expected: { reply: "..." }
-  return data.reply || '';
+/* BACKEND with graceful fallback + guardrails */
+async function backend(bot, messages){
+  const base=window.ZYPHER_API_BASE; if(!base) throw new Error('No backend');
+  const res=await fetch(base.replace(/\\/$/,'')+'/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bot, messages})});
+  if(!res.ok) throw new Error('HTTP '+res.status); const data=await res.json(); return data.reply||'';
 }
-
-/* Local fallback logic incl. guardrails */
-function localReply(bot, text){
-  const low=text.toLowerCase();
-  if(/(politics|weather|joke|song)/.test(low)) return "Let’s keep it on task — what would you like help with today?";
-  if(bot==='appointly' && /tue|tuesday|slot|book/.test(low)) return "I can do Tuesday at 10:00 or 14:30. What suits you best?";
-  if(bot==='realestate' && /(view|flat|house|property)/.test(low)) return "Smashing — are you buying or renting, and what’s your budget range?";
-  if(bot==='salon' && /(cut|hair|trim|colour)/.test(low)) return "We can book a Cut & Finish. Fancy adding a nourishing scalp treatment?";
-  if(bot==='carins' && /quote|insurance|policy/.test(low)) return "No problem. I’ll need your name, date of birth, licence type, and any claims in the last 3 years.";
+function local(bot,text){
+  const t=text.toLowerCase();
+  if(/(politics|weather|joke|song|poem)/.test(t)) return "Let’s keep it on task — what would you like help with today?";
+  if(bot==='appointly'&&/(tue|tuesday|slot|book|appointment)/.test(t)) return "I can do Tuesday at 10:00 or 14:30. Which suits you?";
+  if(bot==='realestate'&&/(view|flat|house|property)/.test(t)) return "Smashing — are you buying or renting, and what’s your budget range?";
+  if(bot==='salon'&&/(cut|hair|trim|colour|color)/.test(t)) return "We can book a Cut & Finish. Fancy adding a nourishing scalp treatment?";
+  if(bot==='carins'&&/(quote|insurance|policy|premium)/.test(t)) return "No problem. I’ll need your name, date of birth, licence type, and any claims in the last 3 years.";
   return "Got it. Tell me a little more and I’ll guide you.";
 }
-
-/* Send flow */
-async function sendText(text){
+async function sendNow(text){
   if(!text.trim()) return;
-  addMsg('user', text);
-  state.messages.push({role:'user', content:text});
-
-  const typingNode = addMsg('bot','…',true);
+  add('user',text);
+  state.msgs.push({role:'user',content:text});
+  const typing=add('bot','…',true);
   let reply='';
-  try{
-    reply = await callBackend(state.activeBot, state.messages);
-  }catch(e){
-    reply = localReply(state.activeBot, text);
-  }
-  typingNode.remove();
-  addMsg('bot', reply);
-  state.messages.push({role:'assistant', content:reply});
+  try{ reply=await backend(state.active,state.msgs); }catch{ reply=local(state.active,text); }
+  typing.remove(); add('bot',reply); state.msgs.push({role:'assistant',content:reply});
 }
-function handleSend(){ const i=qs('#chatInput'); const t=i.value.trim(); if(!t) return; i.value=''; sendText(t); }
-document.addEventListener('DOMContentLoaded',()=>{ qs('#sendBtn').addEventListener('click',handleSend); qs('#chatInput').addEventListener('keydown',e=>{ if(e.key==='Enter') handleSend(); }); });
+function handleSend(){ const i=$('#chatInput'); const t=i.value.trim(); if(!t) return; i.value=''; sendNow(t); }
+$('#sendBtn').addEventListener('click',handleSend);
+$('#chatInput').addEventListener('keydown',e=>{ if(e.key==='Enter') handleSend(); });
 
-/* VOICE: British English, interim typing animation, auto-send on silence */
-(function(){
-  let rec=null, listening=false, lastFinal="";
-  const mic=()=>qs('#micBtn'); const supported=()=>('SpeechRecognition'in window)||('webkitSpeechRecognition'in window);
-  function ensure(){ if(rec) return rec; const SR=window.SpeechRecognition||window.webkitSpeechRecognition; rec=new SR(); rec.lang='en-GB'; rec.continuous=false; rec.interimResults=true; return rec; }
-  function glow(on){ mic().classList.toggle('glow', !!on); }
-  // smooth typing into the input
-  let raf; function typeIntoInput(target){ const i=qs('#chatInput'); cancelAnimationFrame(raf); const from=i.value, to=target; const start=performance.now(); const dur=Math.min(800, 18*to.length); function step(t){ const p=Math.min(1,(t-start)/dur); const n=Math.round(from.length+(to.length-from.length)*p); i.value=to.slice(0,n); if(p<1) raf=requestAnimationFrame(step);} raf=requestAnimationFrame(step); }
-
-  function toggleMic(){
-    if(!supported()){ addMsg('bot','Speech recognition isn’t supported in this browser.'); return; }
-    const r=ensure();
-    if(!listening){
-      listening=true; glow(true); lastFinal=""; r.start();
-      r.onresult=(e)=>{
-        let final="", interim="";
-        for(let i=e.resultIndex;i<e.results.length;i++){ const tr=e.results[i][0].transcript; if(e.results[i].isFinal) final+=tr; else interim+=tr; }
-        if(final){ lastFinal+=final; typeIntoInput(lastFinal.trim()); }
-        else if(interim){ typeIntoInput((lastFinal+interim).trim()); }
-      };
-      r.onerror=()=>{ listening=false; glow(false); addMsg('bot','Sorry — I couldn’t hear that. Try again?'); };
-      r.onend=()=>{ listening=false; glow(false); const i=qs('#chatInput'); const t=(i.value||'').trim(); if(t) { i.value=''; sendText(t); } };
-    }else{ r.stop(); listening=false; glow(false); }
-  }
-  document.addEventListener('DOMContentLoaded',()=>{ mic().addEventListener('click',toggleMic); });
+/* VOICE: en-GB, interim typing animation, auto-send on silence */
+(()=>{let rec=null,listening=false,lastFinal="";const mic=()=>$('#micBtn');const ok=()=>('SpeechRecognition'in window)||('webkitSpeechRecognition'in window);
+function ensure(){ if(rec) return rec; const SR=window.SpeechRecognition||window.webkitSpeechRecognition; rec=new SR(); rec.lang='en-GB'; rec.continuous=false; rec.interimResults=true; return rec; }
+function glow(on){ mic().classList.toggle('glow',!!on); }
+let raf; function typeInto(to){const i=$('#chatInput');cancelAnimationFrame(raf);const from=i.value,start=performance.now(),dur=Math.min(800,18*to.length);function step(t){const p=Math.min(1,(t-start)/dur);i.value=to.slice(0,Math.round(from.length+(to.length-from.length)*p)); if(p<1) raf=requestAnimationFrame(step);}raf=requestAnimationFrame(step);}
+function toggle(){
+  if(!ok()){ add('bot','Speech recognition isn’t supported in this browser.'); return; }
+  const r=ensure();
+  if(!listening){
+    listening=true; glow(true); lastFinal=""; r.start();
+    r.onresult=e=>{ let fin="",int=""; for(let i=e.resultIndex;i<e.results.length;i++){const tr=e.results[i][0].transcript; if(e.results[i].isFinal) fin+=tr; else int+=tr;}
+      if(fin){ lastFinal+=fin; typeInto(lastFinal.trim()); } else if(int){ typeInto((lastFinal+int).trim()); } };
+    r.onerror=()=>{ listening=false; glow(false); add('bot','Sorry — I couldn’t hear that. Try again?'); };
+    r.onend=()=>{ listening=false; glow(false); const i=$('#chatInput'); const t=(i.value||'').trim(); if(t){ i.value=''; sendNow(t); } };
+  } else { r.stop(); listening=false; glow(false); }
+}
+mic().addEventListener('click',toggle);
 })();
 </script>
 </body>
