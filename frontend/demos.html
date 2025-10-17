@@ -1,37 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Demos — Zypher</title>
 <style>
-:root{--panel:#0f111a;--elev:#11131d;--text:#e8ebf5;--muted:#a6adc8;--edge:rgba(255,255,255,.10);--a:#8a5cf6;--b:#00d4ff}
+:root{--panel:#0f111a;--elev:#11131d;--ink:#e8ebf5;--muted:#a6adc8;--edge:rgba(255,255,255,.10);--a:#8a5cf6;--b:#00d4ff}
 *{box-sizing:border-box} html{-webkit-text-size-adjust:100%}
-html,body{margin:0;height:100%;background:transparent;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
-#bg{position:fixed;inset:0;z-index:0;pointer-events:none} .site{position:relative;z-index:1;min-height:100%}
-.vign{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(120% 120% at 50% 15%,transparent 0 60%,rgba(0,0,0,.35) 85%,rgba(0,0,0,.6) 100%)}
-a{color:inherit;text-decoration:none}
+html,body{margin:0;height:100%;background:transparent;color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none}.vign{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(120% 120% at 50% 15%,transparent 0 60%,rgba(0,0,0,.35) 85%,rgba(0,0,0,.62) 100%)}
+.site{position:relative;z-index:1;min-height:100%} a{color:inherit;text-decoration:none}
 .container{max-width:1200px;margin:0 auto;padding:0 24px}
-.nav{position:sticky;top:0;z-index:5;background:rgba(11,12,18,.62);backdrop-filter:blur(10px);border-bottom:1px solid var(--edge);display:flex;align-items:center;justify-content:space-between;padding:10px 18px}
+.nav{position:sticky;top:0;z-index:5;background:rgba(11,12,18,.58);backdrop-filter:blur(12px);border-bottom:1px solid var(--edge);display:flex;align-items:center;justify-content:space-between;padding:10px 18px}
 .brand{display:flex;gap:12px;align-items:center}.brand svg{width:28px;height:28px}
 .links{display:flex;gap:10px}.links a{padding:8px 12px;border-radius:12px;color:var(--muted)}.links a.active,.links a:hover{color:#fff;background:rgba(255,255,255,.08)}
-.section{padding:56px 0}.muted{color:var(--muted)}
-/* Instruction ribbon */
-.hint{display:inline-flex;align-items:center;gap:10px;color:#fff;background:linear-gradient(90deg, rgba(138,92,246,.18), rgba(0,212,255,.18));border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:8px 12px;margin:6px 0 18px 0;box-shadow:0 0 20px rgba(138,92,246,.18), inset 0 0 12px rgba(255,255,255,.04);font-size:14px}
+.section{padding:56px 0}
+.hint{display:inline-flex;align-items:center;gap:10px;color:#fff;background:linear-gradient(90deg, rgba(138,92,246,.18), rgba(0,212,255,.18));border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:10px 14px;margin:6px 0 18px 0;box-shadow:0 0 26px rgba(138,92,246,.18), inset 0 0 12px rgba(255,255,255,.04);font-size:14px}
 .hint .dot{width:8px;height:8px;border-radius:999px;background:#8a5cf6;box-shadow:0 0 12px #8a5cf6}
 .hint kbd{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-bottom-color:rgba(0,0,0,.35);padding:2px 6px;border-radius:6px}
+
 /* Orbit */
-.orbit-wrap{position:relative;height:600px;perspective:1200px;user-select:none}
-.orbit-plane{position:absolute;left:50%;top:50%;transform-style:preserve-3d;transform:translate(-50%,-50%);width:560px;height:560px;will-change:transform}
-.centre-tag{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:180px;height:152px;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);background:radial-gradient(120% 120% at 50% 0%,rgba(138,92,246,.26),rgba(255,255,255,.02));border:1px solid var(--edge);display:grid;place-items:center;animation:hum 5s ease-in-out infinite;pointer-events:none}
+.orbit-wrap{position:relative;height:620px;perspective:1200px;user-select:none}
+.orbit-plane{position:absolute;left:50%;top:50%;transform-style:preserve-3d;transform:translate(-50%,-50%) rotateX(12deg);width:580px;height:580px;will-change:transform}
+.centre-tag{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:190px;height:160px;
+  clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);
+  background:radial-gradient(120% 120% at 50% 0%,rgba(138,92,246,.26),rgba(255,255,255,.02));
+  border:1px solid var(--edge);display:grid;place-items:center;animation:hum 6s ease-in-out infinite;pointer-events:none;color:#dfe6ff}
 @keyframes hum{0%,100%{filter:drop-shadow(0 0 10px rgba(138,92,246,.3))}50%{filter:drop-shadow(0 0 24px rgba(0,212,255,.35))}}
-.hex{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotateZ(var(--rot,0deg)) translateY(-230px);width:220px;height:190px;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);background:radial-gradient(120% 120% at 10% 0%, rgba(138,92,246,.16), rgba(255,255,255,.02));border:1px solid var(--edge);display:grid;place-items:center;cursor:pointer;transition:transform .18s ease, box-shadow .18s ease, filter .18s ease;will-change:transform;z-index:1}
-.hex:hover{transform:translate(-50%,-50%) rotateZ(var(--rot,0deg)) translateY(-230px) scale(1.06);box-shadow:0 18px 36px rgba(0,0,0,.45), inset 0 0 0 1px rgba(138,92,246,.22)}
-.hex .label{text-align:center;width:78%}.hex h4{margin:0 0 4px;color:#fff}.hex small{color:#d4d9ea}
-@media (max-width:640px){.orbit-wrap{height:520px}.orbit-plane{width:420px;height:420px}.hex{width:180px;height:156px;transform:translate(-50%,-50%) rotateZ(var(--rot,0deg)) translateY(-170px)}}
-/* Modal chat */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:50}
+.hex{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotateZ(var(--rot,0deg)) translateY(-235px);
+  width:224px;height:192px;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);
+  background:radial-gradient(120% 120% at 10% 0%, rgba(138,92,246,.16), rgba(255,255,255,.02));
+  border:1px solid var(--edge);display:grid;place-items:center;cursor:pointer;transition:transform .22s ease, box-shadow .22s ease, filter .22s ease;will-change:transform;z-index:1;
+  animation:bob 5.5s ease-in-out infinite}
+.hex:hover{transform:translate(-50%,-50%) rotateZ(var(--rot,0deg)) translateY(-235px) scale(1.06);box-shadow:0 18px 36px rgba(0,0,0,.45), inset 0 0 0 1px rgba(138,92,246,.22)}
+@keyframes bob{0%,100%{filter:brightness(1)}50%{filter:brightness(1.05)}}
+.hex .label{text-align:center;width:78%}
+.hex h4{margin:0 0 4px;color:#fff}
+.hex small{color:#d4d9ea}
+@media (max-width:640px){.orbit-wrap{height:540px}.orbit-plane{width:440px;height:440px}.hex{width:182px;height:158px;transform:translate(-50%,-50%) rotateZ(var(--rot,0deg)) translateY(-175px)}}
+
+/* Modal chat (unchanged visuals; tightened details) */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;z-index:50}
 .modal.open{display:flex}
-.chat{width:min(960px,92vw);height:min(78vh,720px);background:var(--panel);border:1px solid var(--edge);border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+.chat{width:min(960px,92vw);height:min(78vh,720px);background:var(--panel);border:1px solid var(--edge);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.45)}
 .hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--edge)}
 .pill{font-size:12px;padding:4px 8px;border-radius:999px;background:rgba(138,92,246,.18);border:1px solid color-mix(in oklab,var(--a) 55%, transparent)}
 .msgs{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
@@ -41,7 +51,7 @@ a{color:inherit;text-decoration:none}
 .typing{opacity:.75}
 .tools{display:flex;gap:10px;padding:10px;border-top:1px solid var(--edge);align-items:center}
 .bar{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid var(--edge);border-radius:14px;padding:8px;flex:1}
-.bar input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-size:16px}
+.bar input{flex:1;background:transparent;border:none;outline:none;color:var(--ink);font-size:16px}
 .icon{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;border:1px solid var(--edge);background:rgba(255,255,255,.04);cursor:pointer}
 .icon:active{transform:translateY(1px)}
 .mic.glow{box-shadow:0 0 0 2px color-mix(in oklab,var(--a) 55%, transparent),0 0 26px 6px color-mix(in oklab,var(--a) 55%, transparent),inset 0 0 12px color-mix(in oklab,var(--a) 40%, transparent)}
@@ -58,21 +68,21 @@ footer{padding:30px 24px;color:var(--muted);border-top:1px solid var(--edge)}
     <strong>Zypher</strong>
   </div>
   <div class="links"><a href="index.html">Home</a><a class="active" href="demos.html">Demos</a><a href="contact.html">Contact</a></div>
-  <div class="muted">Voice & Chat</div>
+  <div style="color:#a6adc8">Voice & Chat</div>
 </nav>
 
 <main class="container section">
-  <h2 style="margin:0 0 8px">Live demos</h2>
+  <h2 style="margin:0 0 8px">Live Demos</h2>
   <div class="hint"><span class="dot"></span><span>Hover or drag to spin. Tap a hex to start. Press <kbd>🎤</kbd> and speak — we’ll type as you talk and auto-send on pause.</span></div>
 
   <section class="orbit-wrap">
     <div class="orbit-plane" id="orbit">
-      <div class="centre-tag"><small>select your demo</small></div>
+      <div class="centre-tag"><small>Select your demo</small></div>
 
-      <button class="hex" data-id="appointly"   style="--rot:  0deg"><div class="label"><h4><span class="dot" style="width:10px;height:10px;border-radius:999px;background:#8a5cf6;box-shadow:0 0 10px #8a5cf6;margin-right:8px"></span>Appointly</h4><small>Appointment booking</small></div></button>
-      <button class="hex" data-id="realestate"  style="--rot: 90deg"><div class="label"><h4><span class="dot" style="width:10px;height:10px;border-radius:999px;background:#8a5cf6;box-shadow:0 0 10px #8a5cf6;margin-right:8px"></span>Property Qualifier</h4><small>Lead intake & viewings</small></div></button>
-      <button class="hex" data-id="salon"       style="--rot:180deg"><div class="label"><h4><span class="dot" style="width:10px;height:10px;border-radius:999px;background:#8a5cf6;box-shadow:0 0 10px #8a5cf6;margin-right:8px"></span>Salon Booker</h4><small>Services & add-ons</small></div></button>
-      <button class="hex" data-id="carins"      style="--rot:270deg"><div class="label"><h4><span class="dot" style="width:10px;height:10px;border-radius:999px;background:#8a5cf6;box-shadow:0 0 10px #8a5cf6;margin-right:8px"></span>Car Insurance</h4><small>Quick-qualify & quote</small></div></button>
+      <button class="hex" data-id="appointly"  style="--rot:0deg"><div class="label"><h4>Appointly</h4><small>Appointment Booking</small></div></button>
+      <button class="hex" data-id="realestate" style="--rot:90deg"><div class="label"><h4>Property Qualifier</h4><small>Lead Intake & Viewings</small></div></button>
+      <button class="hex" data-id="salon"      style="--rot:180deg"><div class="label"><h4>Salon Booker</h4><small>Services & Add-Ons</small></div></button>
+      <button class="hex" data-id="carins"     style="--rot:270deg"><div class="label"><h4>Car Insurance</h4><small>Quick-Qualify & Quote</small></div></button>
     </div>
   </section>
 </main>
@@ -83,8 +93,8 @@ footer{padding:30px 24px;color:var(--muted);border-top:1px solid var(--edge)}
     <div class="hdr"><div><span class="pill" id="botName">Bot</span></div><button class="icon" id="closeBtn" title="Close">✕</button></div>
     <div class="msgs" id="msgs"></div>
     <div class="tools">
-      <div class="bar"><input id="chatInput" placeholder="Say something…"/><button id="micBtn" class="icon mic">🎤</button></div>
-      <button id="sendBtn" class="icon">➤</button>
+      <div class="bar"><input id="chatInput" placeholder="Say something…" /><button id="micBtn" class="icon mic" title="Mic">🎤</button></div>
+      <button id="sendBtn" class="icon" title="Send">➤</button>
     </div>
   </div>
 </div>
@@ -92,59 +102,82 @@ footer{padding:30px 24px;color:var(--muted);border-top:1px solid var(--edge)}
 <footer class="container">© 2025 Zypher — All rights reserved.</footer>
 </div>
 
-<!-- BACKGROUND v2 (same as Home) -->
+<!-- BACKDROP v3 (slower) -->
 <script>
-(()=>{const c=document.getElementById('bg');const x=c.getContext('2d');
-let DPR=Math.min(2, devicePixelRatio||1), W=0, H=0, T=0;
-let stars=[], comets=[], filaments=[];
+(()=>{const SPEED={stars:0.02, sweep:0.03, comet:0.004, cometV:[4,7], filament:[.06,.14]};
+const c=document.getElementById('bg'), x=c.getContext('2d'); let DPR=Math.min(2,devicePixelRatio||1),W=0,H=0,T=0;
+let stars=[], comets=[], filaments=[], orbs=[];
 function size(){W=innerWidth;H=innerHeight;c.width=W*DPR;c.height=H*DPR;x.setTransform(DPR,0,0,DPR,0,0);}
-function rand(a,b){return a+Math.random()*(b-a)}
-function makeStars(){const n=Math.floor(W*H/1600);stars=new Array(n).fill(0).map(()=>({x:Math.random()*W,y:Math.random()*H,z:rand(.3,1.3),a:rand(.35,.9)}))}
-function spawnComet(){comets.push({x:-60,y:rand(10,H-20),vx:rand(7,12),life:1})}
-function makeFilaments(){const lanes=5;filaments=[];for(let i=0;i<lanes;i++){const y=H*(.18+.14*i)+rand(-20,20);const hue=i%2? 'rgba(0,212,255,.16)':'rgba(138,92,246,.16)';const speed=rand(.15,.4);filaments.push({y,hue,p:rand(0,1),speed});}}
-function aurora(t){const r1=200+60*Math.sin(t*.6), r2=260+70*Math.cos(t*.5);
-let g=x.createRadialGradient(W*.22,H*.26,0,W*.22,H*.26,r1);g.addColorStop(0,'rgba(138,92,246,.22)');g.addColorStop(1,'rgba(138,92,246,0)');x.fillStyle=g;x.beginPath();x.arc(W*.22,H*.26,r1,0,7);x.fill();
-g=x.createRadialGradient(W*.82,H*.78,0,W*.82,H*.78,r2);g.addColorStop(0,'rgba(0,212,255,.20)');g.addColorStop(1,'rgba(0,212,255,0)');x.fillStyle=g;x.beginPath();x.arc(W*.82,H*.78,r2,0,7);x.fill();
-const sweep=(t*0.08)%1;const dx=W*(sweep-.2), w=W*.35;const grd=x.createLinearGradient(dx,0,dx+w,H);
-grd.addColorStop(0,'rgba(255,255,255,0)');grd.addColorStop(.5,'rgba(170,210,255,.05)');grd.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=grd;x.fillRect(dx,0,w,H);}
-function drawFilaments(dt){filaments.forEach(f=>{f.p=(f.p+f.speed*dt*0.06)%1;const len=W*0.55, lead=f.p*W;x.strokeStyle=f.hue;x.lineWidth=1.5;x.beginPath();const y=f.y,k=20*Math.sin((T*0.9)+f.y*.01);x.moveTo(lead-len, y+k);x.bezierCurveTo(lead-len*.66, y-8, lead-len*.33, y+8, lead, y-k);x.stroke();x.fillStyle=f.hue.replace('.16','.45');x.beginPath();x.arc(lead, y-k, 2.2, 0, 7);x.fill();});}
-function drawStars(dt){for(const s of stars){x.globalAlpha=s.a;x.fillStyle='#fff';x.fillRect(s.x,s.y,s.z,s.z);s.x+=.06*s.z;if(s.x>W)s.x=0}x.globalAlpha=1;}
-function drawComets(dt){if(Math.random()<0.015) spawnComet();comets.forEach(cm=>{cm.x+=cm.vx;cm.life*=0.995;x.strokeStyle='rgba(0,212,255,.55)';x.lineWidth=2;x.beginPath();x.moveTo(cm.x-24,cm.y+6);x.lineTo(cm.x+8,cm.y-2);x.stroke();x.strokeStyle='rgba(138,92,246,.5)';x.beginPath();x.moveTo(cm.x-44,cm.y+10);x.lineTo(cm.x-6,cm.y+2);x.stroke();});comets=comets.filter(c=>c.x<W+80 && c.life>.2);}
-function frame(tms){const dt=Math.min(2,(tms-(frame._t||tms))/16);frame._t=tms;T+=dt;x.fillStyle='rgb(14,16,25)';x.fillRect(0,0,W,H);aurora(T);drawFilaments(dt);drawStars(dt);drawComets(dt);requestAnimationFrame(frame);}
-addEventListener('resize',()=>{size();makeStars();makeFilaments()},{passive:true});size();makeStars();makeFilaments();requestAnimationFrame(frame);})();
+function r(a,b){return a+Math.random()*(b-a)}
+function makeStars(){const n=Math.floor(W*H/1900);stars=Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,z:r(.3,1.2),a:r(.35,.85)}))}
+function makeFilaments(){filaments=[];for(let i=0;i<5;i++){filaments.push({y:H*(.18+.14*i)+r(-18,18), hue:i%2?'rgba(0,212,255,.14)':'rgba(138,92,246,.14)', p:Math.random(), speed:r(...SPEED.filament)})}}
+function makeOrbs(){orbs=[];for(let i=0;i<3;i++){orbs.push({x:W*r(.15,.85),y:H*r(.15,.85),r:r(120,220),h:i%2})}}
+function aurora(t){const r1=180+50*Math.sin(t*.45), r2=240+60*Math.cos(t*.4);
+let g=x.createRadialGradient(W*.22,H*.26,0,W*.22,H*.26,r1); g.addColorStop(0,'rgba(138,92,246,.18)'); g.addColorStop(1,'rgba(138,92,246,0)'); x.fillStyle=g; x.beginPath(); x.arc(W*.22,H*.26,r1,0,7); x.fill();
+g=x.createRadialGradient(W*.82,H*.78,0,W*.82,H*.78,r2); g.addColorStop(0,'rgba(0,212,255,.16)'); g.addColorStop(1,'rgba(0,212,255,0)'); x.fillStyle=g; x.beginPath(); x.arc(W*.82,H*.78,r2,0,7); x.fill();
+const s=(t*SPEED.sweep)%1, dx=W*(s-.25), w=W*.30, grd=x.createLinearGradient(dx,0,dx+w,H);
+grd.addColorStop(0,'rgba(255,255,255,0)'); grd.addColorStop(.5,'rgba(170,210,255,.035)'); grd.addColorStop(1,'rgba(255,255,255,0)'); x.fillStyle=grd; x.fillRect(dx,0,w,H);}
+function drawOrbs(t){x.globalCompositeOperation='lighter'; orbs.forEach(o=>{const rr=o.r+10*Math.sin(t*.3+(o.h?1:-1)); let g=x.createRadialGradient(o.x,o.y,0,o.x,o.y,rr);
+g.addColorStop(0,o.h?'rgba(0,212,255,.06)':'rgba(138,92,246,.06)'); g.addColorStop(1,'rgba(0,0,0,0)'); x.fillStyle=g; x.beginPath(); x.arc(o.x,o.y,rr,0,7); x.fill();}); x.globalCompositeOperation='source-over';}
+function drawFilaments(dt){filaments.forEach(f=>{f.p=(f.p+f.speed*dt*0.04)%1;const len=W*0.55, lead=f.p*W; x.strokeStyle=f.hue; x.lineWidth=1.4; x.beginPath();
+const y=f.y,k=16*Math.sin((T*0.7)+f.y*.01); x.moveTo(lead-len,y+k); x.bezierCurveTo(lead-len*.66,y-7,lead-len*.33,y+7,lead,y-k); x.stroke(); x.beginPath(); x.fillStyle=f.hue.replace('.14','.33'); x.arc(lead,y-k,2.2,0,7); x.fill();});}
+function drawStars(){for(const s of stars){x.globalAlpha=s.a; x.fillStyle='#fff'; x.fillRect(s.x,s.y,s.z,s.z); s.x+=SPEED.stars*s.z; if(s.x>W) s.x=0} x.globalAlpha=1;}
+function drawComets(){if(Math.random()<SPEED.comet) comets.push({x:-60,y:r(10,H-20),vx:r(...SPEED.cometV),life:1});
+comets.forEach(cm=>{cm.x+=cm.vx; cm.life*=0.996; x.strokeStyle='rgba(0,212,255,.48)'; x.lineWidth=2; x.beginPath(); x.moveTo(cm.x-26,cm.y+6); x.lineTo(cm.x+8,cm.y-2); x.stroke();
+x.strokeStyle='rgba(138,92,246,.46)'; x.beginPath(); x.moveTo(cm.x-44,cm.y+10); x.lineTo(cm.x-6,cm.y+2); x.stroke();}); comets=comets.filter(c=>c.x<W+80 && c.life>.25);}
+function frame(t){const dt=Math.min(2,(t-(frame._t||t))/16); frame._t=t; T+=dt; x.fillStyle='rgb(14,16,25)'; x.fillRect(0,0,W,H);
+drawOrbs(T); aurora(T); drawFilaments(dt); drawStars(); drawComets(); requestAnimationFrame(frame);}
+addEventListener('resize',()=>{size();makeStars();makeFilaments();makeOrbs()},{passive:true});
+size(); makeStars(); makeFilaments(); makeOrbs(); requestAnimationFrame(frame);
+})();
 </script>
 
-<!-- Orbit + Chat + Voice -->
+<!-- Orbit + Chat + Voice (smoother/inertia) -->
 <script>
-(()=>{const orbit=document.getElementById('orbit');let a=0, target=0, v=0, dragging=false, sx=0, lastT=0, idle=0;
-function apply(){orbit.style.transform=`translate(-50%,-50%) rotateZ(${a}deg)`;}
-function animate(ts){const dt=(ts-(lastT||ts))/16; lastT=ts; idle+=dt; const diff=(target-a); v+=diff*0.08; v*=0.92; a+=v; apply(); requestAnimationFrame(animate); if(idle>120){target+=0.08;}}
+(()=>{const orbit=document.getElementById('orbit');let a=0,target=0,vel=0,dragging=false,sx=0,lt=0,idle=0;
+function apply(){orbit.style.transform=`translate(-50%,-50%) rotateX(12deg) rotateZ(${a}deg)`;}
+function animate(ts){const dt=(ts-(lt||ts))/16; lt=ts; idle+=dt; const diff=(target-a); vel+=diff*0.06; vel*=0.94; a+=vel; apply(); requestAnimationFrame(animate); if(idle>200){target+=0.02;}}
 orbit.addEventListener('pointerdown',e=>{dragging=true;sx=e.clientX;orbit.setPointerCapture(e.pointerId);idle=0;});
-orbit.addEventListener('pointermove',e=>{if(!dragging)return; const dx=e.clientX-sx; sx=e.clientX; target+=dx*0.35; idle=0;});
+orbit.addEventListener('pointermove',e=>{if(!dragging)return; const dx=e.clientX-sx; sx=e.clientX; target+=dx*0.28; idle=0;});
 orbit.addEventListener('pointerup',()=>{dragging=false;});
-document.querySelectorAll('.hex').forEach(h=>{h.addEventListener('mouseenter',()=>{const rot=parseFloat(h.style.getPropertyValue('--rot')||'0'); target=-rot; idle=0;}); h.addEventListener('click',()=>openChat(h.dataset.id));});
+document.querySelectorAll('.hex').forEach(h=>{h.addEventListener('mouseenter',()=>{const rot=parseFloat(h.style.getPropertyValue('--rot')||'0'); target=-rot; idle=0;});
+  h.addEventListener('click',()=>openChat(h.dataset.id));});
 requestAnimationFrame(animate);
 })();
 
-const BOTS={appointly:'Appointly (Appointment booking)',realestate:'Property Qualifier',salon:'Salon Booker',carins:'Car Insurance'};
+const BOTS={appointly:'Appointly (Appointment Booking)',realestate:'Property Qualifier',salon:'Salon Booker',carins:'Car Insurance'};
 const $=s=>document.querySelector(s);
 function add(role,text,typing=false){const d=document.createElement('div');d.className='msg '+role+(typing?' typing':'');d.textContent=text;$('#msgs').appendChild(d);$('#msgs').scrollTop=$('#msgs').scrollHeight;return d;}
 const state={active:null,history:[]};
 function openChat(id){state.active=id;state.history=[];$('#botName').textContent=BOTS[id];$('#msgs').innerHTML='';add('bot',`Hi — I’m ${BOTS[id]}. Ask me anything or press the mic.`);$('#modal').classList.add('open');}
 $('#closeBtn').addEventListener('click',()=>$('#modal').classList.remove('open'));
 
-window.ZYPHER_API_BASE=""; // <- set your backend base URL to go live
+window.ZYPHER_API_BASE=""; // ← set backend base URL when you wire it up
 async function backend(messages){const base=window.ZYPHER_API_BASE;if(!base)throw new Error('no backend');const r=await fetch(base.replace(/\/$/,'')+'/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bot:state.active,messages})});if(!r.ok)throw new Error('HTTP '+r.status);const j=await r.json();return j.reply||'';}
-function local(t){const id=state.active,x=t.toLowerCase();if(/(politics|joke|song|poem)/.test(x))return "Let’s keep it on task — what would you like help with today?";if(id==='appointly'&&/(tue|tuesday|slot|book|appointment)/.test(x))return "I can do Tuesday at 10:00 or 14:30. Which suits you?";if(id==='realestate'&&/(view|flat|house|property)/.test(x))return "Smashing — are you buying or renting, and what’s your budget?";if(id==='salon'&&/(cut|hair|trim|colour|color)/.test(x))return "We can book a Cut & Finish. Fancy adding a nourishing scalp treatment?";if(id==='carins'&&/(quote|insurance|policy|premium)/.test(x))return "No problem. I’ll need your name, date of birth, licence type, and any claims in the last 3 years.";return "Got it. Tell me a little more and I’ll guide you.";}
+function local(t){const id=state.active,x=t.toLowerCase();
+  if(/(politics|joke|song|poem)/.test(x))return "Let’s keep it on task — what would you like help with today?";
+  if(id==='appointly'&&/(tue|tuesday|slot|book|appointment)/.test(x))return "I can do Tuesday at 10:00 or 14:30. Which suits you?";
+  if(id==='realestate'&&/(view|flat|house|property)/.test(x))return "Brilliant — are you buying or renting, and what’s your budget?";
+  if(id==='salon'&&/(cut|hair|trim|colour|color)/.test(x))return "We can book a Cut & Finish. Fancy adding a nourishing scalp treatment?";
+  if(id==='carins'&&/(quote|insurance|policy|premium)/.test(x))return "No problem. I’ll need your name, date of birth, licence type, and any claims in the last 3 years.";
+  return "Got it. Tell me a little more and I’ll guide you.";
+}
 async function sendNow(t){if(!t.trim())return;add('user',t);state.history.push({role:'user',content:t});const typing=add('bot','…',true);let reply='';try{reply=await backend(state.history);}catch{reply=local(t);}typing.remove();add('bot',reply);state.history.push({role:'assistant',content:reply});}
 function handleSend(){const i=$('#chatInput');const t=i.value.trim();if(!t)return;i.value='';sendNow(t)}
 $('#sendBtn').addEventListener('click',handleSend);$('#chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')handleSend();});
 
-/* Voice en-GB with interim typing + auto-send on pause */
-(()=>{let rec=null,listening=false,last="";const mic=()=>$('#micBtn');const ok=()=>('SpeechRecognition'in window)||('webkitSpeechRecognition'in window);
+/* Voice en-GB: interim, type-as-you-talk, auto-send on pause */
+(()=>{let rec=null,listening=false,last="";const mic=()=>$('#micBtn');
+const ok=()=>('SpeechRecognition'in window)||('webkitSpeechRecognition'in window);
 function ensure(){if(rec)return rec;const SR=window.SpeechRecognition||window.webkitSpeechRecognition;rec=new SR();rec.lang='en-GB';rec.interimResults=true;rec.continuous=false;return rec;}
-function glow(on){mic().classList.toggle('glow',!!on)}let raf;function typeInto(to){const i=$('#chatInput');cancelAnimationFrame(raf);const from=i.value,st=performance.now(),dur=Math.min(800,18*to.length);function step(t){const p=Math.min(1,(t-st)/dur);i.value=to.slice(0,Math.round(from.length+(to.length-from.length)*p));if(p<1)raf=requestAnimationFrame(step);}raf=requestAnimationFrame(step);}
-mic().addEventListener('click',()=>{if(!ok()){add('bot','Speech recognition isn’t supported in this browser.');return;}const r=ensure();if(!listening){listening=true;glow(true);last="";r.start();r.onresult=e=>{let fin="",int="";for(let i=e.resultIndex;i<e.results.length;i++){const tr=e.results[i][0].transcript;if(e.results[i].isFinal)fin+=tr;else int+=tr;}if(fin){last+=fin;typeInto(last.trim());}else if(int){typeInto((last+int).trim());}};r.onerror=()=>{listening=false;glow(false);add('bot','Sorry — I couldn’t hear that. Try again?');};r.onend=()=>{listening=false;glow(false);const i=$('#chatInput');const t=(i.value||'').trim();if(t){i.value='';sendNow(t);} };}else{r.stop();listening=false;glow(false);} });})();
+function glow(on){mic().classList.toggle('glow',!!on)}let raf;function typeInto(to){const i=$('#chatInput');cancelAnimationFrame(raf);const from=i.value,st=performance.now(),dur=Math.min(800,18*to.length);
+function step(t){const p=Math.min(1,(t-st)/dur);i.value=to.slice(0,Math.round(from.length+(to.length-from.length)*p));if(p<1)raf=requestAnimationFrame(step);}raf=requestAnimationFrame(step);}
+mic().addEventListener('click',()=>{if(!ok()){add('bot','Speech recognition isn’t supported in this browser.');return;}const r=ensure();if(!listening){listening=true;glow(true);last="";r.start();
+r.onresult=e=>{let fin="",int="";for(let i=e.resultIndex;i<e.results.length;i++){const tr=e.results[i][0].transcript;if(e.results[i].isFinal)fin+=tr;else int+=tr;}
+if(fin){last+=fin;typeInto(last.trim());}else if(int){typeInto((last+int).trim());}};
+r.onerror=()=>{listening=false;glow(false);add('bot','Sorry — I couldn’t hear that. Try again?');};
+r.onend=()=>{listening=false;glow(false);const i=$('#chatInput');const t=(i.value||'').trim();if(t){i.value='';sendNow(t);}}}
+else{r.stop();listening=false;glow(false);} });})();
 </script>
 </body>
 </html>
