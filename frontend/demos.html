@@ -1,66 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Demos — Zypher</title>
-  <style>
-    :root{--bg:#0b0c12;--panel:#0f111a;--elev:#11131d;--text:#e6e9f2;--muted:#a6adc8;--accent:#8a5cf6;--accent-2:#00d4ff}
-    *{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
-    html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
-    a{color:inherit;text-decoration:none}button{font:inherit}img{max-width:100%;display:block}.muted{color:var(--muted)}
-    .container{width:100%;max-width:1180px;margin:0 auto;padding:0 20px}.section{padding:56px 0}
-    .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;position:sticky;top:0;z-index:20;background:rgba(11,12,18,.75);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.06)}
-    .brand{display:flex;align-items:center;gap:12px}.brand-name{font-weight:700}
-    .nav-links{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
-    .nav-links a{padding:8px 10px;border-radius:10px;color:var(--muted)} .nav-links a.active,.nav-links a:hover{color:#fff;background:rgba(255,255,255,.06)}
-    .nav-cta{display:flex;align-items:center;gap:10px}
-    .kbd{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--muted);padding:4px 8px;border:1px solid rgba(255,255,255,.12);border-radius:6px;background:rgba(255,255,255,.04)}
-    .dock-and-stage{display:grid;grid-template-columns:1fr;gap:20px}
-    .dock{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .dock-item{display:flex;gap:12px;align-items:center;text-align:left;background:radial-gradient(120% 120% at 10% 0%,rgba(138,92,246,.12),rgba(255,255,255,.02)),var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;cursor:pointer;transition:.18s ease}
-    .dock-item:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.35),0 0 0 1px rgba(138,92,246,.25) inset}
-    .dock-dot{width:10px;height:10px;border-radius:999px;background:var(--accent)}
-    .stage{min-height:540px}
-    .stage-placeholder{display:grid;place-items:center;height:540px;border:1px dashed rgba(255,255,255,.12);border-radius:18px}
-    .chat{height:540px;background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:18px;display:flex;flex-direction:column;overflow:hidden}
-    .chat-header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.06)}
-    .chat-title{display:flex;align-items:center;gap:10px}
-    .pill{font-size:12px;padding:4px 8px;border-radius:999px;background:rgba(138,92,246,.18);border:1px solid rgba(138,92,246,.35)}
-    .msgs{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
-    .msg{max-width:80%;padding:10px 12px;border-radius:12px;line-height:1.35}
-    .msg.bot{background:rgba(138,92,246,.14);border:1px solid rgba(138,92,246,.35);align-self:flex-start}
-    .msg.user{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);align-self:flex-end}
-    .tools{display:flex;gap:10px;padding:10px;border-top:1px solid rgba(255,255,255,.06);align-items:center}
-    .input-bar{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:8px;flex:1}
-    .input-bar input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-size:16px}
-    .icon-btn{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);cursor:pointer}
-    .icon-btn:active{transform:translateY(1px)}
-    .mic.glow{box-shadow:0 0 0 2px rgba(138,92,246,.55),0 0 26px 6px rgba(138,92,246,.55),inset 0 0 12px rgba(138,92,246,.35);border-color:rgba(138,92,246,.65)}
-    .footer{padding:32px 16px;border-top:1px solid rgba(255,255,255,.06)}.footer-row{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
-    @media (min-width:768px){.dock-and-stage{grid-template-columns:360px 1fr}.dock{grid-template-columns:1fr}}
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Demos — Zypher</title>
+<style>
+  :root{--bg:#0b0c12; --panel:#0f111a; --elev:#11131d; --text:#e6e9f2; --muted:#a6adc8; --accent:#8a5cf6; --accent-2:#00d4ff; --edge:rgba(255,255,255,.08)}
+  *{box-sizing:border-box} html{-webkit-text-size-adjust:100%}
+  html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+  a{color:inherit;text-decoration:none} button{font:inherit} img{max-width:100%;display:block} .muted{color:var(--muted)}
+  .container{max-width:1180px;margin:0 auto;padding:0 20px} .section{padding:56px 0}
+
+  /* BG: aurora + orbs */
+  .bg{position:fixed; inset:0; pointer-events:none; z-index:-1;
+      background: radial-gradient(1200px 900px at 80% -10%, color-mix(in oklab, var(--accent) 50%, transparent), transparent 60%),
+                  radial-gradient(900px 700px at -10% 30%, color-mix(in oklab, var(--accent-2) 55%, transparent), transparent 60%);
+      filter:saturate(1.05);
+  }
+  .orbs{position:fixed; inset:0; pointer-events:none; z-index:-1; overflow:hidden}
+  .orb{position:absolute; width:22px; height:22px; border-radius:999px; background: color-mix(in oklab, var(--accent) 70%, #fff);
+       box-shadow:0 0 24px color-mix(in oklab, var(--accent) 70%, #fff); opacity:.35; animation: float 14s ease-in-out infinite}
+  .orb:nth-child(2){left:12%; top:70%; animation-duration:16s}
+  .orb:nth-child(3){left:80%; top:20%; animation-duration:18s}
+  .orb:nth-child(4){left:60%; top:80%; animation-duration:22s}
+  @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-18px)}100%{transform:translateY(0)}}
+
+  /* NAV (simple) */
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;position:sticky;top:0;z-index:10;background:rgba(11,12,18,.6);backdrop-filter:blur(8px);border-bottom:1px solid var(--edge)}
+  .brand{display:flex;align-items:center;gap:12px}.brand svg{width:28px;height:28px}
+  .nav-links{display:flex;gap:14px}.nav-links a{padding:8px 10px;border-radius:10px;color:var(--muted)} .nav-links a.active,.nav-links a:hover{color:#fff;background:rgba(255,255,255,.06)}
+  .theme{color:var(--muted)}
+
+  /* Dock + Stage */
+  .dock-and-stage{display:grid;grid-template-columns:1fr;gap:20px}
+  .dock{display:grid;grid-template-columns:1fr 1fr;gap:14px; animation: rise .4s ease-out both}
+  @keyframes rise{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .dock-item{display:flex;gap:12px;align-items:center;text-align:left;background:radial-gradient(120% 120% at 10% 0%,rgba(138,92,246,.12),rgba(255,255,255,.02)),var(--panel);border:1px solid var(--edge);border-radius:16px;padding:14px;cursor:pointer;transition:.18s ease}
+  .dock-item:hover{transform:translateY(-2px); box-shadow:0 14px 30px rgba(0,0,0,.35), inset 0 0 0 1px color-mix(in oklab, var(--accent) 40%, transparent)}
+  .dock-dot{width:10px;height:10px;border-radius:999px;background:var(--accent); box-shadow:0 0 10px var(--accent)}
+
+  .stage{min-height:560px}
+  .stage-placeholder{display:grid;place-items:center;height:560px;border:1px dashed var(--edge);border-radius:18px;color:var(--muted); animation: fadeIn .25s ease-out both}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+  .chat{height:560px;background:var(--panel);border:1px solid var(--edge);border-radius:18px;display:flex;flex-direction:column;overflow:hidden}
+  .chat-header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--edge)}
+  .pill{font-size:12px;padding:4px 8px;border-radius:999px;background:rgba(138,92,246,.18);border:1px solid color-mix(in oklab, var(--accent) 50%, transparent)}
+  .msgs{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+  .msg{max-width:80%;padding:10px 12px;border-radius:12px;line-height:1.35}
+  .msg.bot{background:rgba(138,92,246,.14);border:1px solid color-mix(in oklab, var(--accent) 55%, transparent)}
+  .msg.user{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);align-self:flex-end}
+  .tools{display:flex;gap:10px;padding:10px;border-top:1px solid var(--edge);align-items:center}
+  .input-bar{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid var(--edge);border-radius:14px;padding:8px;flex:1}
+  .input-bar input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-size:16px}
+  .icon-btn{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;border:1px solid var(--edge);background:rgba(255,255,255,.04);cursor:pointer}
+  .icon-btn:active{transform:translateY(1px)}
+  .mic.glow{box-shadow:0 0 0 2px color-mix(in oklab, var(--accent) 55%, transparent),0 0 26px 6px color-mix(in oklab, var(--accent) 55%, transparent),inset 0 0 12px color-mix(in oklab, var(--accent) 40%, transparent); border-color: color-mix(in oklab, var(--accent) 60%, transparent)}
+
+  .footer{padding:32px 16px;border-top:1px solid var(--edge)}
+  .footer-row{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+  @media (min-width:768px){ .dock-and-stage{grid-template-columns:360px 1fr} .dock{grid-template-columns:1fr} }
+</style>
 </head>
 <body>
+  <div class="bg"></div>
+  <div class="orbs"><div class="orb" style="left:14%;top:30%"></div><div class="orb"></div><div class="orb"></div><div class="orb"></div></div>
+
   <nav class="nav">
     <div class="brand">
-      <svg width="28" height="28" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8A5CF6"/><stop offset="100%" stop-color="#00D4FF"/></linearGradient></defs>
-        <rect width="256" height="256" rx="40" fill="#0A0B10"/><path d="M176 32L96 144h56l-48 80 80-112h-56l48-80z" fill="url(#g)"/>
-      </svg>
-      <span class="brand-name">Zypher</span>
+      <svg viewBox="0 0 256 256" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8A5CF6"/><stop offset="100%" stop-color="#00D4FF"/></linearGradient></defs><rect width="256" height="256" rx="40" fill="#0A0B10"/><path d="M176 32L96 144h56l-48 80 80-112h-56l48-80z" fill="url(#g)"/></svg>
+      <span>Zypher</span>
     </div>
     <div class="nav-links">
       <a href="index.html">Home</a>
       <a class="active" href="demos.html">Demos</a>
       <a href="contact.html">Contact</a>
     </div>
-    <div class="nav-cta">
-      <select id="themeSelect" class="kbd" aria-label="Theme">
-        <option value="">Nebula</option><option value="circuit">Circuit Neon</option><option value="mono">Monochrome</option>
-      </select>
-      <span class="muted">Voice & Chat</span>
-    </div>
+    <div class="theme muted">Voice & Chat</div>
   </nav>
 
   <main class="container section">
@@ -68,7 +85,6 @@
     <p class="muted" style="margin:0 0 20px">Pick a card from the Dock. The Stage opens on the right. You can always jump back.</p>
 
     <div class="dock-and-stage">
-      <!-- Dock -->
       <div class="dock">
         <button class="dock-item" onclick="openChat('appointly')"><div class="dock-dot"></div><div><h4>Appointly</h4><small class="muted">Generic appointment setter</small></div></button>
         <button class="dock-item" onclick="openChat('realestate')"><div class="dock-dot"></div><div><h4>Property Qualifier</h4><small class="muted">Lead intake & viewings</small></div></button>
@@ -78,9 +94,8 @@
         <button class="dock-item" onclick="openChat('guardrails')"><div class="dock-dot"></div><div><h4>Off-topic Wrangler</h4><small class="muted">Stay on purpose</small></div></button>
       </div>
 
-      <!-- Stage -->
       <div class="stage">
-        <div class="stage-placeholder"><p class="muted">Select a demo from the Dock to start chatting.</p></div>
+        <div class="stage-placeholder"><p>Select a demo from the Dock to start chatting.</p></div>
 
         <section class="chat-wrap" style="display:none">
           <div class="chat">
@@ -110,69 +125,46 @@
     </div>
   </footer>
 
-  <script>
-    // Theme
-    (function(){const sel=document.querySelector('#themeSelect'); if(!sel) return;
-      sel.addEventListener('change',()=>{document.documentElement.setAttribute('data-theme', sel.value);localStorage.setItem('zy_theme', sel.value)});
-      const saved=localStorage.getItem('zy_theme'); if(saved){document.documentElement.setAttribute('data-theme', saved); sel.value=saved;}
-    })();
-
-    // Demos logic
-    const state={activeBot:null,bots:{appointly:{name:'Appointly (Generic Appointment Setter)'},realestate:{name:'Property Qualifier'},salon:{name:'Salon Booker'},carins:{name:'Car Insurance Quick-Qualifier'},support:{name:'Support Triage'},guardrails:{name:'Off-topic Wrangler'}}};
-    const qs=s=>document.querySelector(s);
-    function addMsg(role,text){const m=qs('.msgs'); if(!m) return; const d=document.createElement('div'); d.className='msg '+role; d.textContent=text; m.appendChild(d); m.scrollTop=m.scrollHeight;}
-    function openChat(key){
-      state.activeBot=key;
-      qs('.stage-placeholder')?.remove();
-      const wrap=qs('.chat-wrap'); if(wrap) wrap.style.display='block';
-      const t=qs('#chatBotName'); if(t) t.textContent=state.bots[key].name;
-      const m=qs('.msgs'); if(m) m.innerHTML='';
-      addMsg('bot',`Hi — I'm ${state.bots[key].name}. Ask me something or press the mic.`);
-    }
-    function backToDock(){
-      const wrap=qs('.chat-wrap'); if(wrap) wrap.style.display='none';
-      const st=qs('.stage'); if(st&&!qs('.stage-placeholder')){const ph=document.createElement('div');ph.className='stage-placeholder';ph.innerHTML='<p class="muted">Select a demo from the Dock to start chatting.</p>';st.prepend(ph);}
-    }
-    function fakeAIResponse(input){
-      const k=state.activeBot, low=input.toLowerCase();
-      if(k==='guardrails'&&(low.includes('politics')||low.includes('weather')||low.includes('joke'))) return "Let's park that — what service do you need?";
-      if(k==='appointly'&&low.includes('tuesday')) return "I can offer Tue 10:00 or 14:30. Which works?";
-      if(k==='carins'&&low.includes('quote')) return "Quick check: name, DOB, licence type, any claims in last 3 years?";
-      if(k==='salon'&&(low.includes('hair')||low.includes('cut'))) return "We can do a Cut & Finish. Want to add a scalp treatment today?";
-      if(k==='support'&&(low.includes('down')||low.includes('error'))) return "I can create a ticket. What's your email and a short description?";
-      if(k==='realestate'&&(low.includes('view')||low.includes('flat'))) return "Great — buy or rent, and budget range?";
-      return "Got it. Tell me a bit more and I’ll guide you.";
-    }
-    function handleSend(){
-      const i=qs('#chatInput'); if(!i) return;
-      const t=i.value.trim(); if(!t) return;
-      addMsg('user',t); i.value='';
-      setTimeout(()=>addMsg('bot',fakeAIResponse(t)),400);
-    }
-    document.addEventListener('DOMContentLoaded',()=>{
-      qs('#sendBtn')?.addEventListener('click',handleSend);
-      qs('#chatInput')?.addEventListener('keydown',e=>{if(e.key==='Enter') handleSend();});
-    });
-
-    // Voice (auto-send after speech ends)
-    (function(){
-      let rec=null, listening=false;
-      const mic=()=>qs('#micBtn');
-      const supported=()=>('SpeechRecognition'in window)||('webkitSpeechRecognition'in window);
-      function ensure(){ if(rec) return rec; const SR=window.SpeechRecognition||window.webkitSpeechRecognition; rec=new SR(); rec.lang='en-GB'; rec.continuous=false; rec.interimResults=false; return rec; }
-      function glow(on){ const m=mic(); if(m) m.classList.toggle('glow', !!on); }
-      function toggleMic(){
-        if(!supported()){ addMsg('bot','Speech recognition isn’t supported in this browser.'); return; }
-        const r=ensure();
-        if(!listening){
-          listening=true; glow(true); r.start();
-          r.onresult=e=>{ const t=e.results[0][0].transcript; const i=qs('#chatInput'); if(i){i.value=t; if(i.value.trim()) handleSend();} };
-          r.onerror=()=>{ listening=false; glow(false); addMsg('bot','Sorry — I couldn’t hear that. Try again?'); };
-          r.onend=()=>{ listening=false; glow(false); };
-        } else { r.stop(); listening=false; glow(false); }
-      }
-      document.addEventListener('DOMContentLoaded',()=>{ mic()?.addEventListener('click',toggleMic); });
-    })();
-  </script>
+<script>
+  // Demos logic + voice
+  const state={activeBot:null,bots:{appointly:{name:'Appointly (Generic Appointment Setter)'},realestate:{name:'Property Qualifier'},salon:{name:'Salon Booker'},carins:{name:'Car Insurance Quick-Qualifier'},support:{name:'Support Triage'},guardrails:{name:'Off-topic Wrangler'}}};
+  const qs=s=>document.querySelector(s);
+  function addMsg(role,text){const m=qs('.msgs'); if(!m) return; const d=document.createElement('div'); d.className='msg '+role; d.textContent=text; m.appendChild(d); m.scrollTop=m.scrollHeight;}
+  function openChat(key){
+    state.activeBot=key;
+    qs('.stage-placeholder')?.remove();
+    qs('.chat-wrap').style.display='block';
+    qs('#chatBotName').textContent = state.bots[key].name;
+    const m=qs('.msgs'); m.innerHTML='';
+    addMsg('bot',`Hi — I'm ${state.bots[key].name}. Ask me something or press the mic.`);
+  }
+  function backToDock(){
+    qs('.chat-wrap').style.display='none';
+    const st=qs('.stage'); if(!qs('.stage-placeholder')){const ph=document.createElement('div'); ph.className='stage-placeholder'; ph.innerHTML='<p>Select a demo from the Dock to start chatting.</p>'; st.prepend(ph);}
+  }
+  function fakeAIResponse(input){
+    const k=state.activeBot, low=input.toLowerCase();
+    if(k==='guardrails'&&(low.includes('politics')||low.includes('weather')||low.includes('joke'))) return "Let's park that — what service do you need?";
+    if(k==='appointly'&&low.includes('tuesday')) return "I can offer Tue 10:00 or 14:30. Which works?";
+    if(k==='carins'&&low.includes('quote')) return "Quick check: name, DOB, licence type, any claims in last 3 years?";
+    if(k==='salon'&&(low.includes('hair')||low.includes('cut'))) return "We can do a Cut & Finish. Want to add a scalp treatment today?";
+    if(k==='support'&&(low.includes('down')||low.includes('error'))) return "I can create a ticket. What's your email and a short description?";
+    if(k==='realestate'&&(low.includes('view')||low.includes('flat'))) return "Great — buy or rent, and budget range?";
+    return "Got it. Tell me a bit more and I’ll guide you.";
+  }
+  function handleSend(){const i=qs('#chatInput'); const t=i.value.trim(); if(!t) return; addMsg('user',t); i.value=''; setTimeout(()=>addMsg('bot',fakeAIResponse(t)),400);}
+  document.addEventListener('DOMContentLoaded',()=>{qs('#sendBtn').addEventListener('click',handleSend); qs('#chatInput').addEventListener('keydown',e=>{if(e.key==='Enter') handleSend();});});
+  (function(){ let rec=null, listening=false; const mic=()=>qs('#micBtn'); const supported=()=>('SpeechRecognition'in window)||('webkitSpeechRecognition'in window);
+    function ensure(){ if(rec) return rec; const SR=window.SpeechRecognition||window.webkitSpeechRecognition; rec=new SR(); rec.lang='en-GB'; rec.continuous=false; rec.interimResults=false; return rec; }
+    function glow(on){ mic().classList.toggle('glow', !!on); }
+    function toggleMic(){ if(!supported()){ addMsg('bot','Speech recognition isn’t supported in this browser.'); return; }
+      const r=ensure(); if(!listening){ listening=true; glow(true); r.start();
+        r.onresult=e=>{ const t=e.results[0][0].transcript; const i=qs('#chatInput'); i.value=t; if(i.value.trim()) handleSend(); };
+        r.onerror=()=>{ listening=false; glow(false); addMsg('bot','Sorry — I couldn’t hear that. Try again?'); };
+        r.onend=()=>{ listening=false; glow(false); };
+      } else { r.stop(); listening=false; glow(false); } }
+    document.addEventListener('DOMContentLoaded',()=>{ mic().addEventListener('click',toggleMic); });
+  })();
+</script>
 </body>
 </html>
