@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Zypher — AI that books, qualifies & supports</title>
 <meta name="description" content="Zypher builds voice & chat agents that book appointments, qualify leads and support customers — fast, on-brand and privacy-first.">
+
 <style>
   /* ---------- THEME PALETTES ---------- */
   :root{
@@ -14,51 +15,44 @@
   [data-theme="circuit"]{ --accent:#21d089; --accent-2:#15c0ff; }
   [data-theme="mono"]{ --accent:#bdbdbd; --accent-2:#ffffff; }
   [data-theme="cyber"]{ --accent:#00ffd0; --accent-2:#ff00e5; }
-  [data-theme="sunrise"]{ --accent:#ff7ab6; --accent-2:#ffb86b; }
   [data-theme="midnight"]{ --accent:#6ea8ff; --accent-2:#a975ff; }
+  [data-theme="sunrise"]{ --accent:#ff7ab6; --accent-2:#ffb86b; }
 
   /* ---------- BASE ---------- */
   *{box-sizing:border-box} html{-webkit-text-size-adjust:100%}
   html,body{margin:0;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg)}
   a{color:inherit;text-decoration:none} img{display:block;max-width:100%} button{font:inherit}
-  .container{max-width:1180px;margin:0 auto;padding:0 20px}
-  .section{padding:56px 0} .muted{color:var(--muted)}
+  .container{max-width:1200px;margin:0 auto;padding:0 24px}
+  .section{padding:72px 0} .muted{color:var(--muted)}
+  .spacer{height:24px}
 
-  /* ---------- BACKGROUNDS ---------- */
+  /* ---------- BACKGROUND: aurora + stars ---------- */
+  .bg, .stars{position:fixed; inset:0; pointer-events:none; z-index:-2}
   .bg{
-    position:fixed; inset:0; pointer-events:none; z-index:-1;
     background:
-      radial-gradient(1200px 800px at 80% -10%, color-mix(in oklab, var(--accent) 60%, transparent), transparent 60%),
-      radial-gradient(900px 700px at -10% 30%, color-mix(in oklab, var(--accent-2) 55%, transparent), transparent 60%),
-      radial-gradient(600px 600px at 120% 120%, rgba(255,255,255,.04), transparent 50%);
-    filter:saturate(1.1);
+      radial-gradient(1400px 900px at 85% -10%, color-mix(in oklab, var(--accent) 55%, transparent), transparent 60%),
+      radial-gradient(1000px 800px at -10% 40%, color-mix(in oklab, var(--accent-2) 55%, transparent), transparent 60%),
+      radial-gradient(700px 700px at 120% 120%, rgba(255,255,255,.05), transparent 50%);
+    filter:saturate(1.05);
   }
-  .bg::before{
+  .aurora{position:fixed; inset:-20% -10% -15% -10%; z-index:-1; pointer-events:none; filter: blur(42px);
+    background: conic-gradient(from 180deg, color-mix(in oklab, var(--accent) 45%, transparent), color-mix(in oklab, var(--accent-2) 45%, transparent), transparent 60%);
+    animation: auroraMove 14s linear infinite; opacity:.55;
+  }
+  @keyframes auroraMove{0%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3%) rotate(7deg)}100%{transform:translateY(0) rotate(0)}}
+
+  /* Subtle starfield */
+  .stars::before{
     content:""; position:absolute; inset:0;
-    background-image:
-      radial-gradient(circle at 25px 25px, rgba(255,255,255,.06) 1px, transparent 1px);
-    background-size: 28px 28px; opacity:.08; mix-blend:screen;
-  }
-  .aurora{
-    position:fixed; inset:-20% -10% -10% -10%; pointer-events:none; z-index:-1; filter: blur(40px);
-    background: conic-gradient(from 180deg,
-      color-mix(in oklab, var(--accent) 40%, transparent),
-      color-mix(in oklab, var(--accent-2) 40%, transparent),
-      transparent 60%);
-    animation: auroraMove 14s linear infinite;
-    opacity:.55;
-  }
-  @keyframes auroraMove{
-    0%{transform:translateY(0) rotate(0deg)}
-    50%{transform:translateY(-4%) rotate(8deg)}
-    100%{transform:translateY(0) rotate(0deg)}
+    background-image: radial-gradient(#fff 1px, transparent 1px);
+    background-size: 2px 2px; opacity:.06; mix-blend:screen; mask-image: radial-gradient(circle at 50% 20%, black, transparent 65%);
   }
 
   /* ---------- NAV ---------- */
   .nav{
     display:flex; align-items:center; justify-content:space-between; gap:12px;
-    padding:12px 16px; position:sticky; top:0; z-index:20;
-    background:rgba(11,12,18,.65); backdrop-filter: blur(8px);
+    padding:12px 18px; position:sticky; top:0; z-index:20;
+    background:rgba(11,12,18,.65); backdrop-filter: blur(10px);
     border-bottom:1px solid var(--edge);
   }
   .brand{display:flex;align-items:center;gap:12px}
@@ -66,67 +60,62 @@
   .brand-name{font-weight:700;letter-spacing:.2px}
 
   .nav-links{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
-  .nav-links a{padding:8px 10px;border-radius:10px;color:var(--muted)}
+  .nav-links a{padding:9px 12px;border-radius:12px;color:var(--muted)}
   .nav-links a.active,.nav-links a:hover{color:#fff;background:rgba(255,255,255,.06)}
 
-  /* Futuristic dropdown */
-  .theme{
-    position:relative; display:flex; align-items:center; gap:10px;
-  }
+  /* Futuristic theme dropdown */
+  .theme{position:relative; display:flex; align-items:center; gap:12px}
   .theme button{
     display:flex; align-items:center; gap:10px; cursor:pointer;
-    padding:8px 12px; border-radius:12px;
-    border:1px solid var(--edge); color:#fff;
+    padding:8px 12px; border-radius:12px; border:1px solid var(--edge); color:#fff;
     background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
   }
-  .theme .dot{width:10px;height:10px;border-radius:999px;background:var(--accent); box-shadow:0 0 10px var(--accent)}
-  .menu{position:absolute; right:0; top:42px; min-width:180px; display:none;
-    background:rgba(15,17,26,.98); border:1px solid var(--edge); border-radius:14px;
-    padding:6px; box-shadow:0 20px 40px rgba(0,0,0,.4);
-  }
+  .dot{width:10px;height:10px;border-radius:999px;background:var(--accent); box-shadow:0 0 10px var(--accent)}
+  .menu{position:absolute; right:0; top:42px; min-width:190px; display:none;
+    background:rgba(15,17,26,.98); border:1px solid var(--edge); border-radius:14px; padding:6px; box-shadow:0 20px 40px rgba(0,0,0,.4)}
   .menu.open{display:block; animation: pop .14s ease-out}
   @keyframes pop{from{transform:translateY(-4px);opacity:0}to{transform:translateY(0);opacity:1}}
   .item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;cursor:pointer}
   .item:hover{background:rgba(255,255,255,.06)}
   .swatch{width:14px;height:14px;border-radius:999px;box-shadow:0 0 12px currentColor}
-  .btn{padding:10px 16px;border-radius:12px;border:1px solid var(--edge);
+
+  .btn{padding:12px 16px;border-radius:14px;border:1px solid var(--edge);
     background:linear-gradient(90deg, color-mix(in oklab, var(--accent) 35%, transparent), color-mix(in oklab, var(--accent-2) 35%, transparent));
-    color:#fff; display:inline-block
-  }
+    color:#fff; display:inline-block}
+  .btn.ghost{background:transparent}
 
   /* ---------- HERO ---------- */
-  .hero{padding:90px 0 56px}
+  .hero{padding:96px 0 48px}
   .badge{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;border:1px solid var(--edge);
     color:var(--accent-2); background:rgba(0,212,255,.08); font-size:12px; margin-bottom:18px}
   .hero-title{
-    font-size: clamp(36px, 6vw, 72px); line-height:1.05; margin:0 0 12px;
-    background: linear-gradient(90deg, #fff, color-mix(in oklab, var(--accent) 40%, #fff), #fff);
+    font-size: clamp(34px, 6.5vw, 70px); line-height:1.05; margin:0 0 14px;
+    background: linear-gradient(90deg, #fff, color-mix(in oklab, var(--accent) 40%, #fff), color-mix(in oklab, var(--accent-2) 40%, #fff), #fff);
     background-size: 200% auto; -webkit-background-clip: text; background-clip:text; color: transparent;
     animation: sheen 7s linear infinite;
   }
   @keyframes sheen{ 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-  .hero-sub{max-width:720px;color:var(--muted);font-size:18px;margin:0}
-  .hero-actions{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
+  .hero-sub{max-width:780px;color:var(--muted);font-size:18px;margin:0}
+  .hero-actions{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
 
-  /* ---------- CARDS ---------- */
-  .grid-3{display:grid;grid-template-columns:1fr;gap:16px}
+  /* ---------- CARDS / CONTENT ---------- */
+  .grid-3{display:grid;grid-template-columns:1fr;gap:18px}
   .card{background:linear-gradient(180deg,var(--panel),var(--elev));border:1px solid var(--edge);border-radius:18px;padding:20px}
   .card h3{margin:0 0 6px;font-size:18px}
   .card p{margin:4px 0 0;color:var(--muted)}
 
   /* ---------- FOOTER ---------- */
-  .footer{padding:32px 16px;border-top:1px solid var(--edge)}
+  .footer{padding:40px 24px;border-top:1px solid var(--edge)}
   .footer-row{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
   /* ---------- BREAKPOINTS ---------- */
   @media (min-width:768px){ .grid-3{grid-template-columns:repeat(3,1fr)} }
-  @media (min-width:992px){ .container{padding:0 24px} }
-  @media (min-width:1200px){ .hero-title{font-size:64px} }
+  @media (min-width:992px){ .container{padding:0 28px} }
+  @media (min-width:1200px){ .hero-title{font-size:66px} }
 </style>
 </head>
 <body>
-  <div class="bg"></div><div class="aurora"></div>
+  <div class="bg"></div><div class="aurora"></div><div class="stars"></div>
 
   <nav class="nav">
     <div class="brand">
@@ -167,13 +156,13 @@
     <p class="hero-sub">Meet <strong>Zypher</strong> — voice & chat agents that respect your brand and your customers. Plug into your calendar and CRM. Go live in days, not months.</p>
     <div class="hero-actions">
       <a class="btn" href="demos.html">See live demos</a>
-      <a class="btn" href="contact.html" style="background:transparent;border-color:var(--edge)">Talk to us</a>
+      <a class="btn ghost" href="contact.html">Talk to us</a>
     </div>
   </header>
 
   <main>
-    <section class="container grid-3 section">
-      <div class="card"><h3>Voice & Phone</h3><p>Answer calls, qualify and book — 24/7. Natural speech, clear confirmations.</p></div>
+    <section class="container grid-3 section" aria-label="Capabilities">
+      <div class="card"><h3>Voice & Phone</h3><p>Answer calls, qualify and book — 24/7. Natural speech with clear confirmations.</p></div>
       <div class="card"><h3>Web Chat</h3><p>On-site chat that actually gets things done: capture, schedule, escalate.</p></div>
       <div class="card"><h3>Workflow Ready</h3><p>Integrates with Google Calendar, HubSpot, Notion, Slack, make.com & more.</p></div>
     </section>
@@ -191,7 +180,7 @@
   </footer>
 
 <script>
-  // Futuristic dropdown (theme)
+  // Futuristic theme dropdown (persists)
   (function(){
     const btn = document.getElementById('themeBtn');
     const menu = document.getElementById('themeMenu');
@@ -199,8 +188,8 @@
     const saved = localStorage.getItem('zy_theme');
     if(saved !== null){
       document.documentElement.setAttribute('data-theme', saved);
-      const active = [...menu.querySelectorAll('.item')].find(i=>i.dataset.theme===saved);
-      if(active) label.textContent = active.textContent.trim();
+      const act = [...menu.querySelectorAll('.item')].find(i=>i.dataset.theme===saved);
+      if(act) label.textContent = act.textContent.trim();
     }
     btn.addEventListener('click', ()=>{
       const open = menu.classList.toggle('open');
@@ -212,8 +201,7 @@
       document.documentElement.setAttribute('data-theme', theme);
       localStorage.setItem('zy_theme', theme);
       label.textContent = item.textContent.trim();
-      menu.classList.remove('open');
-      btn.setAttribute('aria-expanded','false');
+      menu.classList.remove('open'); btn.setAttribute('aria-expanded','false');
     });
     document.addEventListener('click', (e)=>{
       if(!menu.contains(e.target) && !btn.contains(e.target)) menu.classList.remove('open');
