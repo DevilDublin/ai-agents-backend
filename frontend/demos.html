@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Demos — Zypher</title>
 <style>
-:root{--bg:#0b0c12;--panel:#0f111a;--elev:#11131d;--text:#e8ebf5;--muted:#a6adc8;--edge:rgba(255,255,255,.10);--a:#8a5cf6;--b:#00d4ff}
+:root{--panel:#0f111a;--elev:#11131d;--text:#e8ebf5;--muted:#a6adc8;--edge:rgba(255,255,255,.10);--a:#8a5cf6;--b:#00d4ff}
 *{box-sizing:border-box} html{-webkit-text-size-adjust:100%}
-html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
-#bg{position:fixed;inset:0;z-index:-2}.vign{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(120% 120% at 50% 15%,transparent 0 60%,rgba(0,0,0,.35) 85%,rgba(0,0,0,.6) 100%)}
+html,body{margin:0;height:100%;background:transparent;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none} .site{position:relative;z-index:1;min-height:100%}
+.vign{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(120% 120% at 50% 15%,transparent 0 60%,rgba(0,0,0,.35) 85%,rgba(0,0,0,.6) 100%)}
 a{color:inherit;text-decoration:none}
 .container{max-width:1200px;margin:0 auto;padding:0 24px}
-.nav{position:sticky;top:0;z-index:10;background:rgba(11,12,18,.62);backdrop-filter:blur(10px);border-bottom:1px solid var(--edge);display:flex;align-items:center;justify-content:space-between;padding:10px 18px}
+.nav{position:sticky;top:0;z-index:5;background:rgba(11,12,18,.62);backdrop-filter:blur(10px);border-bottom:1px solid var(--edge);display:flex;align-items:center;justify-content:space-between;padding:10px 18px}
 .brand{display:flex;gap:12px;align-items:center}.brand svg{width:28px;height:28px}
 .links{display:flex;gap:10px}.links a{padding:8px 12px;border-radius:12px;color:var(--muted)}.links a.active,.links a:hover{color:#fff;background:rgba(255,255,255,.08)}
 .section{padding:56px 0}.muted{color:var(--muted)}
-.orbit-wrap{position:relative;height:560px;perspective:1200px}
-.orbit-plane{position:absolute;left:50%;top:50%;transform-style:preserve-3d;transform:translate(-50%,-50%);width:520px;height:520px}
-.centre-tag{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:170px;height:144px;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);background:radial-gradient(120% 120% at 50% 0%,rgba(138,92,246,.26),rgba(255,255,255,.02));border:1px solid var(--edge);display:grid;place-items:center;animation:hum 5s ease-in-out infinite}
+/* Orbit */
+.orbit-wrap{position:relative;height:600px;perspective:1200px;user-select:none}
+.orbit-plane{position:absolute;left:50%;top:50%;transform-style:preserve-3d;transform:translate(-50%,-50%);width:560px;height:560px;will-change:transform}
+.centre-tag{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:180px;height:152px;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);background:radial-gradient(120% 120% at 50% 0%,rgba(138,92,246,.26),rgba(255,255,255,.02));border:1px solid var(--edge);display:grid;place-items:center;animation:hum 5s ease-in-out infinite;pointer-events:none}
 @keyframes hum{0%,100%{filter:drop-shadow(0 0 10px rgba(138,92,246,.3))}50%{filter:drop-shadow(0 0 24px rgba(0,212,255,.35))}}
-.hex{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotateZ(var(--rot,0deg)) translateY(-210px);width:210px;height:180px;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);background:radial-gradient(120% 120% at 10% 0%, rgba(138,92,246,.16), rgba(255,255,255,.02));border:1px solid var(--edge);display:grid;place-items:center;cursor:pointer;transition:transform .18s ease, box-shadow .18s ease, filter .18s ease}
-.hex:hover{transform:translate(-50%,-50%) rotateZ(var(--rot,0deg)) translateY(-210px) scale(1.04);box-shadow:0 18px 36px rgba(0,0,0,.45), inset 0 0 0 1px rgba(138,92,246,.22)}
-.hex .label{text-align:center;width:72%}.hex h4{margin:0 0 4px}.dot{display:inline-block;width:10px;height:10px;border-radius:999px;background:var(--a);box-shadow:0 0 10px var(--a);margin-right:8px}
-@media (max-width:820px){.orbit-wrap{height:auto}.orbit-plane{position:static;transform:none;width:auto;height:auto}.centre-tag{display:none}.hex{position:static;transform:none;width:100%;height:auto;clip-path:none;border-radius:16px;margin-bottom:12px}}
+.hex{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotateZ(var(--rot,0deg)) translateY(-230px);width:220px;height:190px;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);background:radial-gradient(120% 120% at 10% 0%, rgba(138,92,246,.16), rgba(255,255,255,.02));border:1px solid var(--edge);display:grid;place-items:center;cursor:pointer;transition:transform .18s ease, box-shadow .18s ease, filter .18s ease;will-change:transform;z-index:1}
+.hex:hover{transform:translate(-50%,-50%) rotateZ(var(--rot,0deg)) translateY(-230px) scale(1.06);box-shadow:0 18px 36px rgba(0,0,0,.45), inset 0 0 0 1px rgba(138,92,246,.22)}
+.hex .label{text-align:center;width:78%}.hex h4{margin:0 0 4px}.dot{display:inline-block;width:10px;height:10px;border-radius:999px;background:var(--a);box-shadow:0 0 10px var(--a);margin-right:8px}
 /* Modal chat */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:50}
 .modal.open{display:flex}
@@ -45,6 +45,7 @@ footer{padding:30px 24px;color:var(--muted);border-top:1px solid var(--edge)}
 </head>
 <body>
 <canvas id="bg"></canvas><div class="vign" aria-hidden="true"></div>
+<div class="site">
 
 <nav class="nav">
   <div class="brand">
@@ -62,10 +63,11 @@ footer{padding:30px 24px;color:var(--muted);border-top:1px solid var(--edge)}
   <section class="orbit-wrap">
     <div class="orbit-plane" id="orbit">
       <div class="centre-tag"><small>select your demo</small></div>
-      <button class="hex" data-id="appointly" style="--rot:0deg"><div class="label"><h4><span class="dot"></span>Appointly</h4><small class="muted">Appointment booking</small></div></button>
-      <button class="hex" data-id="realestate" style="--rot:90deg"><div class="label"><h4><span class="dot"></span>Property Qualifier</h4><small class="muted">Lead intake & viewings</small></div></button>
-      <button class="hex" data-id="salon" style="--rot:180deg"><div class="label"><h4><span class="dot"></span>Salon Booker</h4><small class="muted">Services & add-ons</small></div></button>
-      <button class="hex" data-id="carins" style="--rot:270deg"><div class="label"><h4><span class="dot"></span>Car Insurance</h4><small class="muted">Quick-qualify & quote</small></div></button>
+
+      <button class="hex" data-id="appointly"   style="--rot:  0deg"><div class="label"><h4><span class="dot"></span>Appointly</h4><small class="muted">Appointment booking</small></div></button>
+      <button class="hex" data-id="realestate"  style="--rot: 90deg"><div class="label"><h4><span class="dot"></span>Property Qualifier</h4><small class="muted">Lead intake & viewings</small></div></button>
+      <button class="hex" data-id="salon"       style="--rot:180deg"><div class="label"><h4><span class="dot"></span>Salon Booker</h4><small class="muted">Services & add-ons</small></div></button>
+      <button class="hex" data-id="carins"      style="--rot:270deg"><div class="label"><h4><span class="dot"></span>Car Insurance</h4><small class="muted">Quick-qualify & quote</small></div></button>
     </div>
   </section>
 </main>
@@ -76,44 +78,57 @@ footer{padding:30px 24px;color:var(--muted);border-top:1px solid var(--edge)}
     <div class="hdr"><div><span class="pill" id="botName">Bot</span></div><button class="icon" id="closeBtn" title="Close">✕</button></div>
     <div class="msgs" id="msgs"></div>
     <div class="tools">
-      <div class="bar"><input id="chatInput" placeholder="Say something…" /><button id="micBtn" class="icon mic">🎤</button></div>
+      <div class="bar"><input id="chatInput" placeholder="Say something…"/><button id="micBtn" class="icon mic">🎤</button></div>
       <button id="sendBtn" class="icon">➤</button>
     </div>
   </div>
 </div>
 
 <footer class="container">© 2025 Zypher — All rights reserved.</footer>
+</div>
 
 <script>
-/* Background */
-(()=>{const c=document.getElementById('bg'),x=c.getContext('2d');let stars=[],shots=[],r=window.devicePixelRatio||1;
-function sz(){c.width=innerWidth*r;c.height=innerHeight*r;x.setTransform(r,0,0,r,0,0);mk()}
-function mk(){stars=[];const n=Math.floor(innerWidth*innerHeight/2200);for(let i=0;i<n;i++)stars.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*1.3+.2,a:.55*Math.random()+.25})}
-function spawn(){shots.push({x:-80,y:Math.random()*innerHeight*.8+10,vx:6+Math.random()*5,life:1})}
+/* BACKGROUND (same everywhere) */
+(()=>{const c=document.getElementById('bg'),x=c.getContext('2d');let r=devicePixelRatio||1,stars=[],shots=[],t=0;
+function size(){c.width=innerWidth*r;c.height=innerHeight*r;x.setTransform(r,0,0,r,0,0)}
+function make(){stars=[];const n=Math.floor(innerWidth*innerHeight/2200);for(let i=0;i<n;i++)stars.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*1.3+.2,a:.4+.4*Math.random()})}
+function spawn(){shots.push({x:-60,y:Math.random()*innerHeight*.9+10,vx:6+Math.random()*5})}
 setInterval(spawn,1200);
-function step(){x.clearRect(0,0,innerWidth,innerHeight);for(const s of stars){x.globalAlpha=s.a;x.fillStyle='#fff';x.fillRect(s.x,s.y,s.s,s.s);s.x+=.03;if(s.x>innerWidth)s.x=0}x.globalAlpha=1;for(const sh of shots){x.strokeStyle='rgba(0,212,255,.5)';x.lineWidth=2;x.beginPath();x.moveTo(sh.x,sh.y);x.lineTo(sh.x+30,sh.y-6);x.stroke();x.strokeStyle='rgba(138,92,246,.45)';x.beginPath();x.moveTo(sh.x-18,sh.y+4);x.lineTo(sh.x+8,sh.y-1);x.stroke();sh.x+=sh.vx;sh.life-=.02}shots=shots.filter(s=>s.x<innerWidth+70&&s.life>0);requestAnimationFrame(step)}
-addEventListener('resize',sz,{passive:true});sz();step()})();
+function neb(){const r1=160+50*Math.sin(t*.8),r2=220+60*Math.cos(t*.6);
+x.fillStyle='rgb(14,16,25)';x.fillRect(0,0,innerWidth,innerHeight);
+let g=x.createRadialGradient(innerWidth*.2,innerHeight*.25,0,innerWidth*.2,innerHeight*.25,r1);
+g.addColorStop(0,'rgba(138,92,246,.22)');g.addColorStop(1,'rgba(138,92,246,0)');x.fillStyle=g;x.beginPath();x.arc(innerWidth*.2,innerHeight*.25,r1,0,7);x.fill();
+g=x.createRadialGradient(innerWidth*.8,innerHeight*.75,0,innerWidth*.8,innerHeight*.75,r2);
+g.addColorStop(0,'rgba(0,212,255,.20)');g.addColorStop(1,'rgba(0,212,255,0)');x.fillStyle=g;x.beginPath();x.arc(innerWidth*.8,innerHeight*.75,r2,0,7);x.fill();}
+function step(){t+=1/60;neb();for(const s of stars){x.globalAlpha=s.a;x.fillStyle='#fff';x.fillRect(s.x,s.y,s.s,s.s);s.x+=.03;if(s.x>innerWidth)s.x=0}x.globalAlpha=1;for(const sh of shots){x.strokeStyle='rgba(0,212,255,.5)';x.lineWidth=2;x.beginPath();x.moveTo(sh.x,sh.y);x.lineTo(sh.x+30,sh.y-6);x.stroke();x.strokeStyle='rgba(138,92,246,.45)';x.beginPath();x.moveTo(sh.x-18,sh.y+4);x.lineTo(sh.x+8,sh.y-1);x.stroke();sh.x+=sh.vx}shots=shots.filter(s=>s.x<innerWidth+80);requestAnimationFrame(step)}
+addEventListener('resize',()=>{size();make()},{passive:true});size();make();step()})();
 
-/* Orbit interactions */
-(()=>{const orbit=document.getElementById('orbit');let a=0,drag=false,sx=0,sa=0;
-function setA(v){a=v;orbit.style.transform=`translate(-50%,-50%) rotateZ(${a}deg)`;}
-orbit.addEventListener('pointerdown',e=>{drag=true;sx=e.clientX;sa=a;orbit.setPointerCapture(e.pointerId);});
-orbit.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-sx;setA(sa+dx*.25);});
-orbit.addEventListener('pointerup',()=>drag=false);
+/* ORBIT — smooth, all hexes clickable, inertia + idle autorotate */
+(()=>{const orbit=document.getElementById('orbit');let a=0, target=0, v=0, dragging=false, sx=0, lastT=0, idle=0;
+function apply(){orbit.style.transform=`translate(-50%,-50%) rotateZ(${a}deg)`;}
+function animate(ts){const dt=(ts-(lastT||ts))/16; lastT=ts; idle+=dt; // ease towards target with damping
+const diff=(target-a); v+=diff*0.08; v*=0.92; a+=v; apply(); requestAnimationFrame(animate);
+if(idle>120){target+=0.08;} // gentle autorotate when idle
+}
+orbit.addEventListener('pointerdown',e=>{dragging=true;sx=e.clientX;orbit.setPointerCapture(e.pointerId);idle=0;});
+orbit.addEventListener('pointermove',e=>{if(!dragging)return; const dx=e.clientX-sx; sx=e.clientX; target+=dx*0.35; idle=0;});
+orbit.addEventListener('pointerup',()=>{dragging=false;});
 document.querySelectorAll('.hex').forEach(h=>{
-  h.addEventListener('mouseenter',()=>{const rot=parseFloat(h.style.getPropertyValue('--rot')||'0');setA(-rot);});
+  h.addEventListener('mouseenter',()=>{const rot=parseFloat(h.style.getPropertyValue('--rot')||'0'); target=-rot; idle=0;});
   h.addEventListener('click',()=>openChat(h.dataset.id));
-});})();
+});
+requestAnimationFrame(animate);
+})();
 
-/* Modal chat (all inline) */
+/* MODAL CHAT — unchanged look/feel */
 const BOTS={appointly:'Appointly (Appointment booking)',realestate:'Property Qualifier',salon:'Salon Booker',carins:'Car Insurance'};
 const $=s=>document.querySelector(s);
 function add(role,text,typing=false){const d=document.createElement('div');d.className='msg '+role+(typing?' typing':'');d.textContent=text;$('#msgs').appendChild(d);$('#msgs').scrollTop=$('#msgs').scrollHeight;return d;}
 const state={active:null,history:[]};
 function openChat(id){state.active=id;state.history=[];$('#botName').textContent=BOTS[id];$('#msgs').innerHTML='';add('bot',`Hi — I’m ${BOTS[id]}. Ask me anything or press the mic.`);$('#modal').classList.add('open');}
-$('#closeBtn').addEventListener('click',()=>{$('#modal').classList.remove('open');});
+$('#closeBtn').addEventListener('click',()=>$('#modal').classList.remove('open'));
 
-window.ZYPHER_API_BASE=""; // set to your backend URL to go live
+window.ZYPHER_API_BASE=""; // put your backend base URL to go live
 async function backend(messages){const base=window.ZYPHER_API_BASE;if(!base)throw new Error('no backend');const r=await fetch(base.replace(/\/$/,'')+'/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bot:state.active,messages})});if(!r.ok)throw new Error('HTTP '+r.status);const j=await r.json();return j.reply||'';}
 function local(t){const id=state.active,x=t.toLowerCase();if(/(politics|joke|song|poem)/.test(x))return "Let’s keep it on task — what would you like help with today?";if(id==='appointly'&&/(tue|tuesday|slot|book|appointment)/.test(x))return "I can do Tuesday at 10:00 or 14:30. Which suits you?";if(id==='realestate'&&/(view|flat|house|property)/.test(x))return "Smashing — are you buying or renting, and what’s your budget?";if(id==='salon'&&/(cut|hair|trim|colour|color)/.test(x))return "We can book a Cut & Finish. Fancy adding a nourishing scalp treatment?";if(id==='carins'&&/(quote|insurance|policy|premium)/.test(x))return "No problem. I’ll need your name, date of birth, licence type, and any claims in the last 3 years.";return "Got it. Tell me a little more and I’ll guide you.";}
 async function sendNow(t){if(!t.trim())return;add('user',t);state.history.push({role:'user',content:t});const typing=add('bot','…',true);let reply='';try{reply=await backend(state.history);}catch{reply=local(t);}typing.remove();add('bot',reply);state.history.push({role:'assistant',content:reply});}
