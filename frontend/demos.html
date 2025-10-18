@@ -17,7 +17,7 @@
       <a href="./contact.html">Contact</a>
       <div class="theme-wrap">
         <span class="theme-label">Theme</span>
-        <button id="colorToggle" class="color-toggle" title="Click for palettes · Right-click auto"></button>
+        <button id="colorToggle" class="color-toggle" title="Click to switch neon palette"></button>
       </div>
     </div>
   </nav>
@@ -25,22 +25,25 @@
   <canvas id="background"></canvas>
 
   <main class="demos-shell">
-    <!-- Intro diamond (text is bright & centered) -->
-    <button id="selectDemoBtn" class="diamond-button">
-      <span class="diamond-glow"></span>
-      <span class="diamond-label">Select Your Demo</span>
-      <span class="diamond-hint">Click or press <b>Enter</b> to begin</span>
+    <!-- Clean diamond intro -->
+    <button id="selectDemoBtn" class="diamond-button" aria-label="Start demos">
+      <span class="diamond-glow" aria-hidden="true"></span>
+      <span class="diamond-core" aria-hidden="true"></span>
+      <span class="diamond-stack">
+        <span class="diamond-label">Select Your Demo</span>
+        <span class="diamond-hint">Click or press <b>Enter</b> to begin</span>
+      </span>
     </button>
 
     <!-- HUD -->
     <div id="demoHUD" class="demo-hud hidden">
       <span class="hud-dot"></span>
-      <span>Use <b>← →</b> / <b>A D</b> to switch · <b>Enter</b> preview · <b>Esc</b> reset</span>
+      <span id="hudText">Use <b>← →</b> / <b>A D</b> to switch · <b>Enter</b> to open</span>
     </div>
 
-    <!-- Split after diamond -->
+    <!-- Selector / Chat split -->
     <section id="demoSplit" class="demo-split hidden">
-      <aside class="typewriter neon-green" id="twPane">
+      <aside class="typewriter neon-green" id="twPane" aria-live="polite">
         <div class="tw-header">
           <span class="tw-led"></span>
           <span class="tw-title" id="twTitle">_</span>
@@ -49,12 +52,13 @@
         <div class="tw-controls">
           <button id="prevBot" class="pill-btn" aria-label="Previous bot">← Prev</button>
           <button id="nextBot" class="pill-btn" aria-label="Next bot">Next →</button>
-          <button id="previewBtn" class="pill-link" type="button">Preview (Enter)</button>
+          <button id="openNow" class="pill-link" type="button">Open (Enter)</button>
         </div>
       </aside>
 
       <div class="chat-panel" id="chatPane">
-        <!-- appears only after confirming the modal -->
+        <button id="closeChat" class="chat-close hidden" aria-label="Close chat and return">×</button>
+
         <div id="chatContainer" class="chat-container chat-bright hidden">
           <div id="chatMessages" class="chat-messages"></div>
           <div class="chat-input">
@@ -67,26 +71,11 @@
         <div id="chatPlaceholder" class="chat-placeholder">
           <div class="cp-wrap">
             <div class="cp-title">Select a bot to open the chat</div>
-            <div class="cp-sub">Press <b>Enter</b> to preview first</div>
+            <div class="cp-sub">Press <b>Enter</b> when ready</div>
           </div>
         </div>
       </div>
     </section>
-
-    <!-- Bot preview modal (opens on Enter) -->
-    <dialog id="botModal" class="bot-modal">
-      <div class="bm-head">
-        <div class="bm-dot"></div>
-        <div class="bm-title"><span id="bmName" class="grad-text"></span></div>
-      </div>
-      <div id="bmCopy" class="bm-copy">
-        <!-- filled by JS with a one-liner from the typewriter -->
-      </div>
-      <div class="bm-actions">
-        <button id="bmOpen" class="btn">Open Chat</button>
-        <button id="bmClose" class="pill-btn" type="button">Close</button>
-      </div>
-    </dialog>
   </main>
 
   <footer class="footer">© 2025 Zypher — Built for speed · Privacy-first · UK/EU ready</footer>
