@@ -1,205 +1,196 @@
-/* ===== ZYPHER — Demos flow =====
-   Landing shape -> Selector scene -> Chat
-   Keys: Left/Right or A/D to switch, Enter to preview/open, Esc to go back
-*/
-const bots = [
-  {
-    name:'Car Insurance',
-    script:[
-      'Decrypting module…',
-      'Agent: Car Insurance → Quick-qualify & quote',
-      'Collect → name, phone, vehicle, NCB, claims',
-      'Decision → instant quote / manual review',
-      'Integrations → Calendar · CRM · Email',
-      'Hint → say: "Get a quick quote"'
-    ]
-  },
-  {
-    name:'Appointly',
-    script:[
-      'Loading scheduler…',
-      'Agent: Appointly → Appointment booking',
-      'Collect → service, date & time, notes',
-      'Confirm → SMS + calendar invite',
-      'Links → reschedule / cancel',
-      'Hint → say: "Book me Friday 3pm"'
-    ]
-  },
-  {
-    name:'Salon Booker',
-    script:[
-      'Compiling treatments…',
-      'Agent: Salon Booker → Services & add-ons',
-      'Upsell → bundles, extras, deposits',
-      'Remind → no-show sequences',
-      'Ops → CRM summary',
-      'Hint → say: "Cut + beard trim this weekend"'
-    ]
-  },
-  {
-    name:'Property Qualifier',
-    script:[
-      'Scanning listings…',
-      'Agent: Property Qualifier → Tenants & viewings',
-      'Filter → budget, move-in, location, docs',
-      'Book → viewing slots / agent call',
-      'Sync → CRM with transcript',
-      'Hint → say: "I want to view a 2-bed"'
-    ]
-  }
-];
+/* Demos: keep your UI/flow, add animated intro + clean toggling */
+(() => {
+  const intro = document.getElementById('demoIntro');
+  const stage = document.getElementById('demoStage');
+  const glyph = document.getElementById('introGlyph');
+  const brief = document.getElementById('botBrief');
+  const chatMount = document.getElementById('chatMount');
 
-(function(){
-  const landing = document.querySelector('.demo-landing');
-  const selectorWrap = document.querySelector('.selector-wrap');
-  const ttyTitle = document.querySelector('.tty-title .label');
-  const tty = document.querySelector('.tty-screen');
-  const prevBtn = document.querySelector('[data-prev]');
-  const nextBtn = document.querySelector('[data-next]');
-  const openBtn = document.querySelector('[data-open]');
-  const chat = document.querySelector('.chat');
-  const chatX = document.querySelector('.chat .x');
-  const chatLog = document.querySelector('.chatlog');
-  const chatInput = document.querySelector('#chat-input');
-  const chatSend = document.querySelector('#chat-send');
-  const tip = document.querySelector('.hints');
-
-  let i = 0;
-  let inChat = false;
-
-  function renderBot(idx){
-    const bot = bots[idx];
-    ttyTitle.textContent = bot.name;
-    tty.innerHTML = '';
-    typeLines(bot.script, 0);
-  }
-
-  function typeLines(lines, n){
-    if (n >= lines.length) return;
-    const line = document.createElement('div');
-    tty.appendChild(line);
-    typewriter(line, lines[n], ()=>typeLines(lines, n+1));
-  }
-
-  function typewriter(el, text, done){
-    let k = 0;
-    const blink = document.createElement('span'); blink.textContent = ' ▋'; blink.style.opacity='.7';
-    const id = setInterval(()=>{
-      el.textContent = text.slice(0, ++k);
-      el.appendChild(blink);
-      if (k >= text.length){ clearInterval(id); setTimeout(()=>{ blink.remove(); done&&done(); }, 120); }
-    }, 16 + Math.random()*24);
-  }
-
-  /* landing -> selector */
-  const shape = document.querySelector('.shape');
-  if (shape){
-    shape.addEventListener('click', openSelector);
-    shape.addEventListener('keydown', (e)=>{ if(e.key==='Enter') openSelector(); });
-  }
+  // --- Intro open animation -> reveal selector
   function openSelector(){
-    landing.classList.add('hidden');
-    selectorWrap.classList.remove('hidden');
-    tip.style.opacity = .95;
-    renderBot(i);
-    chat.classList.add('hidden');
+    if(!intro || !stage) return;
+    glyph.style.pointerEvents = 'none';
+    glyph.animate([
+      { transform:'scale(1)', opacity:1 },
+      { transform:'scale(1.06)', opacity:1, offset:.4 },
+      { transform:'scale(.84)', opacity:.0 }
+    ], { duration:520, easing:'cubic-bezier(.2,.7,0,1)' }).onfinish = () => {
+      intro.style.display='none';
+      stage.classList.add('active');
+      initSelector();
+    };
   }
+  glyph?.addEventListener('click', openSelector);
+  window.addEventListener('keydown', (e)=>{ if(e.key==='Enter' && intro?.style.display!=='none') openSelector(); });
 
-  function switchBot(step){
-    i = (i + step + bots.length) % bots.length;
-    renderBot(i);
+  // --- Simple demo data (keep your earlier content structure)
+  const DEMOS = [
+    {
+      id:'car',
+      title:'Car Insurance',
+      brief:[
+        'Decrypting module…',
+        'Agent: Car Insurance — Quick-qualify & quote',
+        'Collect → name, phone, vehicle, NCB, claims',
+        'Decision → instant quote / manual review',
+        'Integrations → Calendar · CRM · Email',
+        'Hint → say: "Get a quick quote"'
+      ]
+    },
+    {
+      id:'appointly',
+      title:'Appointly',
+      brief:[
+        'Loading scheduler…',
+        'Agent: Appointly — Appointment Booking',
+        'Collect → service, date & time, notes',
+        'Confirm → SMS + calendar invite',
+        'Links → reschedule / cancel',
+        'Hint → say: "Book me Friday 3pm"'
+      ]
+    },
+    {
+      id:'salon',
+      title:'Salon Booker',
+      brief:[
+        'Compiling treatments…',
+        'Agent: Salon Booker — Services & add-ons',
+        'Upsell → bundles, extras, deposits',
+        'Remind → no-show sequences',
+        'Ops → CRM summary',
+        'Hint → say: "Cut + beard trim this weekend"'
+      ]
+    },
+    {
+      id:'property',
+      title:'Property Qualifier',
+      brief:[
+        'Scanning listings…',
+        'Agent: Property Qualifier — Tenants & viewings',
+        'Filter → budget, move-in, location, docs',
+        'Book → viewing slots / agent call',
+        'Sync → CRM with transcript',
+        'Hint → say: "I want to view a 2-bed"'
+      ]
+    }
+  ];
+
+  let index = 0;
+  let previewOpen = false;
+  let chatOpen = false;
+
+  function renderBrief(){
+    const d = DEMOS[index];
+    const lines = d.brief.map(l => `<div class="type-green">${l}</div>`).join('');
+    brief.innerHTML = `
+      <div style="border-radius:16px; border:1px solid rgba(255,255,255,.1); padding:18px; background:#0e1218;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--success);box-shadow:0 0 16px var(--success)"></div>
+          <div style="opacity:.9">› ${d.title}</div>
+        </div>
+        <div id="briefLines" style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size:14px; line-height:1.6"></div>
+        <div style="display:flex; gap:8px; margin-top:12px; opacity:.7">
+          <span class="badge">Prev</span>
+          <span class="badge">Next</span>
+          <span class="badge">Open (Enter)</span>
+        </div>
+      </div>
+    `;
+    // typewriter reveal
+    const el = brief.querySelector('#briefLines');
+    el.innerHTML = '';
+    let i = 0;
+    function tick(){
+      if(i >= d.brief.length) return;
+      const row = document.createElement('div');
+      row.className = 'type-green typewriter';
+      row.style.animationDuration = '820ms';
+      row.textContent = d.brief[i++];
+      el.appendChild(row);
+      setTimeout(tick, 260);
+    }
+    tick();
   }
 
   function openChat(){
-    if (inChat) return;
-    inChat = true;
-    chat.classList.remove('hidden');
-    chatLog.innerHTML = '';
-    const tag = document.createElement('div');
-    tag.className = 'msg ai';
-    tag.textContent = `Opening demo: ${bots[i].name}`;
-    chatLog.appendChild(tag);
-    chatInput.focus();
-    tip.textContent = 'Chat open. Press Esc to go back.';
-  }
+    if(chatOpen) return;
+    chatOpen = true;
+    previewOpen = true;
+    chatMount.innerHTML = `
+      <div style="position:relative">
+        <button id="chatClose"
+          style="position:absolute;right:10px;top:10px;width:28px;height:28px;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:#0f141a;color:#fff">×</button>
+        <div style="margin:0 8px 10px 0;opacity:.9">Opening demo: <strong>${DEMOS[index].title}</strong></div>
+        <div id="chatBox" class="panel" style="background:#0f141a; border:1px solid rgba(255,255,255,.1); padding:12px">
+          <div id="chatLog" style="min-height:180px"></div>
+          <div style="display:flex; gap:8px; margin-top:12px">
+            <input id="chatInput" class="input" placeholder="type a message or press the mic…"/>
+            <button id="chatSend" class="btn-send">›</button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.getElementById('chatClose').onclick = () => {
+      chatOpen = false;
+      chatMount.innerHTML = '';
+    };
 
-  function closeChat(){
-    if (!inChat) return;
-    inChat = false;
-    chat.classList.add('hidden');
-    tip.textContent = 'Use ← → or A/D to switch · Enter to preview, then again to open chat.';
-  }
-
-  /* controls */
-  prevBtn?.addEventListener('click',()=>switchBot(-1));
-  nextBtn?.addEventListener('click',()=>switchBot(1));
-  openBtn?.addEventListener('click', openChat);
-  chatX?.addEventListener('click', closeChat);
-
-  document.addEventListener('keydown', (e)=>{
-    if (selectorWrap.classList.contains('hidden')) return;
-    if (inChat){
-      if (e.key==='Escape') closeChat();
-      return;
+    // send handler
+    const input = document.getElementById('chatInput');
+    const send = document.getElementById('chatSend');
+    const log = document.getElementById('chatLog');
+    function append(role, text){
+      const row = document.createElement('div');
+      row.style.margin = '8px 0';
+      row.innerHTML = `<div style="opacity:.7">${role}</div><div>${text}</div>`;
+      log.appendChild(row);
+      log.scrollTop = log.scrollHeight;
     }
-    if (e.key==='ArrowLeft' || e.key==='a' || e.key==='A') switchBot(-1);
-    if (e.key==='ArrowRight' || e.key==='d' || e.key==='D') switchBot(1);
-    if (e.key==='Enter'){ 
-      // first Enter previews (already rendered); second Enter opens chat
-      openChat();
-    }
-    if (e.key==='Escape'){
-      // back to landing
-      selectorWrap.classList.add('hidden');
-      landing.classList.remove('hidden');
-      tip.style.opacity = 0;
-    }
-  });
+    send.onclick = () => {
+      const val = input.value.trim();
+      if(!val) return;
+      append('You', val);
+      input.value = '';
+      // mock smart reply (keep your backend hook here)
+      setTimeout(()=>append('Zypher', `Running ${DEMOS[index].title} flow…`), 300);
+    };
 
-  /* chat send + fake “smart” reply (hooked to voice.js typing effect) */
-  function pushMsg(role, text){
-    const m = document.createElement('div');
-    m.className = 'msg ' + role;
-    m.textContent = text;
-    chatLog.appendChild(m);
-    chatLog.scrollTop = chatLog.scrollHeight;
+    // Hook for voice.js transcription -> typewriter effect into input
+    window.typeIntoChat = (text) => {
+      const target = document.getElementById('chatInput');
+      if(!target) return;
+      target.value = ''; // reset
+      let i=0;
+      const interval = setInterval(() => {
+        target.value += text[i++];
+        if(i>=text.length) clearInterval(interval);
+      }, 18);
+    };
   }
 
-  chatSend?.addEventListener('click', send);
-  chatInput?.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); send(); }});
-
-  function send(){
-    const q = chatInput.value.trim();
-    if(!q) return;
-    chatInput.value='';
-    pushMsg('you', q);
-
-    // “futuristic” reply script – you can wire to backend later.
-    const reply = aiReply(q, bots[i].name);
-    typeReply(reply);
-  }
-
-  function aiReply(q, name){
-    // lightweight on-device demo behavior
-    const low = q.toLowerCase();
-    if (low.includes('price')||low.includes('cost')) return `${name}: Pricing depends on configuration. I can collect a few details and generate a tailored quote in under 60s.`;
-    if (low.includes('book')||low.includes('schedule')) return `${name}: Sure — what day works best? I can offer real-time slots and send an SMS confirmation.`;
-    if (low.includes('help')||low.includes('support')) return `${name}: I triage and resolve most issues automatically, and hand off with full context when needed.`;
-    return `${name}: Got it. I’ll capture that and continue.`;
-  }
-
-  function typeReply(text){
-    const m = document.createElement('div');
-    m.className = 'msg ai';
-    chatLog.appendChild(m);
-    // green “typewriter” draw
-    let i=0;
-    const id = setInterval(()=>{
-      m.textContent = text.slice(0, ++i);
-      m.style.color = '#cbffcb';
-      m.style.textShadow = '0 0 6px rgba(156,255,156,.4)';
-      if(i>=text.length){ clearInterval(id); m.style.color='#fff'; m.style.textShadow='none'; }
-      chatLog.scrollTop = chatLog.scrollHeight;
-    }, 14);
+  function initSelector(){
+    renderBrief();
+    window.addEventListener('keydown', (e)=>{
+      if(e.key==='ArrowRight' || e.key.toLowerCase()==='d'){
+        index = (index+1) % DEMOS.length;
+        renderBrief();
+      }
+      if(e.key==='ArrowLeft' || e.key.toLowerCase()==='a'){
+        index = (index-1+DEMOS.length) % DEMOS.length;
+        renderBrief();
+      }
+      if(e.key==='Enter'){
+        if(!previewOpen){ previewOpen = true; renderBrief(); openChat(); }
+        else if(!chatOpen){ openChat(); }
+      }
+      if(e.key==='Escape'){
+        if(chatOpen){ chatOpen=false; chatMount.innerHTML=''; return; }
+        // go back to intro
+        stage.classList.remove('active');
+        intro.style.display='grid';
+        glyph.style.pointerEvents='auto';
+        previewOpen=false;
+      }
+    }, { passive:true });
   }
 })();
