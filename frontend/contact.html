@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Contact — Zypher</title>
+  <title>Zypher — Contact</title>
   <link rel="stylesheet" href="./styles/main.css" />
 </head>
 <body>
@@ -13,7 +13,7 @@
       <a href="./index.html">Home</a>
       <a href="./demos.html">Demos</a>
       <a class="active" href="./contact.html">Contact</a>
-      <div id="colorToggle" class="color-toggle"></div>
+      <button id="colorToggle" class="color-toggle" title="Theme"></button>
     </div>
   </nav>
 
@@ -21,17 +21,25 @@
 
   <main class="contact section">
     <div class="contact-grid">
-      <aside class="contact-card">
+      <aside class="contact-card neon">
         <h2>Let’s Talk</h2>
         <p>Tell us about your use-case. We’ll reply within 1 business day.</p>
+
         <div class="badge-row">
           <span class="badge">UK/EU ready</span>
           <span class="badge">Privacy-first</span>
           <span class="badge">Fast deploys</span>
         </div>
+
         <div class="info">
-          <div><strong>Email</strong> <a href="mailto:zypheragent25@gmail.com">zypheragent25@gmail.com</a></div>
-          <div><strong>Typical reply</strong> under 24 hours</div>
+          <div class="chip">
+            <span class="chip-label">Email</span>
+            <span class="chip-value">zypheragent25@gmail.com</span>
+          </div>
+          <div class="chip">
+            <span class="chip-label">Typical reply</span>
+            <span class="chip-value">under 24 hours</span>
+          </div>
         </div>
       </aside>
 
