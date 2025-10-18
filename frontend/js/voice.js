@@ -1,40 +1,31 @@
-/* ===== ZYPHER — voice + green capture typing =====
-   Adds optional mic capture that "types" recorded text in the input
-*/
-(function(){
-  const input = document.querySelector('#chat-input');
-  const micBtn = document.querySelector('#chat-mic');
-  if (!input || !micBtn) return;
-
-  let rec=null, chunks=[];
-  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)){
-    // graceful: hide mic if not supported
-    micBtn.style.display='none';
-    return;
-  }
+/* Minimal voice hook: turn speech-to-text into the chat input with a typewriter */
+(() => {
+  // If you already have your Web Speech / SDK logic, just call window.typeIntoChat(transcript)
+  // Below is a tiny demo using the Web Speech API (where available).
+  const hasWebSpeech = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
+  if(!hasWebSpeech) return;
 
   const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const sr = new SpeechRec();
-  sr.continuous = false; sr.interimResults = true; sr.lang = 'en-US';
+  const rec = new SpeechRec();
+  rec.lang = 'en-US';
+  rec.interimResults = false;
+  rec.continuous = false;
 
-  micBtn.addEventListener('click', ()=> sr.start());
-
-  sr.onresult = (e)=>{
-    let interim = '', final = '';
-    for (let i = e.resultIndex; i < e.results.length; i++){
-      const trans = e.results[i][0].transcript;
-      if (e.results[i].isFinal) final += trans;
-      else interim += trans;
+  // optional: start recognition when input focused + Cmd/M pressed
+  document.addEventListener('keydown', (e)=>{
+    if((e.metaKey || e.ctrlKey) && e.key.toLowerCase()==='m'){
+      try{ rec.start(); }catch{}
     }
-    greenType(input, (final || interim).trim());
-  };
+  });
 
-  function greenType(target, text){
-    target.value=''; let i=0;
-    const id = setInterval(()=>{
-      target.value = text.slice(0, ++i);
-      target.style.caretColor = '#9cff9c';
-      if(i>=text.length){ clearInterval(id); target.style.caretColor = '#fff'; }
-    }, 14);
-  }
+  rec.onresult = (ev) => {
+    const text = Array.from(ev.results).map(r=>r[0].transcript).join(' ');
+    if(window.typeIntoChat){
+      window.typeIntoChat(text);
+    }else{
+      // fallback: drop into any focused input
+      const el = document.activeElement;
+      if(el && 'value' in el) el.value = text;
+    }
+  };
 })();
