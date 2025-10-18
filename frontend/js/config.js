@@ -1,42 +1,54 @@
-// Colour changer (persists). Also exposes a tiny helper for accent access.
 (function () {
   const KEY = 'zypher-accent-hue';
-  const saved = parseInt(localStorage.getItem(KEY) || '260', 10);
-  let hue = isNaN(saved) ? 260 : saved;
+  const SPEED_KEY = 'zypher-theme-autoplay';
+  let hue = parseInt(localStorage.getItem(KEY) || '260', 10);
+  if (isNaN(hue)) hue = 260;
+  let autoplay = localStorage.getItem(SPEED_KEY) === '1';
+
+  const root = document.documentElement;
+  const toggle = () => document.getElementById('colorToggle');
 
   function apply() {
     const color = `hsl(${hue}, 100%, 70%)`;
-    document.documentElement.style.setProperty('--accent', color);
-    const toggle = document.getElementById('colorToggle');
-    if (toggle) toggle.style.background = color;
+    root.style.setProperty('--accent', color);
+    root.style.setProperty('--accent-strong', `hsla(${hue}, 100%, 70%, .45)`);
+    const t = toggle();
+    if (t) t.style.background = color;
   }
 
-  function ensureToggle() {
-    if (document.getElementById('colorToggle')) return;
-    const nav = document.querySelector('nav .nav-links') || document.querySelector('nav') || document.body;
-    const div = document.createElement('div');
-    div.id = 'colorToggle';
-    div.style.width = '20px';
-    div.style.height = '20px';
-    div.style.borderRadius = '50%';
-    div.style.marginLeft = '12px';
-    div.style.cursor = 'pointer';
-    nav.appendChild(div);
+  function cycleTick() {
+    if (!autoplay) return;
+    hue = (hue + 1) % 360;
+    localStorage.setItem(KEY, String(hue));
+    apply();
+    requestAnimationFrame(cycleTick);
   }
 
   function init() {
-    ensureToggle();
     apply();
-    const t = document.getElementById('colorToggle');
-    if (t) {
-      t.onclick = () => {
-        hue = (hue + 60) % 360;
-        localStorage.setItem(KEY, String(hue));
-        apply();
-      };
-    }
+    const t = toggle();
+    if (!t) return;
+
+    // left click = step, right click = toggle autoplay (press-and-hold feel)
+    t.addEventListener('click', (e) => {
+      e.preventDefault();
+      autoplay = false;
+      localStorage.setItem(SPEED_KEY, '0');
+      hue = (hue + 40) % 360;
+      localStorage.setItem(KEY, String(hue));
+      apply();
+    });
+    t.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      autoplay = !autoplay;
+      localStorage.setItem(SPEED_KEY, autoplay ? '1' : '0');
+      if (autoplay) requestAnimationFrame(cycleTick);
+    });
+
+    // small tooltip
+    t.title = 'Theme — click to change, right-click to auto-cycle';
+    if (autoplay) requestAnimationFrame(cycleTick);
   }
 
-  window.ZYPHER_THEME = { getHue: () => hue };
   document.addEventListener('DOMContentLoaded', init);
 })();
