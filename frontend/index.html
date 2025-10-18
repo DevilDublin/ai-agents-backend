@@ -8,30 +8,49 @@
 </head>
 <body class="layout">
   <nav class="nav">
-    <div class="logo">⚡ Zypher</div>
+    <a href="./index.html" class="brand">
+      <span class="brand-glyph">Ƶ</span><span class="brand-text">Zypher</span>
+    </a>
+
     <div class="nav-links">
       <a class="active" href="./index.html">Home</a>
       <a href="./demos.html">Demos</a>
       <a href="./contact.html">Contact</a>
 
-      <!-- Theme: label + toggle -->
       <div class="theme-wrap">
         <span class="theme-label">Theme</span>
-        <button id="colorToggle" class="color-toggle" title="Theme"></button>
+        <button id="colorToggle" class="color-toggle" title="Click for palettes · Right-click auto"></button>
       </div>
     </div>
   </nav>
 
   <canvas id="background"></canvas>
 
-  <!-- Single-screen hero + cards (no scroll) -->
+  <!-- One-screen hero with compact info rows -->
   <main class="home-viewport">
-    <header class="hero hero-tight">
+    <header class="hero hero-balanced">
       <h1>Power Your Brand with <span class="glow">Zypher</span></h1>
-      <p>AI agents that qualify, book, and support — fast, secure, and beautifully on-brand.</p>
-      <a class="btn" href="./demos.html">Explore Demos</a>
+      <p>AI agents that qualify, book, and support — fast, secure, beautifully on-brand.</p>
+      <a class="btn cta-large" href="./demos.html">Explore Demos</a>
+
+      <!-- compact metric band -->
+      <div class="metrics">
+        <div class="metric">
+          <span class="m-num">24/7</span>
+          <span class="m-label">Availability</span>
+        </div>
+        <div class="metric">
+          <span class="m-num">60s</span>
+          <span class="m-label">To First Lead</span>
+        </div>
+        <div class="metric">
+          <span class="m-num">GDPR</span>
+          <span class="m-label">UK/EU Ready</span>
+        </div>
+      </div>
     </header>
 
+    <!-- inline cards sit inside the same viewport -->
     <section class="band band-inline">
       <div class="band-grid">
         <article class="band-card">
@@ -40,11 +59,11 @@
         </article>
         <article class="band-card">
           <h3>Integrate Fast</h3>
-          <p>Calendar, CRM, email, webhooks. GDPR-first, UK/EU ready. Built to plug into your stack.</p>
+          <p>Calendar, CRM, email, webhooks. Privacy-first. Built to plug into your stack.</p>
         </article>
         <article class="band-card">
           <h3>Look Premium</h3>
-          <p>Futuristic UI with dual-neon theming across buttons, glows, and accents.</p>
+          <p>Dual-neon theming drives glows, accents, and motion — consistently on brand.</p>
         </article>
       </div>
     </section>
