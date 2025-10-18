@@ -6,29 +6,38 @@
   <title>Zypher — Demos</title>
   <link rel="stylesheet" href="./styles/main.css" />
 </head>
-<body>
+<body class="layout">
   <nav class="nav">
     <div class="logo">⚡ Zypher</div>
     <div class="nav-links">
       <a href="./index.html">Home</a>
       <a class="active" href="./demos.html">Demos</a>
       <a href="./contact.html">Contact</a>
-      <button id="colorToggle" class="color-toggle" title="Theme"></button>
+      <div class="theme-wrap">
+        <span class="theme-label">Theme</span>
+        <button id="colorToggle" class="color-toggle" title="Theme"></button>
+      </div>
     </div>
   </nav>
 
   <canvas id="background"></canvas>
 
   <main class="demos-shell">
+    <!-- Stage 0: diamond with glow -->
     <button id="selectDemoBtn" class="diamond-button">
       <span class="diamond-glow"></span>
       <span class="diamond-label">Select Your Demo</span>
       <span class="diamond-hint">Click to begin</span>
     </button>
 
+    <!-- HUD / instructions -->
+    <div id="demoHUD" class="demo-hud hidden">
+      <span>Use <b>← →</b> or <b>A / D</b> to switch · <b>Enter</b> to open · <b>Esc</b> to reset</span>
+    </div>
+
+    <!-- Stage 1: split view -->
     <section id="demoSplit" class="demo-split hidden">
-      <!-- Left: cryptic message typewriter -->
-      <aside class="typewriter neon-green">
+      <aside class="typewriter neon-green" id="twPane">
         <div class="tw-header">
           <span class="tw-led"></span>
           <span class="tw-title" id="twTitle">_</span>
@@ -41,8 +50,7 @@
         </div>
       </aside>
 
-      <!-- Right: chat opens once a bot is chosen -->
-      <div class="chat-panel">
+      <div class="chat-panel" id="chatPane">
         <div id="chatContainer" class="chat-container hidden">
           <div id="chatMessages" class="chat-messages"></div>
           <div class="chat-input">
@@ -55,6 +63,8 @@
       </div>
     </section>
   </main>
+
+  <footer class="footer">© 2025 Zypher — Built for speed · Privacy-first · UK/EU ready</footer>
 
   <script src="./js/config.js"></script>
   <script src="./js/bg.js"></script>
