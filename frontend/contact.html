@@ -8,49 +8,79 @@
 </head>
 <body class="layout">
   <nav class="nav">
-    <a href="./index.html" class="brand"><span class="brand-glyph">Ƶ</span><span class="brand-text">Zypher</span></a>
+    <a href="./index.html" class="brand">
+      <span class="brand-glyph">Ƶ</span><span class="brand-text">Zypher</span>
+    </a>
     <div class="nav-links">
       <a href="./index.html">Home</a>
       <a href="./demos.html">Demos</a>
       <a class="active" href="./contact.html">Contact</a>
-      <div class="theme-wrap"><span class="theme-label">Theme</span><button id="colorToggle" class="color-toggle"></button></div>
+      <div class="theme-wrap">
+        <span class="theme-label">Theme</span>
+        <button id="colorToggle" class="color-toggle" title="Click to switch neon palette"></button>
+      </div>
     </div>
   </nav>
 
   <canvas id="background"></canvas>
 
-  <main>
-    <section class="contact-grid">
-      <div class="panel">
-        <h2>Let’s Talk</h2>
-        <p>Tell us about your use-case. We’ll reply within 1 business day.</p>
-        <div class="badges">
+  <main class="contact section">
+    <div class="contact-grid contact-centered">
+      <!-- Left info card -->
+      <aside class="contact-card neon soft elevate round-glow balanced">
+        <h2 class="center">Let’s Talk</h2>
+        <p class="center subtle">Tell us about your use-case. We’ll reply within 1 business day.</p>
+
+        <div class="badge-row center-row">
           <span class="badge">UK/EU ready</span>
           <span class="badge">Privacy-first</span>
           <span class="badge">Fast deploys</span>
         </div>
-        <div class="line"><b>Email</b> &nbsp; zypheragent25@gmail.com</div>
-        <div class="line"><b>Typical reply</b> &nbsp; under 24 hours</div>
-      </div>
 
-      <form class="form">
-        <div class="row">
-          <input class="input" placeholder="Full Name">
-          <input class="input" placeholder="Work Email">
+        <div class="info">
+          <div class="chip strong">
+            <span class="chip-label">Email</span>
+            <span class="chip-value">zypheragent25@gmail.com</span>
+          </div>
+          <div class="chip">
+            <span class="chip-label">Typical reply</span>
+            <span class="chip-value">under 24 hours</span>
+          </div>
         </div>
-        <div class="row">
-          <input class="input" placeholder="Company">
-          <input class="input" placeholder="Website (optional)">
+      </aside>
+
+      <!-- Right form (same glow recipe for unity) -->
+      <form class="contact-form card soft elevate round-glow neon" onsubmit="event.preventDefault(); alert('Thanks — we’ll be in touch!');">
+        <div class="grid-2 roomy">
+          <input type="text" placeholder="Full Name" required />
+          <input type="email" placeholder="Work Email" required />
         </div>
-        <textarea class="textarea" placeholder="What would you like to build?"></textarea>
-        <button type="button" class="send">Send</button>
+        <div class="grid-2 roomy">
+          <input type="text" placeholder="Company" />
+          <input type="text" placeholder="Website (optional)" />
+        </div>
+        <textarea rows="6" placeholder="What would you like to build?"></textarea>
+        <div class="form-actions">
+          <button type="submit" class="btn">Send</button>
+        </div>
       </form>
-    </section>
+    </div>
 
-    <section class="assure">
-      <div class="assure-item"><h3>Security</h3><p>Data encrypted in transit · Signed webhooks · Access scoped.</p></div>
-      <div class="assure-item"><h3>SLA</h3><p>99.9% target uptime · Priority support for launches.</p></div>
-      <div class="assure-item"><h3>Integration</h3><p>Calendars, CRMs, email, payments — we connect to your stack.</p></div>
+    <section class="assure assure-push">
+      <div class="assure-grid">
+        <div class="assure-item">
+          <div class="assure-title">Security</div>
+          <div class="assure-text">Data encrypted in transit · Signed webhooks · Access scoped.</div>
+        </div>
+        <div class="assure-item">
+          <div class="assure-title">SLA</div>
+          <div class="assure-text">99.9% target uptime · Priority support for launches.</div>
+        </div>
+        <div class="assure-item">
+          <div class="assure-title">Integration</div>
+          <div class="assure-text">Calendars, CRMs, email, payments — we connect to your stack.</div>
+        </div>
+      </div>
     </section>
   </main>
 
