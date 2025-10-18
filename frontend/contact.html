@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Contact — Zypher</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="./js/assets/style.css" />
 </head>
 <body>
-  <nav>
+  <nav class="nav">
     <div class="logo">⚡ Zypher</div>
     <div class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="demos.html">Demos</a>
-      <a href="contact.html" class="active">Contact</a>
-      <div class="color-toggle" id="colorToggle"></div>
+      <a href="./index.html">Home</a>
+      <a href="./demos.html">Demos</a>
+      <a class="active" href="./contact.html">Contact</a>
+      <div id="colorToggle" class="color-toggle" aria-label="Change accent colour"></div>
     </div>
   </nav>
 
@@ -21,21 +21,22 @@
 
   <main class="contact-section">
     <h2>Let’s Talk</h2>
-    <p>Tell us about your project. We’ll reply within 1 business day.</p>
+    <p>Tell us about your use-case. We’ll reply within 1 business day.</p>
     <p>Email: <a href="mailto:zypheragent25@gmail.com">zypheragent25@gmail.com</a></p>
 
-    <form class="contact-form">
+    <form class="contact-form" onsubmit="event.preventDefault(); alert('Thanks — we’ll be in touch!');">
       <input type="text" placeholder="Full Name" required />
       <input type="email" placeholder="Work Email" required />
       <input type="text" placeholder="Company" />
-      <textarea placeholder="What would you like to build?" rows="4"></textarea>
+      <textarea rows="4" placeholder="What would you like to build?"></textarea>
       <button type="submit" class="btn">Send</button>
     </form>
   </main>
 
-  <footer>© 2025 Zypher — Built for speed · Privacy-first · UK/EU ready</footer>
+  <footer class="footer">© 2025 Zypher — Built for speed · Privacy-first · UK/EU ready</footer>
 
-  <script src="three.min.js"></script>
-  <script src="main.js"></script>
+  <script src="./js/config.js"></script>
+  <script src="./js/bg.js"></script>
+  <script src="./js/site.js"></script>
 </body>
 </html>
