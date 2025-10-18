@@ -489,4 +489,17 @@ main{flex:1}
 /* Small screens: stack demos stage */
 @media (max-width: 900px) {
   .demo-stage.show { grid-template-columns: 1fr; }
+
+  /* Make sure the hero layer is visible and centered on first paint */
+.demo-hero {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 40;
+}
+
+/* Fallback in case any global CSS hides fixed layers */
+body:has(.demo-hero) { overflow: hidden; }
+
 }
