@@ -1,48 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Zypher — Home</title>
-  <link rel="stylesheet" href="./styles/main.css" />
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-<body class="layout">
-  <nav class="nav">
-    <a href="./index.html" class="brand"><span class="brand-glyph">Ƶ</span><span class="brand-text">Zypher</span></a>
-    <div class="nav-links">
-      <a class="active" href="./index.html">Home</a>
-      <a href="./demos.html">Demos</a>
-      <a href="./contact.html">Contact</a>
-      <div class="theme-wrap"><span class="theme-label">Theme</span><button id="colorToggle" class="color-toggle"></button></div>
-    </div>
-  </nav>
+<body>
+  <header class="nav">
+    <div class="logo"><span class="z">Z</span>ypher</div>
+    <nav>
+      <a href="index.html" class="active">Home</a>
+      <a href="demos.html">Demos</a>
+      <a href="contact.html">Contact</a>
+      <span class="theme-pill" data-theme-pill title="Change theme"></span>
+      <span class="theme-text" data-theme-label>Theme</span>
+    </nav>
+  </header>
 
-  <canvas id="background"></canvas>
+  <!-- your page content here -->
+  <footer>© 2025 Zypher — Built for speed · UK/EU ready</footer>
 
-  <main>
-    <section class="hero">
-      <h1>Power Your Brand with <span style="-webkit-text-fill-color:transparent;background:linear-gradient(90deg,var(--accentA),var(--accentB));-webkit-background-clip:text;background-clip:text">Zypher</span></h1>
-      <p>AI agents that qualify, book, and support — fast, secure, beautifully on-brand.</p>
-      <a class="cta" href="./demos.html">Explore Demos</a>
-
-      <div class="stat-row">
-        <span class="stat"><b>24/7</b><br/>Availability</span>
-        <span class="stat"><b>60s</b><br/>To First Lead</span>
-        <span class="stat"><b>GDPR</b><br/>UK/EU Ready</span>
-      </div>
-    </section>
-
-    <section class="features">
-      <article class="card"><h3>Convert More</h3><p>Voice + chat flows tuned to your offer. Capture details, qualify quickly, hand off with context.</p></article>
-      <article class="card"><h3>Integrate Fast</h3><p>Calendar, CRM, email, webhooks. Privacy-first. Built to plug into your stack.</p></article>
-      <article class="card"><h3>Look Premium</h3><p>Dual-neon theming drives glows, accents, and motion — consistently on brand.</p></article>
-    </section>
-  </main>
-
-  <footer class="footer">© 2025 Zypher — Built for speed · Privacy-first · UK/EU ready</footer>
-
-  <script src="./js/config.js"></script>
-  <script src="./js/bg.js"></script>
-  <script src="./js/site.js"></script>
+  <script src="js/site.js" defer></script>
 </body>
 </html>
