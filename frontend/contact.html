@@ -13,24 +13,41 @@
       <a href="./index.html">Home</a>
       <a href="./demos.html">Demos</a>
       <a class="active" href="./contact.html">Contact</a>
-      <div id="colorToggle" class="color-toggle" aria-label="Change accent colour"></div>
+      <div id="colorToggle" class="color-toggle"></div>
     </div>
   </nav>
 
   <canvas id="background"></canvas>
 
-  <main class="contact-section">
-    <h2>Let’s Talk</h2>
-    <p>Tell us about your use-case. We’ll reply within 1 business day.</p>
-    <p>Email: <a href="mailto:zypheragent25@gmail.com">zypheragent25@gmail.com</a></p>
+  <main class="contact section">
+    <div class="contact-grid">
+      <aside class="contact-card">
+        <h2>Let’s Talk</h2>
+        <p>Tell us about your use-case. We’ll reply within 1 business day.</p>
+        <div class="badge-row">
+          <span class="badge">UK/EU ready</span>
+          <span class="badge">Privacy-first</span>
+          <span class="badge">Fast deploys</span>
+        </div>
+        <div class="info">
+          <div><strong>Email</strong> <a href="mailto:zypheragent25@gmail.com">zypheragent25@gmail.com</a></div>
+          <div><strong>Typical reply</strong> under 24 hours</div>
+        </div>
+      </aside>
 
-    <form class="contact-form" onsubmit="event.preventDefault(); alert('Thanks — we’ll be in touch!');">
-      <input type="text" placeholder="Full Name" required />
-      <input type="email" placeholder="Work Email" required />
-      <input type="text" placeholder="Company" />
-      <textarea rows="4" placeholder="What would you like to build?"></textarea>
-      <button type="submit" class="btn">Send</button>
-    </form>
+      <form class="contact-form card" onsubmit="event.preventDefault(); alert('Thanks — we’ll be in touch!');">
+        <div class="grid-2">
+          <input type="text" placeholder="Full Name" required />
+          <input type="email" placeholder="Work Email" required />
+        </div>
+        <div class="grid-2">
+          <input type="text" placeholder="Company" />
+          <input type="text" placeholder="Website (optional)" />
+        </div>
+        <textarea rows="5" placeholder="What would you like to build?"></textarea>
+        <button type="submit" class="btn">Send</button>
+      </form>
+    </div>
   </main>
 
   <footer class="footer">© 2025 Zypher — Built for speed · Privacy-first · UK/EU ready</footer>
