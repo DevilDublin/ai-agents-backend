@@ -1,40 +1,48 @@
-// Mic → Speech-to-Text → auto-send on pause
-(function () {
-  const mic = () => document.getElementById('micBtn');
-  const input = () => document.getElementById('userInput');
-  const send = () => document.getElementById('sendBtn');
+/* voice.js — Zypher
+ * Minimal mic wiring + callbacks for the demos screen.
+ * If you already connect to an STT backend, call the provided hooks.
+ */
 
-  function init() {
-    const m = mic(), i = input(), s = send();
-    if (!m || !i || !s) return;
+window.ZYPHER_VOICE = (() => {
+  let handlers = { onStart: null, onFinal: null };
 
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) return;
+  const attach = (h) => {
+    handlers = { ...handlers, ...h };
+  };
 
-    const r = new SR();
-    r.lang = 'en-GB';
-    r.continuous = false;
-    r.interimResults = true;
+  // Call these from your real recorder when you start/stop
+  const _emitStart = () => handlers.onStart && handlers.onStart();
+  const _emitFinal = (text) => handlers.onFinal && handlers.onFinal(text);
 
-    m.addEventListener('click', () => { r.start(); m.classList.add('listening'); });
+  // Demo-only mic (no real STT). Replace with your actual implementation.
+  let demoListening = false;
+  const demoStart = () => {
+    if (demoListening) return;
+    demoListening = true;
+    _emitStart();
+    // Fake a recognized utterance
+    setTimeout(() => {
+      if (!demoListening) return;
+      const sample = [
+        'get me a quick quote',
+        'book me Friday 3pm',
+        'i want to view a 2-bed',
+        'connect me to an agent'
+      ];
+      const text = sample[Math.floor(Math.random() * sample.length)];
+      _emitFinal(text);
+      demoListening = false;
+    }, 1400);
+  };
 
-    r.onresult = (e) => {
-      let finalTxt = '';
-      for (let j = e.resultIndex; j < e.results.length; j++) {
-        finalTxt += e.results[j][0].transcript;
-      }
-      i.value = finalTxt.trim();
-    };
+  const demoStop = () => { demoListening = false; };
 
-    r.onend = () => {
-      m.classList.remove('listening');
-      if (i.value.trim()) s.click();
-    };
-  }
-
-  document.addEventListener('DOMContentLoaded', init);
+  return {
+    attach,
+    // If you have a real mic pipeline, wire to these:
+    _emitStart, _emitFinal,
+    // Fallback demo triggers used by demos.js mic button:
+    demoStart, demoStop
+  };
 })();
-
-// Placeholder: keep your previous voice helpers if any.
-// Demos uses the inline mic/typewriter inside demos.js now.
 
