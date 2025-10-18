@@ -1,4 +1,4 @@
-// Click-to-cycle neon palettes (purple, green, blue, orange, yellow mixes)
+// Click-to-cycle neon palettes (Purple, Green, Blue, Orange, Yellow)
 (function () {
   const PRESETS = [
     { a: 265, b: 325, name: 'Neon Purple + Pink' },
