@@ -1,29 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Zypher — Home</title>
-  <link rel="stylesheet" href="styles/main.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css" />
 </head>
-<body>
+<body class="has-grid">
+  <!-- NAV -->
   <header class="nav">
-    <div class="logo"><span class="z">Z</span>ypher</div>
-    <nav>
-      <a href="index.html" class="active">Home</a>
+    <div class="logo-badge">
+      <span class="badge-dot"></span>
+      <span class="badge-z">Z</span>
+      <span class="brand">ypher</span>
+    </div>
+    <nav class="nav-links">
+      <a class="active" href="index.html">Home</a>
       <a href="demos.html">Demos</a>
       <a href="contact.html">Contact</a>
-      <span class="theme-pill" data-theme-pill title="Change theme"></span>
-      <span class="theme-text" data-theme-label>Theme</span>
+      <button class="theme-pill" id="theme-pill" aria-label="Change theme"></button>
+      <button class="theme-label" id="theme-label" aria-label="Change theme">Theme</button>
     </nav>
   </header>
 
-  <!-- your page content here -->
-  <footer>© 2025 Zypher — Built for speed · UK/EU ready</footer>
+  <!-- HERO -->
+  <main class="container hero-lock">
+    <h1 class="hero-title">Power Your Brand with <span class="zypher-glow">Zypher</span></h1>
+    <p class="hero-sub">AI agents that qualify, book, and support — fast, secure, beautifully on-brand.</p>
 
+    <a class="cta-btn" href="demos.html">Explore Demos</a>
+
+    <div class="stats">
+      <div class="stat-chip"><div>24/7</div><small>Availability</small></div>
+      <div class="stat-chip"><div>60s</div><small>To First Lead</small></div>
+      <div class="stat-chip"><div>GDPR</div><small>UK/EU Ready</small></div>
+    </div>
+
+    <section class="features">
+      <article class="feature-card">
+        <h3>Convert More</h3>
+        <p>Voice + chat flows tuned to your offer. Capture details, qualify quickly, hand off with context.</p>
+      </article>
+      <article class="feature-card">
+        <h3>Integrate Fast</h3>
+        <p>Calendar, CRM, email, webhooks. Privacy-first. Built to plug into your stack.</p>
+      </article>
+      <article class="feature-card">
+        <h3>Look Premium</h3>
+        <p>Dual-neon theming drives glows, accents, and motion — consistently on brand.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-footer">© 2025 Zypher — Built for speed · Privacy-first · UK/EU ready</footer>
+
+  <canvas id="net" class="net-canvas" aria-hidden="true"></canvas>
+  <script src="js/config.js"></script>
   <script src="js/site.js" defer></script>
 </body>
 </html>
