@@ -13,18 +13,56 @@
       <a href="./index.html">Home</a>
       <a class="active" href="./demos.html">Demos</a>
       <a href="./contact.html">Contact</a>
-      <div id="colorToggle" class="color-toggle" aria-label="Change accent colour"></div>
+      <div id="colorToggle" class="color-toggle"></div>
     </div>
   </nav>
 
   <canvas id="background"></canvas>
 
   <main class="demos-section">
+    <div class="pill">Hover tiles · Scroll or use arrows · Tap to open</div>
     <h2>Live Demos</h2>
-    <p class="subtitle">Hover or click the glowing button to reveal hidden bots. Scroll or use ← → to pan. Tap a tile to open that bot.</p>
+    <p class="subtitle">Pick a bot below. We’ll prefill the chat and open it for you.</p>
 
-    <div id="orbitMount"></div>
+    <!-- Clear carousel of demo tiles -->
+    <div class="demo-wrap">
+      <button class="arrow left" id="demoPrev" aria-label="Previous">‹</button>
+      <div class="demo-track" id="demoTrack">
+        <!-- Tiles (data-bot used by demos.js) -->
+        <button class="demo-tile" data-bot="Car Insurance">
+          <div class="tile-title">Car Insurance</div>
+          <div class="tile-sub">Quick-qualify & quote</div>
+        </button>
 
+        <button class="demo-tile" data-bot="Appointly">
+          <div class="tile-title">Appointly</div>
+          <div class="tile-sub">Appointment booking</div>
+        </button>
+
+        <button class="demo-tile" data-bot="Salon Booker">
+          <div class="tile-title">Salon Booker</div>
+          <div class="tile-sub">Services & add-ons</div>
+        </button>
+
+        <button class="demo-tile" data-bot="Property Qualifier">
+          <div class="tile-title">Property Qualifier</div>
+          <div class="tile-sub">Leads: tenants & viewings</div>
+        </button>
+
+        <button class="demo-tile" data-bot="Support Triage">
+          <div class="tile-title">Support Triage</div>
+          <div class="tile-sub">Route to the right fix</div>
+        </button>
+
+        <button class="demo-tile" data-bot="Custom Bot">
+          <div class="tile-title">Custom Bot</div>
+          <div class="tile-sub">Your use-case</div>
+        </button>
+      </div>
+      <button class="arrow right" id="demoNext" aria-label="Next">›</button>
+    </div>
+
+    <!-- Your existing chat UI (kept exactly) -->
     <div id="chatContainer" class="chat-container">
       <div id="chatMessages" class="chat-messages"></div>
       <div class="chat-input">
