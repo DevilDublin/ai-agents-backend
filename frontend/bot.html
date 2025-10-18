@@ -1,106 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Chat — Zypher</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Zypher — Bot</title>
+  <link rel="stylesheet" href="./styles/main.css" />
 </head>
 <body>
-<canvas id="zy-bg"></canvas><div class="zy-vignette" aria-hidden="true"></div>
-
-<nav class="nav">
-  <div class="brand">
-    <svg viewBox="0 0 256 256" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8A5CF6"/><stop offset="100%" stop-color="#00D4FF"/></linearGradient></defs><rect width="256" height="256" rx="40" fill="#0A0B10"/><path d="M176 32L96 144h56l-48 80 80-112h-56l48-80z" fill="url(#g)"/></svg>
-    <strong>Zypher</strong>
-  </div>
-  <div class="links"><a href="index.html">Home</a><a href="demos.html">Demos</a><a href="contact.html">Contact</a></div>
-  <div class="muted" id="crumb">Demo</div>
-</nav>
-
-<main class="container section">
-  <div class="chat">
-    <div class="hdr"><div><span class="pill" id="botName">Bot</span></div>
-      <div><a class="icon" href="demos.html" title="Back">⟲</a></div></div>
-    <div class="msgs" id="msgs"></div>
-    <div class="tools">
-      <div class="bar"><input id="chatInput" placeholder="Say something…" /><button id="micBtn" class="icon mic">🎤</button></div>
-      <button id="sendBtn" class="icon">➤</button>
+  <nav class="nav">
+    <div class="logo">⚡ Zypher</div>
+    <div class="nav-links">
+      <a href="./index.html">Home</a>
+      <a href="./demos.html">Demos</a>
+      <button id="colorToggle" class="color-toggle" title="Theme"></button>
     </div>
-  </div>
-  <small class="muted" style="display:block;margin-top:8px">British English. We auto-send when you pause.</small>
-</main>
+  </nav>
 
-<footer class="container" style="padding:30px 0; color:var(--muted); border-top:1px solid var(--edge)">© 2025 Zypher — All rights reserved.</footer>
+  <canvas id="background"></canvas>
 
-<script src="bg.js"></script>
-<script>
-/* Config */
-const BOTS={
-  appointly:{name:'Appointly (Appointment booking)'},
-  realestate:{name:'Property Qualifier'},
-  salon:{name:'Salon Booker'},
-  carins:{name:'Car Insurance'}
-};
-const params=new URLSearchParams(location.search); const id=params.get('id')||'appointly';
-const BOT=BOTS[id]||BOTS.appointly;
-document.getElementById('botName').textContent=BOT.name;
-document.getElementById('crumb').textContent=BOT.name;
+  <main class="bot-stage">
+    <h2 id="botTitle">Loading…</h2>
+    <div id="chatContainer" class="chat-container">
+      <div id="chatMessages" class="chat-messages"></div>
+      <div class="chat-input">
+        <button id="micBtn" class="mic" aria-label="Start voice input">🎤</button>
+        <input id="userInput" type="text" placeholder="Speak or type…" autocomplete="off" />
+        <button id="sendBtn" class="send" aria-label="Send">➤</button>
+      </div>
+    </div>
+  </main>
 
-/* Backend hook — fill this to use your real API */
-window.ZYPHER_API_BASE=""; // e.g. "https://api.zypheragents.com"
-
-const $=s=>document.querySelector(s);
-function add(role,text,typing=false){const d=document.createElement('div');d.className='msg '+role+(typing?' typing':'');d.textContent=text;$('#msgs').appendChild(d);$('#msgs').scrollTop=$('#msgs').scrollHeight;return d;}
-add('bot',`Hi — I’m ${BOT.name}. Ask me anything or press the mic.`);
-
-const state={history:[]};
-async function backend(messages){
-  const base=window.ZYPHER_API_BASE; if(!base) throw new Error('no backend');
-  const r=await fetch(base.replace(/\/$/,'')+'/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bot:id,messages})});
-  if(!r.ok) throw new Error('HTTP '+r.status); const j=await r.json(); return j.reply||'';
-}
-function local(t){
-  const x=t.toLowerCase();
-  if(/(politics|joke|song|poem)/.test(x))return "Let’s keep it on task — what would you like help with today?";
-  if(id==='appointly'&&/(tue|tuesday|slot|book|appointment)/.test(x))return "I can do Tuesday at 10:00 or 14:30. Which suits you?";
-  if(id==='realestate'&&/(view|flat|house|property)/.test(x))return "Smashing — are you buying or renting, and what’s your budget?";
-  if(id==='salon'&&/(cut|hair|trim|colour|color)/.test(x))return "We can book a Cut & Finish. Fancy adding a nourishing scalp treatment?";
-  if(id==='carins'&&/(quote|insurance|policy|premium)/.test(x))return "No problem. I’ll need your name, date of birth, licence type, and any claims in the last 3 years.";
-  return "Got it. Tell me a little more and I’ll guide you.";
-}
-async function sendNow(t){
-  if(!t.trim())return;
-  add('user',t); state.history.push({role:'user',content:t});
-  const typing=add('bot','…',true);
-  let reply=''; try{ reply=await backend(state.history); }catch{ reply=local(t); }
-  typing.remove(); add('bot',reply); state.history.push({role:'assistant',content:reply});
-}
-function handleSend(){const i=$('#chatInput'); const t=i.value.trim(); if(!t)return; i.value=''; sendNow(t);}
-$('#sendBtn').addEventListener('click',handleSend);
-$('#chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')handleSend();});
-
-/* Voice en-GB with interim typing and auto-send on pause */
-(()=>{let rec=null,listening=false,last="";const mic=()=>$('#micBtn');
-const ok=()=>('SpeechRecognition'in window)||('webkitSpeechRecognition'in window);
-function ensure(){if(rec)return rec; const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  rec=new SR(); rec.lang='en-GB'; rec.interimResults=true; rec.continuous=false; return rec;}
-function glow(on){mic().classList.toggle('glow',!!on)}
-let raf; function typeInto(to){const i=$('#chatInput'); cancelAnimationFrame(raf);
-  const from=i.value, st=performance.now(), dur=Math.min(800,18*to.length);
-  function step(t){const p=Math.min(1,(t-st)/dur); i.value=to.slice(0,Math.round(from.length+(to.length-from.length)*p));
-    if(p<1)raf=requestAnimationFrame(step);} raf=requestAnimationFrame(step);}
-mic().addEventListener('click',()=>{
-  if(!ok()){add('bot','Speech recognition isn’t supported in this browser.');return;}
-  const r=ensure();
-  if(!listening){listening=true; glow(true); last=""; r.start();
-    r.onresult=e=>{let fin="",int=""; for(let i=e.resultIndex;i<e.results.length;i++){
-      const tr=e.results[i][0].transcript; if(e.results[i].isFinal) fin+=tr; else int+=tr; }
-      if(fin){last+=fin; typeInto(last.trim());} else if(int){typeInto((last+int).trim());}};
-    r.onerror=()=>{listening=false; glow(false); add('bot','Sorry — I couldn’t hear that. Try again?');};
-    r.onend=()=>{listening=false; glow(false); const i=$('#chatInput'); const t=(i.value||'').trim(); if(t){i.value=''; sendNow(t);} };
-  }else{r.stop(); listening=false; glow(false);}
-});})();
-</script>
+  <script>
+    // Read ?bot=Name and prefill
+    const params = new URLSearchParams(location.search);
+    const name = params.get('bot') || 'Zypher Bot';
+    document.getElementById('botTitle').textContent = name;
+    window.addEventListener('DOMContentLoaded', () => {
+      const input = document.getElementById('userInput');
+      if (input) input.value = `Open demo: ${name}`;
+      const send = document.getElementById('sendBtn');
+      if (send) setTimeout(() => send.click(), 100);
+    });
+  </script>
+  <script src="./js/config.js"></script>
+  <script src="./js/bg.js"></script>
+  <script src="./js/voice.js"></script>
+  <script src="./js/site.js"></script>
 </body>
 </html>
