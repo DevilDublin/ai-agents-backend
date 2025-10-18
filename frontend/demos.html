@@ -1,32 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Zypher — Demos</title>
-  <link rel="stylesheet" href="styles/main.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/main.css" />
 </head>
-<body>
-  <header class="nav">
-    <div class="logo"><span class="z">Z</span>ypher</div>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="demos.html" class="active">Demos</a>
-      <a href="contact.html">Contact</a>
-      <span class="theme-pill" data-theme-pill title="Change theme"></span>
-      <span class="theme-text" data-theme-label>Theme</span>
-    </nav>
-  </header>
+<body class="layout">
+  <nav class="nav">
+    <a href="./index.html" class="brand">
+      <span class="brand-glyph">Ƶ</span><span class="brand-text">Zypher</span>
+    </a>
+    <div class="nav-links">
+      <a href="./index.html">Home</a>
+      <a class="active" href="./demos.html">Demos</a>
+      <a href="./contact.html">Contact</a>
+      <div class="theme-wrap">
+        <span class="theme-label">Theme</span>
+        <button id="colorToggle" class="color-toggle" title="Click to switch neon palette"></button>
+      </div>
+    </div>
+  </nav>
 
-  <main id="content"></main>
+  <canvas id="background"></canvas>
 
-  <footer>© 2025 Zypher — Built for speed · UK/EU ready</footer>
+  <main class="demos-shell">
+    <!-- Intro: the ONLY thing visible at first -->
+    <button id="starter" class="shape3d crisp" aria-label="Start demos">
+      <span class="s3d-core" aria-hidden="true"></span>
+      <span class="s3d-rim" aria-hidden="true"></span>
+      <span class="s3d-innershine" aria-hidden="true"></span>
+      <span class="s3d-text">Click to begin</span>
+    </button>
 
-  <script src="js/bg.js" defer></script>
-  <script src="js/site.js" defer></script>
-  <script type="module" src="js/demos.js"></script>
+    <!-- HUD hints (hidden until selector opens) -->
+    <div id="demoHUD" class="demo-hud hidden">
+      <span class="hud-dot"></span>
+      <span id="hudText">Use <b>← →</b> / <b>A D</b> to switch · <b>Enter</b> to open · <b>Esc</b> back</span>
+    </div>
+
+    <!-- Selector + Chat (hidden until after intro) -->
+    <section id="demoSplit" class="demo-split hidden">
+      <aside class="typewriter neon-green" id="twPane" aria-live="polite">
+        <div class="tw-header">
+          <span class="tw-led"></span>
+          <span class="tw-title" id="twTitle">_</span>
+        </div>
+        <pre class="tw-body" id="twBody"></pre>
+        <div class="tw-controls">
+          <button id="prevBot" class="pill-btn" aria-label="Previous bot">← Prev</button>
+          <button id="nextBot" class="pill-btn" aria-label="Next bot">Next →</button>
+          <button id="openNow" class="pill-link" type="button">Open (Enter)</button>
+        </div>
+      </aside>
+
+      <div class="chat-panel" id="chatPane">
+        <button id="closeChat" class="chat-close hidden" aria-label="Close chat and return">×</button>
+
+        <!-- Real chat (starts hidden, appears when opened) -->
+        <div id="chatContainer" class="chat-container chat-bright hidden">
+          <div id="chatMessages" class="chat-messages"></div>
+          <div class="chat-input">
+            <button id="micBtn" class="mic" aria-label="Start voice input">🎤</button>
+            <input id="userInput" type="text" placeholder="Type a message or press the mic…" autocomplete="off" />
+            <button id="sendBtn" class="send" aria-label="Send">➤</button>
+          </div>
+        </div>
+
+        <!-- Placeholder (removed when chat opens; no blur left behind) -->
+        <div id="chatPlaceholder" class="chat-placeholder">
+          <div class="cp-wrap">
+            <div class="cp-title">Select a bot to open the chat</div>
+            <div class="cp-sub">Press <b>Enter</b> when ready</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">© 2025 Zypher — Built for speed · Privacy-first · UK/EU ready</footer>
+
+  <script src="./js/config.js"></script>
+  <script src="./js/bg.js"></script>
+  <script src="./js/demos.js"></script>
+  <script src="./js/voice.js"></script>
+  <script src="./js/site.js"></script>
 </body>
 </html>
