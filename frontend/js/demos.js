@@ -53,7 +53,7 @@
   const $ = id => document.getElementById(id);
 
   // Elements
-  const btn=()=>$('selectDemoBtn'), split=()=>$('demoSplit'), hud=()=>$('demoHUD'), hudText=()=>$('hudText');
+  const starter=()=>$('starter'), split=()=>$('demoSplit'), hud=()=>$('demoHUD'), hudText=()=>$('hudText');
   const twTitle=()=>$('twTitle'), twBody=()=>$('twBody'), prev=()=>$('prevBot'), next=()=>$('nextBot'), openNow=()=>$('openNow');
   const chat=()=>$('chatContainer'), ghost=()=>$('chatPlaceholder'), closeChat=()=>$('closeChat');
   const input=()=>$('userInput'), send=()=>$('sendBtn');
@@ -64,7 +64,7 @@
   let locked = false; // when true: selector is locked, keys won’t switch
   const glyphs='!<>-_\\/[]{}—=+*^?#________';
 
-  // Scramble -> reveal text (typewriter hacker vibe)
+  // Scramble -> reveal text
   function scrambleTo(target){
     cancelAnimationFrame(frame);
     const el=twBody(), lines=target.slice(); let queue=[], output=lines.map(()=>''), maxLen=Math.max(...lines.map(l=>l.length));
@@ -102,22 +102,22 @@
     twTitle().textContent=`> ${bot.name}`;
     scrambleTo(bot.lines);
     if(animate) parallax(1);
-  }
-
-  function openSelector(){
-    btn().classList.add('hidden');
-    split().classList.remove('hidden');
-    hud().classList.remove('hidden');
-    hudText().innerHTML = 'Use <b>← →</b> / <b>A D</b> to switch · <b>Enter</b> to open';
-    locked = false;
     ghost().classList.remove('hidden');
     chat().classList.add('hidden');
     closeChat().classList.add('hidden');
+  }
+
+  function openSelector(){
+    starter().classList.add('hidden');
+    split().classList.remove('hidden');
+    hud().classList.remove('hidden');
+    hudText().innerHTML = 'Use <b>← →</b> / <b>A D</b> to switch · <b>Enter</b> to open · <b>Esc</b> back';
+    locked = false;
     showBot(0,false);
   }
 
   function openChat(){
-    // Lock selector; reveal chat; prevent further Enter cycling
+    // Lock selector; reveal chat; remove placeholder (no blur glitch)
     locked = true;
     hudText().innerHTML = '<b>Chat open.</b> Press <b>×</b> to go back.';
     ghost().classList.add('hidden');
@@ -126,7 +126,7 @@
 
     input().value = `Open demo: ${BOTS[i].name}`;
     setTimeout(()=>send().click(), 80);
-    chat().animate([{transform:'translateY(10px)',opacity:.9},{transform:'translateY(0)',opacity:1}],{duration:420,easing:'cubic-bezier(.2,.7,.1,1)'});
+    chat().animate([{transform:'translateY(10px)',opacity:.85},{transform:'translateY(0)',opacity:1}],{duration:420,easing:'cubic-bezier(.2,.7,.1,1)'});
   }
 
   function closeToSelector(){
@@ -134,13 +134,13 @@
     ghost().classList.remove('hidden');
     chat().classList.add('hidden');
     closeChat().classList.add('hidden');
-    hudText().innerHTML = 'Use <b>← →</b> / <b>A D</b> to switch · <b>Enter</b> to open';
+    hudText().innerHTML = 'Use <b>← →</b> / <b>A D</b> to switch · <b>Enter</b> to open · <b>Esc</b> back';
   }
 
   function init(){
-    if(!btn()) return;
+    if(!starter()) return;
 
-    btn().addEventListener('click', openSelector);
+    starter().addEventListener('click', openSelector);
 
     prev().addEventListener('click', ()=>{ if(!locked) showBot(i-1); });
     next().addEventListener('click', ()=>{ if(!locked) showBot(i+1); });
@@ -149,8 +149,8 @@
     closeChat().addEventListener('click', closeToSelector);
 
     document.addEventListener('keydown',(e)=>{
-      // Enter from diamond
-      if(!split() || split().classList.contains('hidden')){
+      // Enter to flip from the 3D shape
+      if(starter() && !starter().classList.contains('hidden')){
         if(e.key==='Enter'){ openSelector(); }
         return;
       }
@@ -158,13 +158,10 @@
       if(!locked && (k==='arrowright'||k==='d')) showBot(i+1);
       if(!locked && (k==='arrowleft'||k==='a')) showBot(i-1);
       if(!locked && k==='enter') openChat();     // open + lock
-      if(k==='escape' && locked===false){ // only reset to diamond when not in chat
-        split().classList.add('hidden'); hud().classList.add('hidden'); btn().classList.remove('hidden');
+      if(k==='escape' && !locked){               // back to 3D shape
+        split().classList.add('hidden'); hud().classList.add('hidden'); starter().classList.remove('hidden');
       }
     });
-
-    // first paint
-    // (diamond visible)
   }
 
   document.addEventListener('DOMContentLoaded', init);
