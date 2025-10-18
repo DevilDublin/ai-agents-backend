@@ -4,72 +4,81 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Zypher — Demos</title>
-  <link rel="stylesheet" href="styles/main.css"/>
+  <link rel="stylesheet" href="./styles/main.css"/>
 </head>
 <body>
-<div class="bg-wrap"><canvas id="net-canvas"></canvas></div>
+<div class="page">
 
-<div class="wrapper">
-  <header class="header">
-    <nav class="nav">
+  <!-- Animated background -->
+  <div class="bg-wrap">
+    <div class="bg-grid"></div>
+    <canvas id="bg-net"></canvas>
+  </div>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
       <div class="brand">
         <div class="brand-badge">Z</div>
-        <span>Zypher</span>
+        Zypher
       </div>
-      <div class="menu">
-        <a href="index.html">Home</a>
-        <a class="active" href="demos.html">Demos</a>
-        <a href="contact.html">Contact</a>
-        <div class="theme-pill"><span>Theme</span><div class="theme-swatch" title="Click to change"></div></div>
-      </div>
-    </nav>
-  </header>
-
-  <main class="main">
-    <!-- Landing shape (only thing visible initially) -->
-    <section class="section demo-landing" aria-labelledby="demoStart">
-      <div class="shape" tabindex="0" role="button" aria-label="Open demos">
-        <div class="cta">Click me!</div>
-      </div>
-    </section>
-
-    <!-- Selector scene -->
-    <section class="section selector-wrap hidden">
-      <div class="selector-grid">
-        <div class="tty">
-          <div class="tty-title">
-            <span style="width:10px;height:10px;border-radius:50%;background:var(--glow-b);box-shadow:0 0 10px var(--glow-b)"></span>
-            <span class="label">Agent</span>
-          </div>
-          <div class="tty-screen" id="tty"></div>
-          <div class="selector-controls">
-            <button class="control" data-prev>← Prev</button>
-            <button class="control" data-next>Next →</button>
-            <button class="control" data-open>Open (Enter)</button>
-          </div>
-          <div class="hints">Use ← → or A/D to switch · Enter to preview, then again to open chat.</div>
+      <div class="nav-links">
+        <a href="./index.html">Home</a>
+        <a href="./demos.html" style="text-shadow:0 0 12px var(--neonB);">Demos</a>
+        <a href="./contact.html">Contact</a>
+        <div class="theme-pill" title="Theme">
+          <div class="theme-dot"></div>
         </div>
-
-        <div class="chat hidden">
-          <button class="x" aria-label="Close">✕</button>
-          <div class="bar">
-            <button id="chat-mic" class="control" title="Speak">🎤</button>
-            <input id="chat-input" placeholder="Type a message or press the mic…" />
-            <button id="chat-send">›</button>
+        <!-- menu -->
+        <div id="themeMenu" style="position:absolute; right:20px; top:58px; display:none" class="panel">
+          <div style="display:flex; gap:8px; flex-wrap:wrap; max-width:260px">
+            <button data-theme="neonPurple" class="badge">Purple</button>
+            <button data-theme="neonGreen"  class="badge">Green</button>
+            <button data-theme="neonBlue"   class="badge">Blue</button>
+            <button data-theme="neonOrange" class="badge">Orange</button>
+            <button data-theme="neonLime"   class="badge">Lime</button>
           </div>
-          <div class="chatlog" id="chatlog"></div>
         </div>
+        <script>
+          // tiny show/hide
+          const menu = document.getElementById('themeMenu');
+          const pill = document.querySelector('.theme-pill');
+          ['click','touchend'].forEach(ev=>{
+            pill?.addEventListener(ev, e=>{ e.stopPropagation(); menu.style.display = (menu.style.display==='block'?'none':'block'); });
+            document.addEventListener(ev, e=>{ if(!menu.contains(e.target)) menu.style.display='none'; });
+          });
+        </script>
       </div>
-    </section>
+    </div>
+  </nav>
+
+  <!-- INTRO SHAPE -->
+  <section id="demoIntro" class="demo-intro">
+    <div class="glyph" id="introGlyph" aria-role="button">
+      <h2>Click me!</h2>
+    </div>
+  </section>
+
+  <!-- DEMO STAGE (hidden until intro is clicked) -->
+  <main id="demoStage" class="demo-stage">
+    <div class="selector-tip">
+      Use <strong>← / →</strong> or <strong>A / D</strong> to switch • Press <strong>Enter</strong> to preview • Press <strong>Enter</strong> again to open chat • <strong>Esc</strong> to go back.
+    </div>
+
+    <!-- Left: green “decrypted” panel (populated by demos.js) -->
+    <section id="botBrief" class="panel" style="margin-top:18px"></section>
+
+    <!-- Right: chat mount (opened by demos.js) -->
+    <section id="chatMount" class="panel" style="margin-top:18px"></section>
   </main>
 
-  <footer class="footer"><div class="section">
+  <footer class="footer">
     © 2025 Zypher — Built for speed · Privacy-first · UK/EU ready
-  </div></footer>
+  </footer>
 </div>
 
-<script src="js/site.js"></script>
-<script src="js/demos.js"></script>
-<script src="js/voice.js"></script>
+<script src="./js/site.js"></script>
+<script src="./js/demos.js"></script>
+<script src="./js/voice.js"></script>
 </body>
 </html>
