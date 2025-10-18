@@ -1,88 +1,103 @@
-/* ===== ZYPHER — shared site logic (bg, theme, nav) ===== */
-(function(){
-  const themes = [
-    {a:'#b388ff', b:'#ff7ab6'}, // purple/pink
-    {a:'#66ffaa', b:'#00e0b5'}, // green/teal
-    {a:'#67b2ff', b:'#00dcff'}, // blue/cyan
-    {a:'#ffb84d', b:'#ff5a26'}  // orange/yellow
-  ];
-  let idx = +localStorage.getItem('zy_theme_idx') || 0;
+/* ===== Theme, background, and shared helpers ===== */
+(() => {
+  const PALETTES = {
+    neonPurple: ['#7a5cff', '#ff4fd8'],
+    neonGreen:  ['#00ffa3', '#36f3ff'],
+    neonBlue:   ['#5cc2ff', '#7a5cff'],
+    neonOrange: ['#ff7a34', '#ff4fd8'],
+    neonLime:   ['#41ff8a', '#d3ff3a']
+  };
 
-  function applyTheme(i){
-    idx = (i+themes.length)%themes.length;
-    const t = themes[idx];
-    document.documentElement.style.setProperty('--glow-a', t.a);
-    document.documentElement.style.setProperty('--glow-b', t.b);
-    localStorage.setItem('zy_theme_idx', idx);
-    const swatch = document.querySelector('.theme-swatch');
-    if (swatch) swatch.style.background = `linear-gradient(90deg, ${t.a}, ${t.b})`;
+  // Apply palette to CSS variables
+  function applyTheme(name){
+    const [a,b] = PALETTES[name] || PALETTES.neonPurple;
+    document.documentElement.style.setProperty('--neonA', a);
+    document.documentElement.style.setProperty('--neonB', b);
+    localStorage.setItem('zypher_theme', name);
   }
 
-  /* nav active */
-  document.querySelectorAll('.menu a').forEach(a=>{
-    if (a.getAttribute('href') && location.pathname.endsWith(a.getAttribute('href'))) a.classList.add('active');
-  });
+  // Theme pill
+  function initThemePill(){
+    const pill = document.querySelector('.theme-pill');
+    if(!pill) return;
+    const menu = document.querySelector('#themeMenu');
+    const saved = localStorage.getItem('zypher_theme') || 'neonPurple';
+    applyTheme(saved);
 
-  /* theme */
-  const pill = document.querySelector('.theme-swatch');
-  if (pill){ pill.addEventListener('click', ()=>applyTheme(idx+1)); }
-  applyTheme(idx);
+    pill.addEventListener('click', () => {
+      menu?.classList.toggle('open');
+    });
 
-  /* grid + network canvas across all pages */
-  const canvas = document.getElementById('net-canvas');
-  if (canvas){
-    const ctx = canvas.getContext('2d');
-    let W,H,points=[];
+    menu?.addEventListener('click', (e) => {
+      const li = e.target.closest('button[data-theme]');
+      if(!li) return;
+      applyTheme(li.dataset.theme);
+      menu.classList.remove('open');
+    });
+  }
+
+  // Animated network background
+  function initBackground(){
+    const canvas = document.getElementById('bg-net');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha:true });
+    const DPR = Math.min(2, window.devicePixelRatio || 1);
+
     function resize(){
-      W = canvas.width = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-      points = Array.from({length: 70},()=>({
-        x:Math.random()*W, y:Math.random()*H, vx:(Math.random()-.5)*.25, vy:(Math.random()-.5)*.25
-      }));
+      canvas.width = Math.floor(canvas.clientWidth * DPR);
+      canvas.height = Math.floor(canvas.clientHeight * DPR);
+      ctx.setTransform(DPR,0,0,DPR,0,0);
     }
-    resize(); window.addEventListener('resize', resize);
+    resize();
+    window.addEventListener('resize', resize, { passive:true });
 
-    function tick(){
-      ctx.clearRect(0,0,W,H);
-      // nodes
-      ctx.fillStyle = 'rgba(255,255,255,.7)';
-      points.forEach(p=>{
-        p.x+=p.vx; p.y+=p.vy;
-        if(p.x<0||p.x>W) p.vx*=-1;
-        if(p.y<0||p.y>H) p.vy*=-1;
-        ctx.globalAlpha = .25;
-        ctx.beginPath(); ctx.arc(p.x,p.y,1.2,0,6.283); ctx.fill();
-      });
-      // lines
-      ctx.strokeStyle = 'rgba(255,255,255,.06)';
+    const dots = Array.from({length: 68}, () => ({
+      x: Math.random()*canvas.clientWidth,
+      y: Math.random()*canvas.clientHeight,
+      vx:(Math.random()-.5)*0.6,
+      vy:(Math.random()-.5)*0.6
+    }));
+
+    function step(){
+      ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
+
+      // Lines
+      ctx.strokeStyle = 'rgba(255,255,255,.08)';
       ctx.lineWidth = 1;
-      for(let i=0;i<points.length;i++){
-        for(let j=i+1;j<points.length;j++){
-          const dx=points[i].x-points[j].x, dy=points[i].y-points[j].y;
-          const d2=dx*dx+dy*dy;
-          if (d2<120*120){
-            ctx.globalAlpha = .06;
+      for(let i=0;i<dots.length;i++){
+        for(let j=i+1;j<dots.length;j++){
+          const dx = dots[i].x - dots[j].x;
+          const dy = dots[i].y - dots[j].y;
+          const d2 = dx*dx + dy*dy;
+          if(d2 < 170*170){
+            ctx.globalAlpha = 1 - (Math.sqrt(d2)/170);
             ctx.beginPath();
-            ctx.moveTo(points[i].x, points[i].y);
-            ctx.lineTo(points[j].x, points[j].y);
+            ctx.moveTo(dots[i].x, dots[i].y);
+            ctx.lineTo(dots[j].x, dots[j].y);
             ctx.stroke();
           }
         }
       }
-      requestAnimationFrame(tick);
+      ctx.globalAlpha = 1;
+
+      // Nodes
+      for(const p of dots){
+        p.x += p.vx; p.y += p.vy;
+        if(p.x<0||p.x>canvas.clientWidth) p.vx*=-1;
+        if(p.y<0||p.y>canvas.clientHeight) p.vy*=-1;
+        ctx.fillStyle='rgba(255,255,255,.5)';
+        ctx.fillRect(p.x, p.y, 1, 1);
+      }
+      requestAnimationFrame(step);
     }
-    tick();
+    step();
   }
 
-  /* footer pin */
-  const wrapper = document.querySelector('.wrapper');
-  if (wrapper){
-    const footer = document.querySelector('.footer');
-    const main = document.querySelector('.main');
-    const adjust = ()=>{ 
-      const fh = footer?.offsetHeight || 0;
-      main.style.minHeight = `calc(100svh - ${fh + 72}px)`; 
-    };
-    adjust(); addEventListener('resize', adjust);
-  }
+  document.addEventListener('DOMContentLoaded', () => {
+    initThemePill();
+    initBackground();
+  });
+
+  // Expose a small API used by demos/voice
+  window.ZypherTheme = { applyTheme };
 })();
