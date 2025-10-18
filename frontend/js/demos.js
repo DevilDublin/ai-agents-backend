@@ -1,63 +1,69 @@
 (function () {
-  const data = [
+  const BOTS = [
     {
       name: 'Car Insurance',
       lines: [
-        '> Bot: Car Insurance — Quick-qualify & quote',
-        '> Collects: name, phone, vehicle, NCB, claims',
-        '> Decides: quote route or manual review',
-        '> Integrates: Calendar + CRM + email handoff',
-        '> Try: “Get a quick quote”'
+        'Decrypting module…',
+        'Agent: Car Insurance — Quick-qualify & quote',
+        'Collect → name, phone, vehicle, NCB, claims',
+        'Decision → instant quote / manual review',
+        'Integrations → Calendar · CRM · Email',
+        'Hint → say: "Get a quick quote"'
       ]
     },
     {
       name: 'Appointly',
       lines: [
-        '> Bot: Appointly — Appointment Booking',
-        '> Collects: service, date & time, notes',
-        '> Confirms: SMS + calendar invite',
-        '> Reschedule/Cancel links included',
-        '> Try: “Book me for Friday 3pm”'
+        'Loading scheduler…',
+        'Agent: Appointly — Appointment Booking',
+        'Collect → service, date & time, notes',
+        'Confirm → SMS + calendar invite',
+        'Links → reschedule/cancel',
+        'Hint → say: "Book me Friday 3pm"'
       ]
     },
     {
       name: 'Salon Booker',
       lines: [
-        '> Bot: Salon Booker — Services & Add-ons',
-        '> Upsells: treatments, bundles, extras',
-        '> Deposits: optional link checkout',
-        '> No-shows: reminder flows',
-        '> Try: “Cut + beard trim this weekend”'
+        'Compiling treatments…',
+        'Agent: Salon Booker — Services & add-ons',
+        'Upsell → bundles, extras, deposits',
+        'Remind → no-show sequences',
+        'Ops → CRM summary',
+        'Hint → say: "Cut + beard trim this weekend"'
       ]
     },
     {
       name: 'Property Qualifier',
       lines: [
-        '> Bot: Property Qualifier — Tenants & Viewings',
-        '> Filters: budget, move-in, location, docs',
-        '> Books: viewing slots or agent call',
-        '> Sends: summary to CRM',
-        '> Try: “I want to view a 2-bed flat”'
+        'Scanning listings…',
+        'Agent: Property Qualifier — Tenants & viewings',
+        'Filter → budget, move-in, location, docs',
+        'Book → viewing slots / agent call',
+        'Sync → CRM with transcript',
+        'Hint → say: "I want to view a 2-bed"'
       ]
     },
     {
       name: 'Support Triage',
       lines: [
-        '> Bot: Support Triage — Right Fix, First Time',
-        '> Identifies: issue category & priority',
-        '> Resolves: guided steps or routes to human',
-        '> Logs: ticket with context',
-        '> Try: “My order never arrived”'
+        'Routing engine online…',
+        'Agent: Support Triage — Right fix, first time',
+        'Identify → category · priority',
+        'Resolve → guided steps or human handoff',
+        'Ticket → context auto-logged',
+        'Hint → say: "My order never arrived"'
       ]
     },
     {
       name: 'Custom Bot',
       lines: [
-        '> Bot: Custom — Built for Your Use-case',
-        '> Pick: lead gen, bookings, support, sales',
-        '> Connect: your CRM + calendar + APIs',
-        '> Brand: tone, colours, copy — yours',
-        '> Try: “Show me a tailored flow”'
+        'Generating blueprint…',
+        'Agent: Custom — Your use-case',
+        'Modes → lead gen · bookings · support',
+        'Connect → APIs · CRM · calendar',
+        'Brand → tone, visuals, copy',
+        'Hint → say: "Show me a tailored flow"'
       ]
     }
   ];
@@ -70,85 +76,100 @@
   const prev = () => $('prevBot');
   const next = () => $('nextBot');
   const full = () => $('fullBot');
-  const chatWrap = () => $('chatContainer');
-  const chatGhost = () => $('chatPlaceholder');
+  const chat = () => $('chatContainer');
+  const ghost = () => $('chatPlaceholder');
   const input = () => $('userInput');
   const send = () => $('sendBtn');
 
   let i = 0;
-  let typingTimeout;
+  let frame;
+  const glyphs = '!<>-_\\/[]{}—=+*^?#________';
 
-  function typewriter(lines, onDone) {
-    clearTimeout(typingTimeout);
-    twBody().textContent = '';
-    let li = 0, ci = 0;
+  function scrambleTo(target, onDone) {
+    cancelAnimationFrame(frame);
+    const el = twBody();
+    const lines = target.slice();
+    let queue = [];
+    let output = lines.map(() => '');
+    const maxLen = Math.max(...lines.map(l => l.length));
 
-    function tick() {
-      if (li >= lines.length) return onDone && onDone();
-      const line = lines[li];
-      twBody().textContent += line.slice(0, ci) + (ci % 2 ? '_' : ' ') + (ci ? '\n' : '');
-      ci++;
-      if (ci > line.length) {
-        twBody().textContent = lines.slice(0, li + 1).join('\n') + '\n';
-        li++; ci = 0;
+    for (let li = 0; li < lines.length; li++) {
+      const from = ''.padEnd(maxLen, ' ');
+      const to = lines[li].padEnd(maxLen, ' ');
+      const lineQ = [];
+      for (let n = 0; n < maxLen; n++) {
+        const start = Math.floor(Math.random() * 20);
+        const end = start + Math.floor(Math.random() * 24) + 6;
+        lineQ.push({ from: from[n], to: to[n], start, end, char: '' });
       }
-      typingTimeout = setTimeout(tick, 18); // hacker speed
+      queue.push(lineQ);
     }
-    tick();
+
+    let frameCount = 0;
+    (function update(){
+      let complete = 0;
+      for (let li = 0; li < queue.length; li++) {
+        const q = queue[li];
+        let line = '';
+        for (let n = 0; n < q.length; n++) {
+          let { from, to, start, end, char } = q[n];
+          if (frameCount >= end) { complete++; line += to; }
+          else if (frameCount >= start) {
+            if (!char || Math.random() < 0.09) char = glyphs[Math.floor(Math.random()*glyphs.length)];
+            q[n].char = char;
+            line += char;
+          } else {
+            line += from;
+          }
+        }
+        output[li] = line.replace(/\s+$/,'');
+      }
+      el.textContent = output.join('\n');
+      frameCount++;
+      if (complete >= queue.length * maxLen) { if (onDone) onDone(); return; }
+      frame = requestAnimationFrame(update);
+    })();
   }
 
-  function showBot(index, whoosh = true) {
-    i = (index + data.length) % data.length;
-    const bot = data[i];
-
+  function showBot(index, animate = true) {
+    i = (index + BOTS.length) % BOTS.length;
+    const bot = BOTS[i];
     twTitle().textContent = `> ${bot.name}`;
-    typewriter(bot.lines);
+    scrambleTo(bot.lines);
 
-    // update deep link
     full().href = `./bot.html?bot=${encodeURIComponent(bot.name)}`;
 
-    // prep chat
-    if (chatGhost()) chatGhost().classList.add('hidden');
-    if (chatWrap()) chatWrap().classList.remove('hidden');
+    if (ghost()) ghost().classList.add('hidden');
+    if (chat()) chat().classList.remove('hidden');
     if (input()) input().value = `Open demo: ${bot.name}`;
     if (send()) setTimeout(() => send().click(), 80);
 
-    // whoosh animation on split container
-    if (whoosh) {
+    if (animate) {
       split().style.animation = 'whoosh .5s ease';
-      setTimeout(() => split().style.animation = '', 500);
+      setTimeout(() => (split().style.animation = ''), 500);
     }
   }
 
   function init() {
     if (!btn()) return;
-
     btn().addEventListener('click', () => {
       btn().classList.add('hidden');
       split().classList.remove('hidden');
       showBot(0, false);
     });
-
     if (prev()) prev().addEventListener('click', () => showBot(i - 1));
     if (next()) next().addEventListener('click', () => showBot(i + 1));
-
-    // keyboard arrows
     document.addEventListener('keydown', (e) => {
       if (split().classList.contains('hidden')) return;
       if (e.key === 'ArrowRight') showBot(i + 1);
-      if (e.key === 'ArrowLeft') showBot(i - 1);
+      if (e.key === 'ArrowLeft')  showBot(i - 1);
     });
   }
 
   document.addEventListener('DOMContentLoaded', init);
 
-  // whoosh keyframes injected once
+  // whoosh keyframes (once)
   const style = document.createElement('style');
-  style.textContent = `
-    @keyframes whoosh { 
-      0% { transform: translateX(10px); opacity:.9 } 
-      100% { transform: none; opacity:1 } 
-    }
-  `;
+  style.textContent = `@keyframes whoosh{0%{transform:translateX(10px);opacity:.9}100%{transform:none;opacity:1}}`;
   document.head.appendChild(style);
 })();
