@@ -8,14 +8,18 @@
 </head>
 <body class="layout">
   <nav class="nav">
-    <div class="logo">⚡ Zypher</div>
+    <a href="./index.html" class="brand">
+      <span class="brand-glyph">Ƶ</span><span class="brand-text">Zypher</span>
+    </a>
+
     <div class="nav-links">
       <a href="./index.html">Home</a>
       <a href="./demos.html">Demos</a>
       <a class="active" href="./contact.html">Contact</a>
+
       <div class="theme-wrap">
         <span class="theme-label">Theme</span>
-        <button id="colorToggle" class="color-toggle" title="Theme"></button>
+        <button id="colorToggle" class="color-toggle" title="Click for palettes · Right-click auto"></button>
       </div>
     </div>
   </nav>
@@ -24,7 +28,7 @@
 
   <main class="contact section">
     <div class="contact-grid">
-      <aside class="contact-card neon">
+      <aside class="contact-card neon round-glow">
         <h2>Let’s Talk</h2>
         <p>Tell us about your use-case. We’ll reply within 1 business day.</p>
 
@@ -59,6 +63,24 @@
         <button type="submit" class="btn">Send</button>
       </form>
     </div>
+
+    <!-- assurances band -->
+    <section class="assure">
+      <div class="assure-grid">
+        <div class="assure-item">
+          <div class="assure-title">Security</div>
+          <div class="assure-text">Data encrypted in transit · Signed webhooks · Access scoped.</div>
+        </div>
+        <div class="assure-item">
+          <div class="assure-title">SLA</div>
+          <div class="assure-text">99.9% target uptime · Priority support for launches.</div>
+        </div>
+        <div class="assure-item">
+          <div class="assure-title">Integration</div>
+          <div class="assure-text">Calendars, CRMs, email, payments — we connect to your stack.</div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="footer">© 2025 Zypher — Built for speed · Privacy-first · UK/EU ready</footer>
