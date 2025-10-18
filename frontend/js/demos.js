@@ -1,7 +1,23 @@
-/* Demos state machine – unchanged from last fix, included for completeness */
 (function(){
-  let STATE = 'intro';
+  const $ = s => document.querySelector(s);
+  const shell = () => $('.demos-shell');
 
+  /* ----------------- INTRO SHAPE ----------------- */
+  function buildIntro(){
+    const b = document.createElement('button');
+    b.id = 'starter';
+    b.className = 'shape3d';
+    b.innerHTML = `
+      <span class="core"></span>
+      <span class="halo"></span>
+      <span class="shine"></span>
+      <span class="label">Click me!</span>
+    `;
+    b.addEventListener('click', startSelector, {passive:true});
+    shell().appendChild(b);
+  }
+
+  /* ----------------- SELECTOR + CHAT ----------------- */
   const BOTS = [
     { name:'Car Insurance', lines:[
       'Decrypting module…',
@@ -53,16 +69,11 @@
     ]}
   ];
 
-  const $ = s => document.querySelector(s);
-  const starter = () => $('#starter');
-  const shell = () => $('.demos-shell');
-
-  let split, hud, hudText, twTitle, twBody, prevBtn, nextBtn, openBtn,
-      chatClose, chatBox, msgWrap, input, send, micBtn, placeholder;
-  let current = 0, frame;
+  let STATE='intro', current=0, frame;
+  let split, twTitle, twBody, placeholder, chatBox, chatClose, msgWrap, input, send, micBtn;
 
   const glyphs='!<>-_\\/[]{}—=+*^?#________';
-  function scrambleTo(lines){
+  function scramble(lines){
     cancelAnimationFrame(frame);
     const max=Math.max(...lines.map(l=>l.length));
     const queues = lines.map(line=>{
@@ -84,30 +95,17 @@
     })();
   }
 
-  function parallax(dir){
-    const panes = split.querySelectorAll('#twPane, #chatPane');
-    panes.forEach(p=>p.animate([{transform:`translateX(${8*dir}px)`},{transform:'translateX(0)'}],{duration:420,easing:'cubic-bezier(.2,.7,.1,1)'}));
-  }
-
   function buildSelector(){
-    if(split) return;
-
-    hud = document.createElement('div');
-    hud.className='demo-hud';
-    hud.innerHTML = `<span class="hud-dot"></span><span id="hudText">Use <b>← →</b> / <b>A D</b> to switch · <b>Enter</b> to open · <b>Esc</b> back</span>`;
-    shell().appendChild(hud);
-    hudText = $('#hudText');
-
     split = document.createElement('section');
-    split.className = 'demo-split';
+    split.className='demo-split';
     split.innerHTML = `
       <aside class="typewriter" id="twPane">
         <div class="tw-header"><span class="tw-led"></span><span class="tw-title" id="twTitle">_</span></div>
         <pre class="tw-body" id="twBody"></pre>
         <div class="tw-controls">
-          <button id="prevBot" class="pill-btn">← Prev</button>
-          <button id="nextBot" class="pill-btn">Next →</button>
-          <button id="openNow" class="pill-link" type="button">Open (Enter)</button>
+          <button class="pill" id="prevBot">← Prev</button>
+          <button class="pill" id="nextBot">Next →</button>
+          <button class="pill" id="openNow">Open (Enter)</button>
         </div>
       </aside>
       <div class="chat-panel" id="chatPane">
@@ -129,17 +127,18 @@
     split.querySelector('#chatPane').appendChild(placeholder);
 
     twTitle = $('#twTitle'); twBody = $('#twBody');
-    prevBtn = $('#prevBot'); nextBtn = $('#nextBot'); openBtn = $('#openNow');
-    chatClose=$('#closeChat'); chatBox=$('#chatContainer'); msgWrap=$('#chatMessages');
-    input=$('#userInput'); send=$('#sendBtn'); micBtn=$('#micBtn');
+    $('#prevBot').onclick=()=>show(current-1);
+    $('#nextBot').onclick=()=>show(current+1);
+    $('#openNow').onclick=openChat;
 
-    prevBtn.onclick=()=>{ if(STATE==='selector') show(current-1) };
-    nextBtn.onclick=()=>{ if(STATE==='selector') show(current+1) };
-    openBtn.onclick=()=>{ if(STATE==='selector') openChat() };
-    chatClose.onclick=()=>{ if(STATE==='chat') closeChat() };
+    chatClose = $('#closeChat'); chatBox = $('#chatContainer');
+    msgWrap = $('#chatMessages'); input=$('#userInput'); send=$('#sendBtn'); micBtn=$('#micBtn');
+
+    chatClose.onclick=closeChat;
     send.onclick=sendMsg;
     input.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); sendMsg(); }});
-    initMic();
+
+    initMicTypewriter();
 
     show(0,false);
   }
@@ -148,29 +147,27 @@
     current = (n+BOTS.length)%BOTS.length;
     const bot=BOTS[current];
     twTitle.textContent = `> ${bot.name}`;
-    scrambleTo(bot.lines);
-    if(animate) parallax(1);
+    scramble(bot.lines);
     if(STATE==='selector'){
+      chatBox.classList.add('hidden');
+      chatClose.classList.add('hidden');
       if(!placeholder){
         placeholder=document.createElement('div');
         placeholder.className='chat-placeholder';
         placeholder.innerHTML=`<div class="cp-wrap"><div class="cp-title">Select a bot to open the chat</div><div class="cp-sub">Press <b>Enter</b> when ready</div></div>`;
         split.querySelector('#chatPane').appendChild(placeholder);
       }
-      chatBox.classList.add('hidden');
-      chatClose.classList.add('hidden');
     }
   }
 
   function openChat(){
+    if(STATE!=='selector') return;
     STATE='chat';
     if(placeholder){ placeholder.remove(); placeholder=null; }
     chatBox.classList.remove('hidden');
     chatClose.classList.remove('hidden');
-    hudText.innerHTML='<b>Chat open.</b> Press <b>×</b> to go back.';
     addMsg('assistant', `Opening demo: ${BOTS[current].name}`);
     input.focus();
-    chatBox.animate([{transform:'translateY(10px)',opacity:.85},{transform:'translateY(0)',opacity:1}],{duration:420,easing:'cubic-bezier(.2,.7,.1,1)'});
   }
 
   function closeChat(){
@@ -183,7 +180,6 @@
     }
     chatBox.classList.add('hidden');
     chatClose.classList.add('hidden');
-    hudText.innerHTML='Use <b>← →</b> / <b>A D</b> to switch · <b>Enter</b> to open · <b>Esc</b> back';
   }
 
   function addMsg(role,text){
@@ -196,48 +192,63 @@
   function sendMsg(){
     const v=input.value.trim(); if(!v) return;
     addMsg('user', v); input.value='';
-    setTimeout(()=>addMsg('assistant','(Demo) Response from '+BOTS[current].name), 350);
+    setTimeout(()=>addMsg('assistant','(Demo) Response from '+BOTS[current].name), 320);
   }
 
-  function initMic(){
+  /* ----------------- Mic: green typewriter while recording ----------------- */
+  function initMicTypewriter(){
     if(!('webkitSpeechRecognition'in window || 'SpeechRecognition'in window)) return;
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const rec = new SR(); rec.lang='en-US'; rec.interimResults=false;
-    micBtn.addEventListener('click', ()=>{ micBtn.classList.add('listening'); rec.start(); }, {passive:true});
-    rec.onresult = e=>{ input.value=e.results[0][0].transcript; micBtn.classList.remove('listening'); sendMsg(); };
-    rec.onend    = ()=> micBtn.classList.remove('listening');
+    const rec = new SR(); rec.lang='en-US'; rec.interimResults=true; rec.continuous=false;
+
+    let typingTimer=null;
+    function typeIntoInput(text){
+      clearInterval(typingTimer);
+      const full=text; let i=0; input.classList.add('input-typing');
+      typingTimer=setInterval(()=>{
+        input.value = full.slice(0, ++i);
+        if(i>=full.length){ clearInterval(typingTimer); input.classList.remove('input-typing'); }
+      }, 18);
+    }
+
+    micBtn.addEventListener('click', ()=>{
+      input.value=''; input.classList.add('input-typing');
+      rec.start();
+    }, {passive:true});
+
+    rec.onresult = e=>{
+      let interim='', final='';
+      for(let i=e.resultIndex;i<e.results.length;i++){
+        const t = e.results[i][0].transcript;
+        if(e.results[i].isFinal) final += t; else interim += t;
+      }
+      typeIntoInput(final || interim);
+    };
+    rec.onend = ()=> input.classList.remove('input-typing');
   }
 
+  /* ----------------- State transitions ----------------- */
   function startSelector(){
     if(STATE!=='intro') return;
     STATE='selector';
-    if(starter()) starter().classList.add('hidden');
+    const s = $('#starter'); if(s) s.remove();
     buildSelector();
   }
-
-  function keyHandler(e){
+  document.addEventListener('keydown', e=>{
     if(e.key==='Enter'){
-      if(STATE==='intro'){ e.preventDefault(); startSelector(); return; }
-      if(STATE==='selector'){ e.preventDefault(); openChat(); return; }
+      if(STATE==='intro'){ e.preventDefault(); startSelector(); }
+      else if(STATE==='selector'){ e.preventDefault(); openChat(); }
     }else if(e.key==='Escape'){
-      if(STATE==='selector'){
-        STATE='intro';
-        if(split){ split.remove(); split=null; }
-        if(hud){ hud.remove(); hud=null; }
-        starter().classList.remove('hidden');
-      }
+      if(STATE==='selector'){ STATE='intro'; if(split){ split.remove(); split=null; } buildIntro(); }
+      else if(STATE==='chat'){ closeChat(); }
     }else if(STATE==='selector'){
       const k=e.key.toLowerCase();
       if(k==='arrowright'||k==='d') show(current+1);
-      if(k==='arrowleft' ||k==='a') show(current-1);
+      if(k==='arrowleft'||k==='a') show(current-1);
     }
-  }
+  });
 
-  function init(){
-    if(!starter()) return;
-    starter().addEventListener('click', startSelector, {passive:true});
-    document.addEventListener('keydown', keyHandler);
-    document.addEventListener('touchstart', ()=>{}, {passive:true}); // iOS
-  }
-  document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('DOMContentLoaded', ()=>{
+    buildIntro();
+  });
 })();
