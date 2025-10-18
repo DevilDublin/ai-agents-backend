@@ -25,20 +25,21 @@
   <canvas id="background"></canvas>
 
   <main class="demos-shell">
-    <!-- Rotating 3D diamond -->
-    <button id="starter" class="shape3d" aria-label="Start demos">
-      <span class="s3d-glow" aria-hidden="true"></span>
+    <!-- Intro: the ONLY thing visible at first -->
+    <button id="starter" class="shape3d crisp" aria-label="Start demos">
       <span class="s3d-core" aria-hidden="true"></span>
+      <span class="s3d-rim" aria-hidden="true"></span>
+      <span class="s3d-innershine" aria-hidden="true"></span>
       <span class="s3d-text">Click to begin</span>
     </button>
 
-    <!-- HUD -->
+    <!-- HUD hints (hidden until selector opens) -->
     <div id="demoHUD" class="demo-hud hidden">
       <span class="hud-dot"></span>
       <span id="hudText">Use <b>← →</b> / <b>A D</b> to switch · <b>Enter</b> to open · <b>Esc</b> back</span>
     </div>
 
-    <!-- Selector / Chat split -->
+    <!-- Selector + Chat (hidden until after intro) -->
     <section id="demoSplit" class="demo-split hidden">
       <aside class="typewriter neon-green" id="twPane" aria-live="polite">
         <div class="tw-header">
@@ -56,6 +57,7 @@
       <div class="chat-panel" id="chatPane">
         <button id="closeChat" class="chat-close hidden" aria-label="Close chat and return">×</button>
 
+        <!-- Real chat (starts hidden, appears when opened) -->
         <div id="chatContainer" class="chat-container chat-bright hidden">
           <div id="chatMessages" class="chat-messages"></div>
           <div class="chat-input">
@@ -65,6 +67,7 @@
           </div>
         </div>
 
+        <!-- Placeholder (removed when chat opens; no blur left behind) -->
         <div id="chatPlaceholder" class="chat-placeholder">
           <div class="cp-wrap">
             <div class="cp-title">Select a bot to open the chat</div>
