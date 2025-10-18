@@ -1,13 +1,12 @@
-(function(){
-function initTheme(){
-const sel=document.querySelector('#themeSelect');
-if(!sel) return;
-sel.addEventListener('change',()=>{
-document.documentElement.setAttribute('data-theme', sel.value);
-localStorage.setItem('zy_theme', sel.value);
+// site.js — main initializer
+import { initBackground } from './bg.js';
+import { initTheme } from './config.js';
+import { initDemos } from './demos.js';
+import { initVoice } from './voice.js';
+
+window.addEventListener('DOMContentLoaded', () => {
+  initBackground();
+  initTheme();
+  initDemos();
+  initVoice();
 });
-const saved=localStorage.getItem('zy_theme');
-if(saved){ document.documentElement.setAttribute('data-theme', saved); sel.value=saved; }
-}
-document.addEventListener('DOMContentLoaded', initTheme);
-})();
