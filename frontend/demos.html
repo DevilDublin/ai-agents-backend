@@ -25,5 +25,14 @@
   <script src="./js/bg.js"></script>
   <script src="./js/demos.js"></script>
   <script src="./js/site.js"></script>
+  <!-- Background + site chrome (already on all pages) -->
+<script src="js/bg.js" defer></script>
+<script src="js/site.js" defer></script>
+
+<!-- Demos logic MUST be a module and loaded last -->
+<script type="module" src="js/demos.js"></script>
+</body>
+</html>
+
 </body>
 </html>
