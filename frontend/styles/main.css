@@ -1,143 +1,209 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800;900&display=swap');
 
+/* ---------- Design tokens (overwritten by JS theme) ---------- */
 :root{
-  /* your dual-neon palette (used for glow only) */
-  --accentA: hsl(265,100%,68%);
-  --accentB: hsl(325,100%,70%);
-  --glowA: hsla(265,100%,68%,.45);
-  --glowB: hsla(325,100%,70%,.45);
+  --bg:#000;
+  --text:#fff;
+  --muted: rgba(255,255,255,.75);
+
+  /* accent pair (dual-neon) – changed by site.js */
+  --accentA: #a06bff; /* purple default */
+  --accentB: #ff76b3;
+
+  --glowA: rgba(160,107,255,.45);
+  --glowB: rgba(255,118,179,.45);
+
+  --card-bg: rgba(0,0,0,.45);
+  --card-bd: rgba(255,255,255,.12);
+  --soft-bd: rgba(255,255,255,.08);
 }
 
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
-  margin:0;
-  background:#000;
-  color:#fff;                 /* ← default text is bright white */
-  font-family:Poppins,system-ui,Segoe UI,Roboto,sans-serif;
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Poppins,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
   overflow-x:hidden;
 }
-a{color:#fff;text-decoration:none}          /* links are white too */
-canvas#background{position:fixed;inset:0;z-index:-1}
 
+a{color:var(--text);text-decoration:none}
+
+/* ---------- Background canvas (your circuit grid) ---------- */
+#background{position:fixed;inset:0;z-index:-1}
+
+/* ---------- Layout ---------- */
 .layout{min-height:100dvh;display:flex;flex-direction:column}
 main{flex:1}
-.footer{margin-top:auto;text-align:center;padding:18px;color:#eef0f7}
+.footer{margin-top:auto;text-align:center;color:#eef0f7;padding:18px}
 
-/* NAV (unchanged look; improves legibility) */
-.nav{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:14px 22px;background:rgba(0,0,0,.35);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)}
+/* ---------- Top nav ---------- */
+.nav{
+  position:sticky;top:0;z-index:20;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 22px;background:rgba(0,0,0,.35);
+  border-bottom:1px solid var(--soft-bd);backdrop-filter:blur(14px)
+}
 .brand{display:flex;align-items:center;gap:10px}
-.brand-glyph{display:grid;place-items:center;width:28px;height:28px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.45);backdrop-filter:blur(8px);box-shadow:0 0 12px var(--glowA),0 0 16px var(--glowB);font-weight:900}
-.brand-text{font-weight:800;letter-spacing:.2px}
+.brand-glyph{display:grid;place-items:center;width:28px;height:28px;border-radius:10px;
+  border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.45);
+  box-shadow:0 0 10px var(--glowA),0 0 14px var(--glowB);font-weight:900}
+.brand-text{font-weight:900;letter-spacing:.2px}
 .nav-links{display:flex;align-items:center;gap:16px}
-.nav a{opacity:.92}
-.nav a.active,.nav a:hover{opacity:1;background:linear-gradient(90deg,var(--accentA),var(--accentB));-webkit-background-clip:text;background-clip:text;color:transparent}
+.nav a{
+  padding:6px 8px;border-radius:10px;opacity:.9;font-weight:700;letter-spacing:.2px
+}
+.nav a:hover,.nav a.active{
+  opacity:1;background:linear-gradient(90deg,var(--accentA),var(--accentB));
+  -webkit-background-clip:text;background-clip:text;color:transparent
+}
+
+/* Theme label now matches nav font */
 .theme-wrap{display:flex;align-items:center;gap:8px}
-.theme-label{font-size:.85rem;opacity:.92}
-.color-toggle{width:42px;height:24px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(135deg,var(--accentA),var(--accentB));cursor:pointer;box-shadow:inset 0 0 0 2px rgba(255,255,255,.06),0 0 16px var(--glowA),0 0 22px var(--glowB)}
+.theme-label{font-weight:700;letter-spacing:.2px;opacity:.9}
+.color-toggle{
+  width:42px;height:24px;border-radius:999px;cursor:pointer;
+  border:1px solid rgba(255,255,255,.14);
+  background:linear-gradient(135deg,var(--accentA),var(--accentB));
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.06),0 0 16px var(--glowA),0 0 22px var(--glowB)
+}
 
-/* DEMOS – intro shape (single cohesive object) */
+/* ---------- Home (locked layout – purple default) ---------- */
+.hero{display:grid;place-items:center;text-align:center;padding:80px 20px 40px}
+.hero h1{font-size:clamp(34px,4.5vw,60px);margin:0 0 10px}
+.hero p{margin:0 0 22px;color:var(--muted)}
+.cta{
+  display:inline-block;padding:12px 22px;border-radius:14px;font-weight:800;
+  background:linear-gradient(135deg,var(--accentA),var(--accentB));
+  box-shadow:0 0 18px var(--glowA),0 0 22px var(--glowB);
+  border:1px solid rgba(255,255,255,.12)
+}
+.stat-row{display:flex;gap:14px;justify-content:center;margin:18px 0 42px}
+.stat{
+  padding:10px 14px;border-radius:12px;background:rgba(0,0,0,.35);
+  border:1px solid var(--card-bd)
+}
+.features{
+  width:min(1100px,92%);margin:0 auto 60px;display:grid;gap:18px;
+  grid-template-columns:repeat(3,1fr)
+}
+.card{
+  padding:18px;border-radius:18px;background:var(--card-bg);border:1px solid var(--card-bd)
+}
+.card h3{margin:0 0 8px}
+
+/* ---------- Contact (locked layout – purple default, even glow) ---------- */
+.contact-grid{
+  width:min(1100px,92%);margin:40px auto;display:grid;gap:18px;
+  grid-template-columns:1.05fr .95fr;align-items:start
+}
+.panel{
+  background:var(--card-bg);border:1px solid var(--card-bd);border-radius:18px;padding:18px;
+  box-shadow:0 0 16px var(--glowA),0 0 18px var(--glowB)
+}
+.badges{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 16px}
+.badge{padding:6px 10px;border:1px solid var(--card-bd);border-radius:999px;background:rgba(0,0,0,.35)}
+.line{padding:12px 14px;border-radius:12px;border:1px solid var(--card-bd);background:rgba(0,0,0,.25);margin:10px 0}
+.form{background:var(--card-bg);border:1px solid var(--card-bd);border-radius:18px;padding:16px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.input, .textarea{
+  width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--soft-bd);
+  background:rgba(0,0,0,.25);color:var(--text);outline:none
+}
+.textarea{min-height:140px;resize:vertical}
+.send{
+  margin-top:10px;padding:10px 14px;border-radius:12px;border:1px solid var(--card-bd);
+  background:linear-gradient(135deg,var(--accentA),var(--accentB));
+  box-shadow:0 0 14px var(--glowA),0 0 18px var(--glowB);font-weight:700
+}
+.assure{
+  width:min(1100px,92%);margin:18px auto 0;display:grid;gap:16px;grid-template-columns:repeat(3,1fr)
+}
+.assure-item{
+  background:var(--card-bg);border:1px solid var(--card-bd);border-radius:14px;padding:16px;
+  box-shadow:0 0 12px var(--glowA),0 0 16px var(--glowB)
+}
+
+/* ---------- DEMOS ---------- */
 .demos-shell{min-height:calc(100vh - 70px);display:grid;place-items:center;padding:42px 20px}
-.shape3d{
-  position:relative;display:grid;place-items:center;
-  width:280px;height:280px;border:none;background:transparent;cursor:pointer;
-  perspective:900px;isolation:isolate;touch-action:manipulation;filter:saturate(1.1);
-}
-.shape3d .s3d-text{
-  position:relative;z-index:3;font-weight:900;letter-spacing:.2px;
-  color:#fff;text-shadow:0 0 10px rgba(255,255,255,.25);
-}
 
-/* core plate (rounded diamond) */
-.shape3d .s3d-core{
-  position:absolute;inset:0;border-radius:34px;transform:rotate(45deg);
+/* Intro shape – single cohesive object; colour sits inside */
+.shape3d{
+  position:relative;display:grid;place-items:center;width:300px;height:300px;cursor:pointer;
+  perspective:900px;isolation:isolate;filter:saturate(1.1)
+}
+.shape3d .core{
+  position:absolute;inset:0;border-radius:32px;transform:rotate(45deg);
   background:radial-gradient(120% 120% at 50% 50%, rgba(255,255,255,.06) 0%, rgba(255,255,255,.02) 55%, rgba(0,0,0,0) 100%);
-  border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(6px);z-index:1;
+  border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(6px);
 }
-/* internal colour lives INSIDE the core (no offset) */
-.shape3d .s3d-core::before{
-  content:"";position:absolute;inset:8%;border-radius:28px;
+.shape3d .core::before{ /* internal colour */
+  content:"";position:absolute;inset:10%;border-radius:26px;z-index:-1;
   background:conic-gradient(from 45deg at 50% 50%, var(--accentA), var(--accentB), var(--accentA));
-  filter:blur(18px) saturate(1.2);opacity:.75;z-index:-1;
+  filter:blur(18px) saturate(1.15);opacity:.8;
 }
-/* inner rotating wire-shine sits inside the plate */
-.shape3d .s3d-core::after{
-  content:"";position:absolute;inset:18px;border-radius:22px;
-  background:linear-gradient(135deg,hsla(0,0%,100%,.12),hsla(0,0%,100%,.02));
-  border:1px solid rgba(255,255,255,.1);
+.shape3d .halo{position:absolute;inset:0;border-radius:32px;box-shadow:0 0 28px var(--glowA),0 0 36px var(--glowB)}
+.shape3d .shine{
+  position:absolute;inset:18px;border-radius:22px;
+  background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.08);
   transform:rotateX(58deg);
-  animation:spin 10s linear infinite;
+  animation:spin 12s linear infinite;
 }
-/* outer glow hugs the edge perfectly */
-.shape3d .s3d-rim{
-  position:absolute;inset:0;border-radius:34px;
-  box-shadow:0 0 28px var(--glowA), 0 0 36px var(--glowB);z-index:0;
-}
-/* subtle inner halo */
-.shape3d .s3d-innershine{
-  position:absolute;inset:6px;border-radius:30px;
-  box-shadow:inset 0 0 30px rgba(255,255,255,.08);
-}
+.shape3d .label{position:relative;z-index:3;font-weight:900;letter-spacing:.2px}
 @keyframes spin{from{transform:rotateX(58deg) rotateZ(0)}to{transform:rotateX(58deg) rotateZ(360deg)}}
 
-/* Selector + Chat (all white text) */
-.hidden{display:none !important}
-.demo-hud{
-  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
-  padding:8px 12px;border-radius:999px;background:rgba(0,0,0,.55);
-  border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(10px);
-  box-shadow:0 0 16px var(--glowA);z-index:6;display:flex;align-items:center;gap:8px;
-  color:#fff;                                      /* ← white */
+/* Selector + chat layout */
+.demo-split{width:min(1200px,96%);display:grid;grid-template-columns:1.05fr .95fr;gap:18px}
+.typewriter{
+  background:var(--card-bg);border:1px solid var(--card-bd);border-radius:16px;padding:18px;
+  display:flex;flex-direction:column
 }
-.demo-hud b{background:rgba(255,255,255,.1);padding:2px 6px;border-radius:6px;color:#fff}
-.hud-dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(90deg,var(--accentA),var(--accentB));box-shadow:0 0 10px var(--glowA),0 0 14px var(--glowB)}
-
-.demo-split{width:min(1200px,96%);display:grid;grid-template-columns:1.05fr .95fr;gap:18px;align-items:stretch}
-.typewriter{background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:18px;backdrop-filter:blur(10px);display:flex;flex-direction:column;color:#fff}
-.tw-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;color:#fff}
-.tw-led{width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 10px #fff}
-.tw-title{font-family:ui-monospace,Menlo,Consolas,monospace;letter-spacing:.5px;color:#fff}
+.tw-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.tw-led{width:8px;height:8px;border-radius:50%;background:linear-gradient(90deg,var(--accentA),var(--accentB));box-shadow:0 0 10px var(--glowA),0 0 12px var(--glowB)}
+.tw-title{font-family:ui-monospace,Menlo,Consolas,monospace;letter-spacing:.5px}
 .tw-body{
-  flex:1;overflow:auto;margin:0;padding:14px;border-radius:12px;
-  background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.1);
-  font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.98rem;line-height:1.6;
-  color:#fff;                                     /* ← white typing */
-  text-shadow:0 0 8px rgba(255,255,255,.16);
+  flex:1;overflow:auto;margin:0;padding:14px;border-radius:12px;background:rgba(0,0,0,.55);
+  border:1px solid var(--soft-bd);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.98rem;line-height:1.6;
+  color:#b8ffbf;text-shadow:0 0 6px rgba(30,255,90,.45) /* ← green typing */
 }
 .tw-controls{display:flex;gap:10px;margin-top:12px}
-.pill-btn,.pill-link{padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.35);cursor:pointer;color:#fff}
-.pill-btn:hover,.pill-link:hover{box-shadow:0 0 14px var(--glowA),0 0 16px var(--glowB)}
+.pill{padding:8px 12px;border-radius:999px;border:1px solid var(--card-bd);background:rgba(0,0,0,.35);cursor:pointer}
+.pill:hover{box-shadow:0 0 14px var(--glowA),0 0 16px var(--glowB)}
 
-.chat-panel{position:relative;color:#fff}
-.chat-close{position:absolute;right:8px;top:-8px;transform:translateY(-100%);border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.55);backdrop-filter:blur(8px);border-radius:50%;width:32px;height:32px;display:grid;place-items:center;cursor:pointer;box-shadow:0 0 14px var(--glowA),0 0 18px var(--glowB);color:#fff}
-.chat-container{position:relative;width:100%;box-shadow:0 0 16px var(--glowA),0 0 20px var(--glowB);background:rgba(15,15,18,.92);border:1px solid rgba(255,255,255,.16);border-radius:16px;color:#fff}
-.chat-messages{max-height:52vh;overflow:auto;padding:12px;color:#fff}
-.chat-input{display:flex;border-top:1px solid rgba(255,255,255,.12)}
-.chat-input .mic,.chat-input .send,.chat-input input{background:transparent;color:#fff;border:none;padding:10px 12px}
-.chat-input input{flex:1;outline:none}
-.mic.listening{filter:drop-shadow(0 0 10px var(--glowA))}
-
+.chat-panel{position:relative}
 .chat-placeholder{
-  position:absolute;inset:0;display:grid;place-items:center;color:#fff;  /* ← white */
-  opacity:.98;border:1px dashed rgba(255,255,255,.24);border-radius:16px;background:rgba(0,0,0,.28);backdrop-filter:blur(6px)
+  position:absolute;inset:0;display:grid;place-items:center;opacity:.96;
+  border:1px dashed rgba(255,255,255,.24);border-radius:16px;background:rgba(0,0,0,.28);backdrop-filter:blur(6px)
 }
 .cp-wrap{text-align:center}
 .cp-title{font-weight:800}
 .cp-sub{opacity:.95;margin-top:4px}
 
-/* bubbles keep white text inside */
-.msg{display:flex;margin:8px 10px;color:#fff}
+.chat-close{position:absolute;right:8px;top:-10px;transform:translateY(-100%);border:1px solid var(--card-bd);background:rgba(0,0,0,.55);backdrop-filter:blur(8px);border-radius:50%;width:32px;height:32px;display:grid;place-items:center;cursor:pointer;box-shadow:0 0 14px var(--glowA),0 0 18px var(--glowB)}
+.chat-container{position:relative;width:100%;box-shadow:0 0 16px var(--glowA),0 0 20px var(--glowB);background:rgba(15,15,18,.95);border:1px solid var(--card-bd);border-radius:16px}
+.chat-messages{max-height:52vh;overflow:auto;padding:12px}
+.chat-input{display:flex;border-top:1px solid var(--soft-bd)}
+.chat-input .mic,.chat-input .send,.chat-input input{background:transparent;color:var(--text);border:none;padding:10px 12px}
+.chat-input input{flex:1;outline:none}
+
+/* mic typing effect */
+.input-typing{position:relative}
+.input-typing::after{
+  content:"";position:absolute;height:2px;left:12px;right:12px;bottom:8px;
+  background:linear-gradient(90deg,#00ff95,#b2ffb9,#00ff95);
+  box-shadow:0 0 10px #00ff95;animation:bar 1.2s ease-in-out infinite
+}
+@keyframes bar{0%,100%{transform:scaleX(.2)}50%{transform:scaleX(1)}}
+
+.msg{display:flex;margin:8px 10px}
 .msg .bubble{padding:10px 12px;border-radius:12px;max-width:82%}
-.msg.user .bubble{background:#1e1f24;border:1px solid rgba(255,255,255,.2);color:#fff}
-.msg.assistant .bubble{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);color:#fff}
+.msg.user .bubble{background:#1e1f24;border:1px solid rgba(255,255,255,.2)}
+.msg.assistant .bubble{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22)}
 
-/* CONTACT – consistent glow */
-.badge.strong{box-shadow:0 0 12px var(--glowA),0 0 14px var(--glowB)}
-.chip.strong{box-shadow:0 0 16px var(--glowA),0 0 18px var(--glowB)}
-.assure-item.neon{box-shadow:0 0 16px var(--glowA),0 0 18px var(--glowB)}
-.assure-item{background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:16px;color:#fff}
+.hidden{display:none!important}
 
-/* Responsive */
+/* ---------- Responsive ---------- */
 @media (max-width:1024px){ .chat-messages{max-height:48vh} }
 @media (max-width:900px){ .demo-split{grid-template-columns:1fr} .chat-close{top:8px;transform:none} }
 @media (max-width:420px){ .shape3d{width:240px;height:240px} }
