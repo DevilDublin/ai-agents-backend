@@ -26,7 +26,8 @@
 
   <main class="contact section">
     <div class="contact-grid contact-centered">
-      <aside class="contact-card neon round-glow soft elevate">
+      <!-- Left info card -->
+      <aside class="contact-card neon soft elevate round-glow balanced">
         <h2 class="center">Let’s Talk</h2>
         <p class="center subtle">Tell us about your use-case. We’ll reply within 1 business day.</p>
 
@@ -48,7 +49,8 @@
         </div>
       </aside>
 
-      <form class="contact-form card soft elevate" onsubmit="event.preventDefault(); alert('Thanks — we’ll be in touch!');">
+      <!-- Right form (same glow recipe for unity) -->
+      <form class="contact-form card soft elevate round-glow neon" onsubmit="event.preventDefault(); alert('Thanks — we’ll be in touch!');">
         <div class="grid-2 roomy">
           <input type="text" placeholder="Full Name" required />
           <input type="email" placeholder="Work Email" required />
@@ -58,7 +60,9 @@
           <input type="text" placeholder="Website (optional)" />
         </div>
         <textarea rows="6" placeholder="What would you like to build?"></textarea>
-        <button type="submit" class="btn">Send</button>
+        <div class="form-actions">
+          <button type="submit" class="btn">Send</button>
+        </div>
       </form>
     </div>
 
