@@ -1,93 +1,73 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Zypher — Contact</title>
-  <link rel="stylesheet" href="./styles/main.css" />
+  <link rel="stylesheet" href="styles/main.css"/>
 </head>
-<body class="layout">
-  <nav class="nav">
-    <a href="./index.html" class="brand">
-      <span class="brand-glyph">Ƶ</span><span class="brand-text">Zypher</span>
-    </a>
-    <div class="nav-links">
-      <a href="./index.html">Home</a>
-      <a href="./demos.html">Demos</a>
-      <a class="active" href="./contact.html">Contact</a>
-      <div class="theme-wrap">
-        <span class="theme-label">Theme</span>
-        <button id="colorToggle" class="color-toggle" title="Click to switch neon palette"></button>
+<body>
+<div class="bg-wrap"><canvas id="net-canvas"></canvas></div>
+
+<div class="wrapper">
+  <header class="header">
+    <nav class="nav">
+      <div class="brand"><div class="brand-badge">Z</div><span>Zypher</span></div>
+      <div class="menu">
+        <a href="index.html">Home</a>
+        <a href="demos.html">Demos</a>
+        <a class="active" href="contact.html">Contact</a>
+        <div class="theme-pill"><span>Theme</span><div class="theme-swatch" title="Click to change"></div></div>
       </div>
-    </div>
-  </nav>
+    </nav>
+  </header>
 
-  <canvas id="background"></canvas>
+  <main class="main">
+    <section class="section">
+      <div class="contact-grid">
+        <div class="contact-card">
+          <h2 style="margin:0 0 8px">Let’s Talk</h2>
+          <p>Tell us about your use-case. We’ll reply within 1 business day.</p>
 
-  <main class="contact section">
-    <div class="contact-grid contact-centered">
-      <!-- Left info card -->
-      <aside class="contact-card neon soft elevate round-glow balanced">
-        <h2 class="center">Let’s Talk</h2>
-        <p class="center subtle">Tell us about your use-case. We’ll reply within 1 business day.</p>
-
-        <div class="badge-row center-row">
-          <span class="badge">UK/EU ready</span>
-          <span class="badge">Privacy-first</span>
-          <span class="badge">Fast deploys</span>
-        </div>
-
-        <div class="info">
-          <div class="chip strong">
-            <span class="chip-label">Email</span>
-            <span class="chip-value">zypheragent25@gmail.com</span>
+          <div class="badges">
+            <span class="badge">UK/EU ready</span>
+            <span class="badge">Privacy-first</span>
+            <span class="badge">Fast deploys</span>
           </div>
-          <div class="chip">
-            <span class="chip-label">Typical reply</span>
-            <span class="chip-value">under 24 hours</span>
+
+          <div class="kv">
+            <div class="row"><strong style="opacity:.9">Email</strong>&nbsp;&nbsp;zypheragent25@gmail.com</div>
+            <div class="row"><strong style="opacity:.9">Typical reply</strong>&nbsp;&nbsp;under 24 hours</div>
           </div>
         </div>
-      </aside>
 
-      <!-- Right form (same glow recipe for unity) -->
-      <form class="contact-form card soft elevate round-glow neon" onsubmit="event.preventDefault(); alert('Thanks — we’ll be in touch!');">
-        <div class="grid-2 roomy">
-          <input type="text" placeholder="Full Name" required />
-          <input type="email" placeholder="Work Email" required />
-        </div>
-        <div class="grid-2 roomy">
-          <input type="text" placeholder="Company" />
-          <input type="text" placeholder="Website (optional)" />
-        </div>
-        <textarea rows="6" placeholder="What would you like to build?"></textarea>
-        <div class="form-actions">
-          <button type="submit" class="btn">Send</button>
-        </div>
-      </form>
-    </div>
+        <form class="form" onsubmit="event.preventDefault(); alert('Thanks — we will be in touch!');">
+          <div class="row">
+            <input placeholder="Full Name" required/>
+            <input placeholder="Work Email" type="email" required/>
+          </div>
+          <div class="row">
+            <input placeholder="Company"/>
+            <input placeholder="Website (optional)"/>
+          </div>
+          <textarea placeholder="What would you like to build?"></textarea>
+          <button class="btn send" type="submit">Send</button>
+        </form>
+      </div>
 
-    <section class="assure assure-push">
-      <div class="assure-grid">
-        <div class="assure-item">
-          <div class="assure-title">Security</div>
-          <div class="assure-text">Data encrypted in transit · Signed webhooks · Access scoped.</div>
-        </div>
-        <div class="assure-item">
-          <div class="assure-title">SLA</div>
-          <div class="assure-text">99.9% target uptime · Priority support for launches.</div>
-        </div>
-        <div class="assure-item">
-          <div class="assure-title">Integration</div>
-          <div class="assure-text">Calendars, CRMs, email, payments — we connect to your stack.</div>
-        </div>
+      <div class="grid" style="margin-top:26px">
+        <div class="card"><h3>Security</h3><p>Data encrypted in transit · Signed webhooks · Access scoped.</p></div>
+        <div class="card"><h3>SLA</h3><p>99.9% target uptime · Priority support for launches.</p></div>
+        <div class="card"><h3>Integration</h3><p>Calendars, CRMs, email, payments — we connect to your stack.</p></div>
       </div>
     </section>
   </main>
 
-  <footer class="footer">© 2025 Zypher — Built for speed · Privacy-first · UK/EU ready</footer>
+  <footer class="footer"><div class="section">
+    © 2025 Zypher — Built for speed · Privacy-first · UK/EU ready
+  </div></footer>
+</div>
 
-  <script src="./js/config.js"></script>
-  <script src="./js/bg.js"></script>
-  <script src="./js/site.js"></script>
+<script src="js/site.js"></script>
 </body>
 </html>
