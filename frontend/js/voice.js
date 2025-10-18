@@ -1,48 +1,31 @@
-/* voice.js — Zypher
- * Minimal mic wiring + callbacks for the demos screen.
- * If you already connect to an STT backend, call the provided hooks.
- */
+// keep existing imports/engine…
 
-window.ZYPHER_VOICE = (() => {
-  let handlers = { onStart: null, onFinal: null };
+let _onInterimCb = null;
+let _onFinalCb   = null;
 
-  const attach = (h) => {
-    handlers = { ...handlers, ...h };
-  };
+export function onInterimTranscript(text, cb) {
+  _onInterimCb = cb;
+  if (cb) cb(text);
+}
+export function onFinalTranscript(text, cb) {
+  _onFinalCb = cb;
+  if (cb) cb(text);
+}
 
-  // Call these from your real recorder when you start/stop
-  const _emitStart = () => handlers.onStart && handlers.onStart();
-  const _emitFinal = (text) => handlers.onFinal && handlers.onFinal(text);
-
-  // Demo-only mic (no real STT). Replace with your actual implementation.
-  let demoListening = false;
-  const demoStart = () => {
-    if (demoListening) return;
-    demoListening = true;
-    _emitStart();
-    // Fake a recognized utterance
-    setTimeout(() => {
-      if (!demoListening) return;
-      const sample = [
-        'get me a quick quote',
-        'book me Friday 3pm',
-        'i want to view a 2-bed',
-        'connect me to an agent'
-      ];
-      const text = sample[Math.floor(Math.random() * sample.length)];
-      _emitFinal(text);
-      demoListening = false;
-    }, 1400);
-  };
-
-  const demoStop = () => { demoListening = false; };
-
-  return {
-    attach,
-    // If you have a real mic pipeline, wire to these:
-    _emitStart, _emitFinal,
-    // Fallback demo triggers used by demos.js mic button:
-    demoStart, demoStop
-  };
-})();
-
+/* Example wire-up inside your recognition handlers:
+recognition.onresult = (e) => {
+  let interim = '';
+  for (let i = e.resultIndex; i < e.results.length; i++) {
+    const res = e.results[i];
+    if (res.isFinal) {
+      const txt = res[0].transcript.trim();
+      _onFinalCb && _onFinalCb(txt);
+      // … your existing send(txt)
+    } else {
+      interim += res[0].transcript;
+    }
+  }
+  if (interim) _onInterimCb && _onInterimCb(interim);
+};
+recognition.onend = () => { _onInterimCb && _onInterimCb(''); };
+*/
