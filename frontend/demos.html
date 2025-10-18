@@ -8,37 +8,22 @@
 </head>
 <body class="layout">
   <nav class="nav">
-    <a href="./index.html" class="brand">
-      <span class="brand-glyph">Ƶ</span><span class="brand-text">Zypher</span>
-    </a>
+    <a href="./index.html" class="brand"><span class="brand-glyph">Ƶ</span><span class="brand-text">Zypher</span></a>
     <div class="nav-links">
       <a href="./index.html">Home</a>
       <a class="active" href="./demos.html">Demos</a>
       <a href="./contact.html">Contact</a>
-      <div class="theme-wrap">
-        <span class="theme-label">Theme</span>
-        <button id="colorToggle" class="color-toggle" title="Click to switch neon palette"></button>
-      </div>
+      <div class="theme-wrap"><span class="theme-label">Theme</span><button id="colorToggle" class="color-toggle"></button></div>
     </div>
   </nav>
 
   <canvas id="background"></canvas>
-
-  <main class="demos-shell">
-    <button id="starter" class="shape3d crisp" aria-label="Start demos">
-      <span class="s3d-core"></span>
-      <span class="s3d-rim"></span>
-      <span class="s3d-innershine"></span>
-      <span class="s3d-text">Click me!</span>
-    </button>
-  </main>
-
+  <main class="demos-shell"><!-- intro shape is injected here --></main>
   <footer class="footer">© 2025 Zypher — Built for speed · Privacy-first · UK/EU ready</footer>
 
   <script src="./js/config.js"></script>
   <script src="./js/bg.js"></script>
   <script src="./js/demos.js"></script>
-  <script src="./js/voice.js"></script>
   <script src="./js/site.js"></script>
 </body>
 </html>
