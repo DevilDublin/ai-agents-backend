@@ -2,44 +2,75 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Zypher — Demos</title>
-  <link rel="stylesheet" href="./styles/main.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css" />
 </head>
-<body class="layout">
-  <nav class="nav">
-    <a href="./index.html" class="brand">
-      <span class="brand-glyph">Ƶ</span><span class="brand-text">Zypher</span>
-    </a>
-    <div class="nav-links">
-      <a href="./index.html">Home</a>
-      <a class="active" href="./demos.html">Demos</a>
-      <a href="./contact.html">Contact</a>
-      <div class="theme-wrap">
-        <span class="theme-label">Theme</span>
-        <button id="colorToggle" class="color-toggle" title="Click to switch neon palette"></button>
-      </div>
+<body class="has-grid">
+  <header class="nav">
+    <div class="logo-badge">
+      <span class="badge-dot"></span><span class="badge-z">Z</span><span class="brand">ypher</span>
     </div>
-  </nav>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a class="active" href="demos.html">Demos</a>
+      <a href="contact.html">Contact</a>
+      <button class="theme-pill" id="theme-pill" aria-label="Change theme"></button>
+      <button class="theme-label" id="theme-label" aria-label="Change theme">Theme</button>
+    </nav>
+  </header>
 
-  <canvas id="background"></canvas>
+  <!-- Intro shape (page 1) -->
+  <section id="demo-hero" class="demo-hero" aria-label="Open demo selector">
+    <div class="zy-shape" id="zy-shape">
+      <div class="shape-core"></div>
+      <div class="shape-label">Click me!</div>
+    </div>
+  </section>
 
-  <main class="demos-shell">
-    <!-- Only this button is rendered initially -->
-    <button id="starter" class="shape3d crisp" aria-label="Start demos">
-      <span class="s3d-core" aria-hidden="true"></span>
-      <span class="s3d-rim"  aria-hidden="true"></span>
-      <span class="s3d-innershine" aria-hidden="true"></span>
-      <span class="s3d-text">Click to begin</span>
-    </button>
+  <!-- Selector + chat (page 2) -->
+  <main id="demo-stage" class="demo-stage hidden">
+    <section class="crt-card">
+      <div class="crt-head"><span class="dot"></span><strong id="botTitle">› Bot</strong></div>
+      <pre id="botCrt" class="crt-body"></pre>
+      <div class="crt-actions">
+        <button class="pill" id="prevBot">Prev</button>
+        <button class="pill" id="nextBot">Next</button>
+        <button class="pill primary" id="openPreview">Open (Enter)</button>
+      </div>
+    </section>
+
+    <section id="chatPanel" class="chat-panel">
+      <div class="chat-placeholder dashed" id="chatPlaceholder">
+        <p><strong>Select a bot to open the chat</strong></p>
+        <small>Press <b>Enter</b> when ready</small>
+      </div>
+
+      <div class="chatbox glass hidden" id="chatBox">
+        <button class="x" id="closeChat" aria-label="Close">×</button>
+        <div class="chat-log" id="chatLog"></div>
+        <div class="chat-input">
+          <button class="mic" id="micBtn" aria-label="Speak">🎤</button>
+          <input id="chatInput" placeholder="Type a message or press the mic..." />
+          <button class="send" id="sendBtn">›</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="zy-controls" id="controls">
+      Use ← → or <b>A / D</b> to switch · <b>Enter</b> to preview, then again to open chat · <b>Esc</b> back
+    </div>
   </main>
 
-  <footer class="footer">© 2025 Zypher — Built for speed · Privacy-first · UK/EU ready</footer>
+  <footer class="site-footer">© 2025 Zypher — Built for speed · Privacy-first · UK/EU ready</footer>
 
-  <script src="./js/config.js"></script>
-  <script src="./js/bg.js"></script>
-  <script src="./js/demos.js"></script>
-  <script src="./js/voice.js"></script>
-  <script src="./js/site.js"></script>
+  <canvas id="net" class="net-canvas" aria-hidden="true"></canvas>
+  <script src="js/config.js"></script>
+  <script src="js/site.js" defer></script>
+  <script src="js/chat.js" defer></script>
+  <script src="js/demos.js" type="module"></script>
 </body>
 </html>
