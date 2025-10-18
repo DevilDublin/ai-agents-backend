@@ -323,3 +323,170 @@ main{flex:1}
   .z-selector{ grid-template-columns: 1fr; }
   .z-chat-stream{ max-height: 38vh; }
 }
+
+/* ===== Demos: floating hero shape ===== */
+.demo-hero {
+  position: fixed;          /* sits above layout so it can't push the footer */
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 40;
+  pointer-events: auto;
+}
+
+.zy-shape {
+  position: relative;
+  width: clamp(220px, 28vmin, 420px);
+  aspect-ratio: 1/1;
+  border-radius: 28px;
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  border: 1px solid rgba(255,255,255,0.08);
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.05) inset,
+    0 30px 80px rgba(var(--accent-rgb, 120,255,180), 0.20),
+    0 0 120px rgba(var(--accent-rgb, 120,255,180), 0.25);
+  animation: zyFloat 6s ease-in-out infinite;
+  cursor: pointer;
+  isolation: isolate;
+}
+
+/* smooth rotating inner gradient is clipped INSIDE the shape */
+.zy-shape::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(55% 55% at 50% 45%,
+      var(--t1, #73ff9e) 0%,
+      var(--t2, #7ac8ff) 35%,
+      var(--t3, #ff79f9) 70%,
+      transparent 100%);
+  filter: blur(18px);
+  transform: rotate(0deg) scale(1.05);
+  animation: zySpin 14s linear infinite;
+  z-index: -1; /* stays under the content but INSIDE the clip */
+}
+
+/* a soft outer glow ring */
+.zy-shape::after {
+  content: "";
+  position: absolute;
+  inset: -24px;
+  border-radius: 40px;
+  background: radial-gradient(60% 60% at 50% 50%,
+      rgba(var(--accent-rgb, 120,255,180), 0.35),
+      rgba(0,0,0,0) 70%);
+  z-index: -2;
+  filter: blur(16px);
+  animation: zyPulse 3.2s ease-in-out infinite;
+}
+
+.zy-shape .shape-label {
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  font-size: clamp(14px, 2.2vmin, 18px);
+  letter-spacing: 0.3px;
+  user-select: none;
+}
+
+@keyframes zySpin {
+  0%   { transform: rotate(0deg)   scale(1.05); }
+  100% { transform: rotate(360deg) scale(1.05); }
+}
+@keyframes zyPulse {
+  0%,100% { opacity: .75; }
+  50%     { opacity: 1; }
+}
+@keyframes zyFloat {
+  0%,100% { transform: translateY(0px); }
+  50%     { transform: translateY(-10px); }
+}
+
+/* Fade-out when we transition into the selector */
+.demo-hero.is-exiting { animation: fadeOut .3s ease forwards; }
+@keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+
+/* ===== Demos: selector stage and chrome ===== */
+.demo-stage {
+  position: relative;
+  z-index: 20;
+  min-height: 60vh;
+  display: none; /* becomes flex when hero ends */
+}
+.demo-stage.show { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+
+/* tips / controls bar */
+.zy-controls {
+  position: fixed;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.08);
+  z-index: 30;
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: .2px;
+}
+.zy-controls kbd {
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-bottom-color: rgba(0,0,0,0.5);
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+/* ===== Chat: STT typewriter overlay ===== */
+.stt-preview {
+  position: absolute;
+  left: 18px;
+  right: 62px;
+  bottom: 18px;
+  height: 22px;
+  pointer-events: none;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13.5px;
+  color: #9cff9c;
+  text-shadow: 0 0 6px rgba(156,255,156,.65);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.stt-preview::after {
+  content: "▋";
+  margin-left: 2px;
+  color: #b2ffb2;
+  animation: caretBlink .9s steps(1) infinite;
+}
+@keyframes caretBlink { 50% { opacity: 0; } }
+
+/* ===== Theme label in nav matches nav font & glass ===== */
+.nav-theme {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: .2px;
+}
+.nav-theme .label { opacity: .95; }
+
+/* Small screens: stack demos stage */
+@media (max-width: 900px) {
+  .demo-stage.show { grid-template-columns: 1fr; }
+}
