@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Demos — Zypher</title>
+  <title>Zypher — Demos</title>
   <link rel="stylesheet" href="./styles/main.css" />
 </head>
 <body>
@@ -13,64 +13,49 @@
       <a href="./index.html">Home</a>
       <a class="active" href="./demos.html">Demos</a>
       <a href="./contact.html">Contact</a>
-      <div id="colorToggle" class="color-toggle"></div>
+      <button id="colorToggle" class="color-toggle" title="Theme"></button>
     </div>
   </nav>
 
   <canvas id="background"></canvas>
 
-  <main class="demos-section">
-    <div class="pill">Hover tiles · Scroll or use arrows · Tap to open</div>
-    <h2>Live Demos</h2>
-    <p class="subtitle">Pick a bot below. We’ll prefill the chat and open it for you.</p>
+  <main class="demos-shell">
+    <!-- Stage 0: just a diamond button with clear instruction -->
+    <button id="selectDemoBtn" class="diamond-button">
+      <span class="diamond-glow"></span>
+      <span class="diamond-label">Select Your Demo</span>
+      <span class="diamond-hint">Click to begin</span>
+    </button>
 
-    <!-- Clear carousel of demo tiles -->
-    <div class="demo-wrap">
-      <button class="arrow left" id="demoPrev" aria-label="Previous">‹</button>
-      <div class="demo-track" id="demoTrack">
-        <!-- Tiles (data-bot used by demos.js) -->
-        <button class="demo-tile" data-bot="Car Insurance">
-          <div class="tile-title">Car Insurance</div>
-          <div class="tile-sub">Quick-qualify & quote</div>
-        </button>
+    <!-- Stage 1: split layout appears after click -->
+    <section id="demoSplit" class="demo-split hidden">
+      <!-- Left: typewriter panel -->
+      <aside class="typewriter">
+        <div class="tw-header">
+          <span class="tw-led"></span>
+          <span class="tw-title" id="twTitle">_</span>
+        </div>
+        <pre class="tw-body" id="twBody"></pre>
+        <div class="tw-controls">
+          <button id="prevBot" class="pill-btn" aria-label="Previous bot">← Prev</button>
+          <button id="nextBot" class="pill-btn" aria-label="Next bot">Next →</button>
+          <a id="fullBot" class="pill-link" href="./bot.html" target="_self">Open fullscreen</a>
+        </div>
+      </aside>
 
-        <button class="demo-tile" data-bot="Appointly">
-          <div class="tile-title">Appointly</div>
-          <div class="tile-sub">Appointment booking</div>
-        </button>
-
-        <button class="demo-tile" data-bot="Salon Booker">
-          <div class="tile-title">Salon Booker</div>
-          <div class="tile-sub">Services & add-ons</div>
-        </button>
-
-        <button class="demo-tile" data-bot="Property Qualifier">
-          <div class="tile-title">Property Qualifier</div>
-          <div class="tile-sub">Leads: tenants & viewings</div>
-        </button>
-
-        <button class="demo-tile" data-bot="Support Triage">
-          <div class="tile-title">Support Triage</div>
-          <div class="tile-sub">Route to the right fix</div>
-        </button>
-
-        <button class="demo-tile" data-bot="Custom Bot">
-          <div class="tile-title">Custom Bot</div>
-          <div class="tile-sub">Your use-case</div>
-        </button>
+      <!-- Right: your existing chat (hidden until a bot is selected) -->
+      <div class="chat-panel">
+        <div id="chatContainer" class="chat-container hidden">
+          <div id="chatMessages" class="chat-messages"></div>
+          <div class="chat-input">
+            <button id="micBtn" class="mic" aria-label="Start voice input">🎤</button>
+            <input id="userInput" type="text" placeholder="Speak or type…" autocomplete="off" />
+            <button id="sendBtn" class="send" aria-label="Send">➤</button>
+          </div>
+        </div>
+        <div id="chatPlaceholder" class="chat-placeholder">Select a bot to open the chat.</div>
       </div>
-      <button class="arrow right" id="demoNext" aria-label="Next">›</button>
-    </div>
-
-    <!-- Your existing chat UI (kept exactly) -->
-    <div id="chatContainer" class="chat-container">
-      <div id="chatMessages" class="chat-messages"></div>
-      <div class="chat-input">
-        <button id="micBtn" class="mic" aria-label="Start voice input">🎤</button>
-        <input id="userInput" type="text" placeholder="Speak or type…" autocomplete="off" />
-        <button id="sendBtn" class="send" aria-label="Send">➤</button>
-      </div>
-    </div>
+    </section>
   </main>
 
   <script src="./js/config.js"></script>
