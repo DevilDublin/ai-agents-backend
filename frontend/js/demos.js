@@ -1,24 +1,51 @@
-(function(){
-const state={
-activeBot:null,
-bots:{
-appointly:{name:'Appointly (Generic Appointment Setter)'},
-realestate:{name:'Property Qualifier'},
-salon:{name:'Salon Booker'},
-carins:{name:'Car Insurance Quick-Qualifier'},
-support:{name:'Support Triage'},
-guardrails:{name:'Off-topic Wrangler'}
-}
+// demos.js — orbital demo selector
+import * as THREE from 'three';
+
+export const initDemos = () => {
+  const selectBtn = document.getElementById('selectDemoBtn');
+  const orbitContainer = document.getElementById('orbitContainer');
+  if (!selectBtn || !orbitContainer) return;
+
+  selectBtn.addEventListener('click', () => {
+    orbitContainer.innerHTML = '';
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, orbitContainer.clientWidth / 400, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ alpha: true });
+    orbitContainer.appendChild(renderer.domElement);
+    renderer.setSize(orbitContainer.clientWidth, 400);
+
+    const geometry = new THREE.IcosahedronGeometry(2, 0);
+    const material = new THREE.MeshStandardMaterial({
+      color: 0x7b61ff,
+      emissive: 0x7b61ff,
+      emissiveIntensity: 1
+    });
+
+    const bots = [];
+    for (let i = 0; i < 6; i++) {
+      const mesh = new THREE.Mesh(geometry, material.clone());
+      mesh.position.set(
+        Math.cos((i / 6) * Math.PI * 2) * 10,
+        Math.sin((i / 6) * Math.PI * 2) * 5,
+        0
+      );
+      scene.add(mesh);
+      bots.push(mesh);
+    }
+
+    const light = new THREE.PointLight(0xffffff, 1);
+    light.position.set(0, 0, 20);
+    scene.add(light);
+    camera.position.z = 20;
+
+    let rotationY = 0;
+    const animate = () => {
+      requestAnimationFrame(animate);
+      rotationY += 0.002;
+      scene.rotation.y = rotationY;
+      bots.forEach((b, i) => (b.rotation.y += 0.01 + i * 0.001));
+      renderer.render(scene, camera);
+    };
+    animate();
+  });
 };
-const qs = (s)=>document.querySelector(s);
-function addMsg(role,text){const m=qs('.msgs'); if(!m) return; const d=document.createElement('div'); d.className='msg '+role; d.textContent=text; m.appendChild(d); m.scrollTop=m.scrollHeight;}
-function openChat(key){state.activeBot=key; qs('.stage-placeholder')?.remove(); const wrap=qs('.chat-wrap'); if(wrap) wrap.style.display='block'; const t=qs('#chatBotName'); if(t) t.textContent=state.bots[key].name; const m=qs('.msgs'); if(m) m.innerHTML=''; addMsg('bot', `Hi — I'm ${state.bots[key].name}. Ask me something or press the mic.`);}
-function backToOrbit(){ const wrap=qs('.chat-wrap'); if(wrap) wrap.style.display='none'; const st=qs('.stage'); if(st && !qs('.stage-placeholder')){ const ph=document.createElement('div'); ph.className='stage-placeholder'; ph.innerHTML='<p class="muted">Select a demo from the Dock to start chatting.</p>'; st.prepend(ph); }
-}
-function fakeAIResponse(input){ const k=state.activeBot; const low=input.toLowerCase(); if(k==='guardrails'&&(low.includes('politics')||low.includes('weather')||low.includes('joke'))) return "Let's park that — what service do you need?"; if(k==='appointly'&&low.includes('tuesday')) return 'I can offer Tue 10:00 or 14:30. Which works?'; if(k==='carins'&&low.includes('quote')) return 'Quick check: name, DOB, licence type, any claims in last 3 years?'; if(k==='salon'&&(low.includes('hair')||low.includes('cut'))) return 'We can do a Cut & Finish. Want to add a scalp treatment today?'; if(k==='support'&&(low.includes('down')||low.includes('error'))) return "I can create a ticket. What's your email and a short description?"; if(k==='realestate'&&(low.includes('view')||low.includes('flat'))) return 'Great — buy or rent, and budget range?'; return "Got it. Tell me a bit more and I’ll guide you."; }
-function handleSend(){ const i=qs('#chatInput'); if(!i) return; const t=i.value.trim(); if(!t) return; addMsg('user', t); i.value=''; setTimeout(()=>addMsg('bot', fakeAIResponse(t)), 400); }
-function setTranscriptAndSend(text){ const i=qs('#chatInput'); if(!i) return; i.value=text||''; if(i.value.trim()) handleSend(); }
-function init(){ if(!qs('.dock-and-stage')) return; qs('#sendBtn')?.addEventListener('click', handleSend); qs('#chatInput')?.addEventListener('keydown', e=>{ if(e.key==='Enter') handleSend(); }); }
-window.openChat=openChat; window.backToOrbit=backToOrbit; window.Demo={setTranscriptAndSend, addMsg};
-document.addEventListener('DOMContentLoaded', init);
-})();
