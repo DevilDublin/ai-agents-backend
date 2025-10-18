@@ -1,64 +1,67 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Zypher — Home</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/main.css"/>
 </head>
-<body class="has-grid">
-  <!-- NAV -->
-  <header class="nav">
-    <div class="logo-badge">
-      <span class="badge-dot"></span>
-      <span class="badge-z">Z</span>
-      <span class="brand">ypher</span>
-    </div>
-    <nav class="nav-links">
-      <a class="active" href="index.html">Home</a>
-      <a href="demos.html">Demos</a>
-      <a href="contact.html">Contact</a>
-      <button class="theme-pill" id="theme-pill" aria-label="Change theme"></button>
-      <button class="theme-label" id="theme-label" aria-label="Change theme">Theme</button>
+<body>
+<div class="bg-wrap"><canvas id="net-canvas"></canvas></div>
+
+<div class="wrapper">
+  <header class="header">
+    <nav class="nav">
+      <div class="brand">
+        <div class="brand-badge"><!-- subtle Z glyph via mask -->Z</div>
+        <span>Zypher</span>
+      </div>
+      <div class="menu">
+        <a class="active" href="index.html">Home</a>
+        <a href="demos.html">Demos</a>
+        <a href="contact.html">Contact</a>
+        <div class="theme-pill">
+          <span>Theme</span>
+          <div class="theme-swatch" title="Click to change"></div>
+        </div>
+      </div>
     </nav>
   </header>
 
-  <!-- HERO -->
-  <main class="container hero-lock">
-    <h1 class="hero-title">Power Your Brand with <span class="zypher-glow">Zypher</span></h1>
-    <p class="hero-sub">AI agents that qualify, book, and support — fast, secure, beautifully on-brand.</p>
+  <main class="main">
+    <section class="section hero">
+      <h1>Power Your Brand with <span class="zypher">Zypher</span></h1>
+      <p>AI agents that qualify, book, and support — fast, secure, and beautifully on-brand.</p>
+      <a class="btn" href="demos.html">Explore Demos</a>
 
-    <a class="cta-btn" href="demos.html">Explore Demos</a>
+      <div class="metrics">
+        <div class="pill"><strong>24/7</strong><div style="opacity:.8">Availability</div></div>
+        <div class="pill"><strong>60s</strong><div style="opacity:.8">To First Lead</div></div>
+        <div class="pill"><strong>GDPR</strong><div style="opacity:.8">UK/EU Ready</div></div>
+      </div>
 
-    <div class="stats">
-      <div class="stat-chip"><div>24/7</div><small>Availability</small></div>
-      <div class="stat-chip"><div>60s</div><small>To First Lead</small></div>
-      <div class="stat-chip"><div>GDPR</div><small>UK/EU Ready</small></div>
-    </div>
-
-    <section class="features">
-      <article class="feature-card">
-        <h3>Convert More</h3>
-        <p>Voice + chat flows tuned to your offer. Capture details, qualify quickly, hand off with context.</p>
-      </article>
-      <article class="feature-card">
-        <h3>Integrate Fast</h3>
-        <p>Calendar, CRM, email, webhooks. Privacy-first. Built to plug into your stack.</p>
-      </article>
-      <article class="feature-card">
-        <h3>Look Premium</h3>
-        <p>Dual-neon theming drives glows, accents, and motion — consistently on brand.</p>
-      </article>
+      <div class="grid">
+        <div class="card">
+          <h3>Convert More</h3>
+          <p class="muted">Voice + chat flows tuned to your offer. Capture details, qualify quickly, hand off with context.</p>
+        </div>
+        <div class="card">
+          <h3>Integrate Fast</h3>
+          <p class="muted">Calendar, CRM, email, webhooks. Privacy-first. Built to plug into your stack.</p>
+        </div>
+        <div class="card">
+          <h3>Look Premium</h3>
+          <p class="muted">Dual-neon theming drives glows, accents, and motion — consistently on brand.</p>
+        </div>
+      </div>
     </section>
   </main>
 
-  <footer class="site-footer">© 2025 Zypher — Built for speed · Privacy-first · UK/EU ready</footer>
+  <footer class="footer"><div class="section">
+    © 2025 Zypher — Built for speed · Privacy-first · UK/EU ready
+  </div></footer>
+</div>
 
-  <canvas id="net" class="net-canvas" aria-hidden="true"></canvas>
-  <script src="js/config.js"></script>
-  <script src="js/site.js" defer></script>
+<script src="js/site.js"></script>
 </body>
 </html>
