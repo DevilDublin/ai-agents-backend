@@ -34,3 +34,7 @@
 
   document.addEventListener('DOMContentLoaded', init);
 })();
+
+// Placeholder: keep your previous voice helpers if any.
+// Demos uses the inline mic/typewriter inside demos.js now.
+
