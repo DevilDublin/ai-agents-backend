@@ -18,7 +18,7 @@
         'Agent: Appointly — Appointment Booking',
         'Collect → service, date & time, notes',
         'Confirm → SMS + calendar invite',
-        'Links → reschedule/cancel',
+        'Links → reschedule / cancel',
         'Hint → say: "Book me Friday 3pm"'
       ]
     },
@@ -50,7 +50,7 @@
         'Routing engine online…',
         'Agent: Support Triage — Right fix, first time',
         'Identify → category · priority',
-        'Resolve → guided steps or human handoff',
+        'Resolve → guided steps / human handoff',
         'Ticket → context auto-logged',
         'Hint → say: "My order never arrived"'
       ]
@@ -71,6 +71,7 @@
   const $ = (id) => document.getElementById(id);
   const btn = () => $('selectDemoBtn');
   const split = () => $('demoSplit');
+  const hud = () => $('demoHUD');
   const twTitle = () => $('twTitle');
   const twBody = () => $('twBody');
   const prev = () => $('prevBot');
@@ -80,12 +81,14 @@
   const ghost = () => $('chatPlaceholder');
   const input = () => $('userInput');
   const send = () => $('sendBtn');
+  const twPane = () => $('twPane');
+  const chatPane = () => $('chatPane');
 
-  let i = 0;
-  let frame;
+  let i = 0, frame;
+
+  // cryptic scramble→reveal
   const glyphs = '!<>-_\\/[]{}—=+*^?#________';
-
-  function scrambleTo(target, onDone) {
+  function scrambleTo(target) {
     cancelAnimationFrame(frame);
     const el = twBody();
     const lines = target.slice();
@@ -98,8 +101,8 @@
       const to = lines[li].padEnd(maxLen, ' ');
       const lineQ = [];
       for (let n = 0; n < maxLen; n++) {
-        const start = Math.floor(Math.random() * 20);
-        const end = start + Math.floor(Math.random() * 24) + 6;
+        const start = Math.floor(Math.random() * 14);
+        const end = start + Math.floor(Math.random() * 18) + 8;
         lineQ.push({ from: from[n], to: to[n], start, end, char: '' });
       }
       queue.push(lineQ);
@@ -116,23 +119,31 @@
           if (frameCount >= end) { complete++; line += to; }
           else if (frameCount >= start) {
             if (!char || Math.random() < 0.09) char = glyphs[Math.floor(Math.random()*glyphs.length)];
-            q[n].char = char;
-            line += char;
-          } else {
-            line += from;
-          }
+            q[n].char = char; line += char;
+          } else { line += from; }
         }
         output[li] = line.replace(/\s+$/,'');
       }
       el.textContent = output.join('\n');
       frameCount++;
-      if (complete >= queue.length * maxLen) { if (onDone) onDone(); return; }
+      if (complete >= queue.length * maxLen) return;
       frame = requestAnimationFrame(update);
     })();
   }
 
-  function showBot(index, animate = true) {
-    i = (index + BOTS.length) % BOTS.length;
+  function parallax(n) {
+    const left = twPane(); const right = chatPane();
+    const dir = n > 0 ? 1 : -1;
+    [left, right].forEach((pane, ix) => {
+      pane.animate(
+        [{ transform: `translateX(${8*dir}px)` }, { transform: 'translateX(0)' }],
+        { duration: 450, easing: 'cubic-bezier(.2,.7,.1,1)' }
+      );
+    });
+  }
+
+  function openBot(iNew, withAnim = true) {
+    i = (iNew + BOTS.length) % BOTS.length;
     const bot = BOTS[i];
     twTitle().textContent = `> ${bot.name}`;
     scrambleTo(bot.lines);
@@ -144,32 +155,36 @@
     if (input()) input().value = `Open demo: ${bot.name}`;
     if (send()) setTimeout(() => send().click(), 80);
 
-    if (animate) {
-      split().style.animation = 'whoosh .5s ease';
-      setTimeout(() => (split().style.animation = ''), 500);
-    }
+    if (withAnim) parallax(1);
+  }
+
+  function reset() {
+    split().classList.add('hidden');
+    hud().classList.add('hidden');
+    btn().classList.remove('hidden');
   }
 
   function init() {
     if (!btn()) return;
+
     btn().addEventListener('click', () => {
       btn().classList.add('hidden');
       split().classList.remove('hidden');
-      showBot(0, false);
+      hud().classList.remove('hidden');
+      openBot(0, false);
     });
-    if (prev()) prev().addEventListener('click', () => showBot(i - 1));
-    if (next()) next().addEventListener('click', () => showBot(i + 1));
+
+    if (prev()) prev().addEventListener('click', () => openBot(i - 1));
+    if (next()) next().addEventListener('click', () => openBot(i + 1));
+
     document.addEventListener('keydown', (e) => {
-      if (split().classList.contains('hidden')) return;
-      if (e.key === 'ArrowRight') showBot(i + 1);
-      if (e.key === 'ArrowLeft')  showBot(i - 1);
+      if (btn() && !btn().classList.contains('hidden')) return;
+      if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') openBot(i + 1);
+      if (e.key === 'ArrowLeft'  || e.key.toLowerCase() === 'a') openBot(i - 1);
+      if (e.key === 'Enter') openBot(i, true);
+      if (e.key === 'Escape') reset();
     });
   }
 
   document.addEventListener('DOMContentLoaded', init);
-
-  // whoosh keyframes (once)
-  const style = document.createElement('style');
-  style.textContent = `@keyframes whoosh{0%{transform:translateX(10px);opacity:.9}100%{transform:none;opacity:1}}`;
-  document.head.appendChild(style);
 })();
