@@ -25,20 +25,17 @@
   <canvas id="background"></canvas>
 
   <main class="demos-shell">
-    <!-- Clean diamond intro -->
-    <button id="selectDemoBtn" class="diamond-button" aria-label="Start demos">
-      <span class="diamond-glow" aria-hidden="true"></span>
-      <span class="diamond-core" aria-hidden="true"></span>
-      <span class="diamond-stack">
-        <span class="diamond-label">Select Your Demo</span>
-        <span class="diamond-hint">Click or press <b>Enter</b> to begin</span>
-      </span>
+    <!-- Rotating 3D diamond -->
+    <button id="starter" class="shape3d" aria-label="Start demos">
+      <span class="s3d-glow" aria-hidden="true"></span>
+      <span class="s3d-core" aria-hidden="true"></span>
+      <span class="s3d-text">Click to begin</span>
     </button>
 
     <!-- HUD -->
     <div id="demoHUD" class="demo-hud hidden">
       <span class="hud-dot"></span>
-      <span id="hudText">Use <b>← →</b> / <b>A D</b> to switch · <b>Enter</b> to open</span>
+      <span id="hudText">Use <b>← →</b> / <b>A D</b> to switch · <b>Enter</b> to open · <b>Esc</b> back</span>
     </div>
 
     <!-- Selector / Chat split -->
