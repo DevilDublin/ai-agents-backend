@@ -207,3 +207,119 @@ main{flex:1}
 @media (max-width:1024px){ .chat-messages{max-height:48vh} }
 @media (max-width:900px){ .demo-split{grid-template-columns:1fr} .chat-close{top:8px;transform:none} }
 @media (max-width:420px){ .shape3d{width:240px;height:240px} }
+
+/* ===== Zypher — DEMOS ===== */
+
+/* Nav: make “Theme” label match the hotbar font & weight */
+.nav .nav-theme-label,
+#nav .nav-theme-label,
+.navbar .nav-theme-label {
+  font-family: inherit;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  opacity: 0.9;
+}
+
+/* Mount */
+.z-mount { position: relative; width: 100%; min-height: calc(100vh - 80px); }
+
+/* Intro shape */
+.z-intro { display:flex; align-items:center; justify-content:center; min-height: calc(100vh - 120px); }
+.z-orb {
+  width: clamp(220px, 32vw, 420px);
+  aspect-ratio: 1/1;
+  border-radius: 28px;
+  position: relative;
+  background: radial-gradient(120% 120% at 50% 50%, rgba(var(--theme-a),0.5) 0%, rgba(var(--theme-b),0.5) 45%, rgba(255,255,255,0.05) 100%);
+  box-shadow:
+    0 0 50px 12px rgba(var(--theme-a),0.35),
+    inset 0 0 30px rgba(255,255,255,0.06);
+  transform-style: preserve-3d;
+  transition: box-shadow .3s ease, transform .3s ease;
+  cursor: pointer;
+}
+.z-orb::before{
+  content:"";
+  position:absolute; inset:12%;
+  border-radius: 22px;
+  background:
+    radial-gradient(75% 75% at 50% 50%, rgba(var(--theme-b),0.6), rgba(var(--theme-a),0.15)),
+    linear-gradient(145deg, rgba(255,255,255,0.10), rgba(255,255,255,0) 60%);
+  filter: blur(0.5px);
+}
+.z-orb::after{
+  content:"";
+  position:absolute; inset:-22px;
+  border-radius: 36px;
+  box-shadow: 0 0 60px 16px rgba(var(--theme-a),0.35);
+  pointer-events:none;
+}
+.z-orb:hover{ box-shadow: 0 0 60px 18px rgba(var(--theme-b),0.45), inset 0 0 34px rgba(255,255,255,0.08);}
+.z-orb-label{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  color:#fff; font-weight:700; font-size: clamp(14px, 1.1vw, 18px);
+  text-shadow: 0 2px 12px rgba(0,0,0,.5);
+}
+.z-orb-open{ transform: scale(1.02) translateZ(0); }
+
+/* Selector grid */
+.z-selector{
+  display:grid; grid-template-columns: minmax(280px, 560px) 1fr; gap: clamp(16px, 3vw, 40px);
+  align-items: stretch; padding: clamp(16px, 4vw, 48px);
+}
+.z-selector.z-enter{ animation: z-enter .65s ease both; }
+@keyframes z-enter{ from{ transform: translateY(20px) scale(.98); opacity:0 } to{ transform:none; opacity:1 } }
+
+/* Terminal */
+.z-term{ backdrop-filter: blur(10px); background: rgba(255,255,255,0.03); border-radius: 18px; border:1px solid rgba(255,255,255,0.07); box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset; }
+.z-term-head{ display:flex; align-items:center; gap:8px; padding:14px 16px 8px; color:#fff; font-weight:700; }
+.z-term-title{ opacity: .95; }
+.z-dot{ width:10px; height:10px; border-radius:999px; background:#ff4d4f; box-shadow:0 0 8px 2px rgba(255,77,79,.6)}
+.z-live{ background: rgb(var(--theme-a)); box-shadow:0 0 8px 2px rgba(var(--theme-a),.65) }
+.z-term-body{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; color:#9aff9a; padding: 6px 16px 12px; min-height: 220px; }
+.z-term-line{ padding: 6px 0; white-space: pre-wrap; }
+
+.z-term-actions{ display:flex; gap:10px; padding: 10px 12px 14px; }
+.z-btn{ border:1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.06); color:#fff; border-radius: 999px; padding: 10px 16px; font-weight:700; }
+.z-btn:hover{ background: rgba(255,255,255,0.10); }
+.z-btn-ghost{ background: transparent; }
+
+/* Right: chat preview area */
+.z-chat-preview{ position:relative; border-radius:18px; border:1px dashed rgba(255,255,255,0.16); }
+.z-chat-blur{ position:absolute; inset:0; border-radius:18px; background: rgba(0,0,0,0.55); filter: blur(1.5px); display:flex; align-items:center; justify-content:center; }
+.z-chat-hint{ text-align:center; color:#fff; }
+.z-chat-hint .z-h{ font-weight:800; font-size: clamp(16px, 1.6vw, 22px); margin-bottom:6px; }
+.z-chat-hint .z-s{ opacity:.8; }
+
+/* Chat (opened) */
+.z-chatbox{ position:relative; border-radius:18px; background: rgba(18,18,18,.85); border:1px solid rgba(255,255,255,0.08); padding: 16px; min-height: 260px; box-shadow: 0 0 60px 12px rgba(var(--theme-a),.28); }
+.z-close{ position:absolute; top:10px; right:12px; width:28px; height:28px; border-radius:999px; border:1px solid rgba(255,255,255,.22); color:#fff; background: rgba(255,255,255,0.06); font-weight:900; }
+.z-close:hover{ background: rgba(255,255,255,0.12); }
+
+.z-chat-stream{ display:flex; flex-direction:column; gap:10px; max-height: 42vh; overflow:auto; padding-right: 6px; }
+.z-row{ display:flex; }
+.z-row.user{ justify-content:flex-end; }
+.z-bubble{ border-radius: 14px; padding: 10px 12px; background: rgba(255,255,255,0.08); color:#fff; max-width: 78%; }
+.z-row.user .z-bubble{ background: rgba(var(--theme-a),0.18); border:1px solid rgba(var(--theme-a),.35); }
+.z-chip{ display:inline-block; padding: 8px 12px; border-radius:999px; background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:#fff; font-weight:700; }
+
+.z-chat-input{ margin-top:12px; display:grid; grid-template-columns: 44px 1fr 44px; gap:8px; align-items:center; }
+.z-inp{ width:100%; height:44px; border-radius:999px; background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:#fff; padding: 0 14px; }
+.z-mic, .z-send{ height:44px; border-radius:999px; border:1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.06); color:#fff; }
+.z-mic:hover, .z-send:hover{ background: rgba(255,255,255,0.10); }
+
+/* STT overlay (green typewriter) */
+.z-stt{ margin-top:8px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; color:#9aff9a; min-height: 18px; }
+.z-stt.on{ text-shadow: 0 0 8px rgba(0,255,120,.4); }
+
+/* HUD */
+.z-hud{ position: fixed; left:50%; transform: translateX(-50%); bottom: clamp(12px, 3vh, 28px); display:flex; flex-direction:column; gap:10px; align-items:center; z-index: 40; }
+.z-hud-row{ display:flex; gap:10px; }
+.z-pill{ border-radius:999px; padding: 8px 12px; background: rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.12); color:#fff; font-weight:700; }
+.z-tip{ color:#fff; opacity:.8 }
+
+/* Responsive */
+@media (max-width: 980px){
+  .z-selector{ grid-template-columns: 1fr; }
+  .z-chat-stream{ max-height: 38vh; }
+}
