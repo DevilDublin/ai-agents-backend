@@ -1,128 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Zypher — AI that Books, Qualifies & Supports</title>
-<style>
-:root{
-  --panel:#0f111a; --elev:#11131d; --ink:#e8ebf5; --muted:#a6adc8; --edge:rgba(255,255,255,.10);
-  --a:#8a5cf6; --b:#00d4ff; --glass:rgba(255,255,255,.06);
-}
-*{box-sizing:border-box} html{-webkit-text-size-adjust:100%}
-html,body{margin:0;height:100%;background:transparent;color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
-#bg{position:fixed;inset:0;z-index:0;pointer-events:none}
-.vign{position:fixed;inset:0;z-index:0;pointer-events:none;background:
-  radial-gradient(120% 120% at 50% 15%,transparent 0 60%,rgba(0,0,0,.35) 85%,rgba(0,0,0,.62) 100%)}
-.site{position:relative;z-index:1;min-height:100%}
-a{color:inherit;text-decoration:none}
-
-.container{max-width:1200px;margin:0 auto;padding:0 24px}
-
-.nav{position:sticky;top:0;z-index:5;background:rgba(11,12,18,.58);backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--edge);display:flex;align-items:center;justify-content:space-between;padding:10px 18px}
-.brand{display:flex;gap:12px;align-items:center}
-.brand svg{width:28px;height:28px}
-.links{display:flex;gap:10px}
-.links a{padding:8px 12px;border-radius:12px;color:var(--muted)}
-.links a.active,.links a:hover{color:#fff;background:rgba(255,255,255,.08)}
-.cta .btn,.btn{padding:10px 16px;border-radius:14px;border:1px solid var(--edge);color:#fff;
-  background:linear-gradient(90deg,color-mix(in oklab,var(--a)55%,transparent),color-mix(in oklab,var(--b)55%,transparent));
-  transition:filter .2s, transform .2s}
-.btn:hover{filter:brightness(1.1) saturate(1.06)} .btn:active{transform:translateY(1px)}
-
-header{padding:78px 0 18px}
-.badge{display:inline-flex;gap:8px;align-items:center;padding:6px 12px;border-radius:999px;border:1px solid var(--edge);
-  color:var(--b);background:rgba(0,212,255,.08);font-size:12px;margin:0 0 14px}
-h1{margin:0 0 10px;font-size:clamp(36px,6.4vw,76px);line-height:1.03;
-  background:linear-gradient(90deg,#fff,color-mix(in oklab,var(--a)45%,#fff),color-mix(in oklab,var(--b)45%,#fff),#fff);
-  -webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% auto;animation:sheen 9s linear infinite}
-@keyframes sheen{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-.sub{max-width:800px;color:var(--muted);margin:0 0 18px}
-.cta{display:flex;gap:10px;flex-wrap:wrap}
-
-.grid{display:grid;grid-template-columns:1fr;gap:18px;padding:32px 0 0}
-.card{
-  background:linear-gradient(180deg,rgba(17,19,29,.7),rgba(15,17,26,.7));
-  border:1px solid var(--edge); border-radius:18px; padding:18px; position:relative; overflow:hidden;
-  backdrop-filter:blur(8px); box-shadow:inset 0 0 0 1px rgba(255,255,255,.02), 0 10px 30px rgba(0,0,0,.35);
-  animation:floatUp .6s ease both
-}
-.card::after{content:"";position:absolute;inset:-40% -60% auto -60%;height:1px;background:
-  linear-gradient(90deg,transparent,rgba(138,92,246,.35),rgba(0,212,255,.35),transparent);filter:blur(1px)}
-@keyframes floatUp{from{transform:translateY(6px);opacity:.0}to{transform:translateY(0);opacity:1}}
-.card h3{margin:0 0 6px}.card p{margin:4px 0 0;color:var(--muted)}
-@media (min-width:768px){.grid{grid-template-columns:repeat(3,1fr)}}
-
-footer{padding:34px 24px;border-top:1px solid var(--edge);color:var(--muted)}
-.row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home — Zypher</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<canvas id="bg"></canvas><div class="vign" aria-hidden="true"></div>
-<div class="site">
+  <nav>
+    <div class="logo">⚡ Zypher</div>
+    <div class="nav-links">
+      <a href="index.html" class="active">Home</a>
+      <a href="demos.html">Demos</a>
+      <a href="contact.html">Contact</a>
+      <div class="color-toggle" id="colorToggle"></div>
+    </div>
+  </nav>
 
-<nav class="nav">
-  <div class="brand">
-    <svg viewBox="0 0 256 256" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8A5CF6"/><stop offset="100%" stop-color="#00D4FF"/></linearGradient></defs><rect width="256" height="256" rx="40" fill="#0A0B10"/><path d="M176 32L96 144h56l-48 80 80-112h-56l48-80z" fill="url(#g)"/></svg>
-    <strong>Zypher</strong>
-  </div>
-  <div class="links"><a class="active" href="index.html">Home</a><a href="demos.html">Demos</a><a href="contact.html">Contact</a></div>
-  <a class="btn" href="demos.html">Try a Bot</a>
-</nav>
+  <canvas id="background"></canvas>
+  <main class="hero">
+    <h1>Power Your Brand with <span class="glow">AI Agents</span></h1>
+    <p>Build intelligent voice and chat automation for any business — fast, secure, and futuristic.</p>
+    <a href="demos.html" class="btn">Explore Demos</a>
+  </main>
 
-<header>
-  <div class="container">
-    <span class="badge">Futuristic by Design • Practical by Default</span>
-    <h1>AI agents that <span style="color:#b8a7ff">Book</span>, <span style="color:#89ecff">Qualify</span> & <span style="color:#b8a7ff">Support</span>.</h1>
-    <p class="sub">Meet <strong>Zypher</strong> — voice & chat agents that respect your brand and your customers. Plug into your calendar and CRM. Go live in days, not months.</p>
-    <div class="cta"><a class="btn" href="demos.html">See Live Demos</a><a class="btn" style="background:transparent" href="contact.html">Talk to Us</a></div>
-  </div>
-</header>
-
-<main class="container">
-  <section class="grid">
-    <div class="card"><h3>Voice & Phone</h3><p>Answer calls, qualify and book — 24/7. Natural speech with clear confirmations.</p></div>
-    <div class="card"><h3>Web Chat</h3><p>On-site chat that actually gets things done: capture, schedule, escalate.</p></div>
-    <div class="card"><h3>Workflow Ready</h3><p>Integrates with Google Calendar, HubSpot, Notion, Slack, make.com & more.</p></div>
-  </section>
-  <section class="grid" style="padding-top:28px">
-    <div class="card"><h3>Why Zypher?</h3><p>Focused, on-rails agents. Guardrails keep conversations on task. Personalised prompts for your niche. Analytics to improve over time.</p></div>
-  </section>
-</main>
-
-<footer><div class="container row"><span>© 2025 Zypher — All rights reserved.</span><span>Built for speed • Privacy-first • UK/EU ready</span></div></footer>
-</div>
-
-<!-- ZYPHER BACKDROP v3 (slower, moodier, extra glass orbs) -->
-<script>
-(()=>{const SPEED={stars:0.02, sweep:0.03, comet:0.004, cometV:[4,7], filament:[.06,.14]};
-const c=document.getElementById('bg'), x=c.getContext('2d'); let DPR=Math.min(2,devicePixelRatio||1),W=0,H=0,T=0;
-let stars=[], comets=[], filaments=[], orbs=[];
-function size(){W=innerWidth;H=innerHeight;c.width=W*DPR;c.height=H*DPR;x.setTransform(DPR,0,0,DPR,0,0);}
-function r(a,b){return a+Math.random()*(b-a)}
-function makeStars(){const n=Math.floor(W*H/1900);stars=Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,z:r(.3,1.2),a:r(.35,.85)}))}
-function makeFilaments(){filaments=[];for(let i=0;i<5;i++){filaments.push({y:H*(.18+.14*i)+r(-18,18), hue:i%2?'rgba(0,212,255,.14)':'rgba(138,92,246,.14)', p:Math.random(), speed:r(...SPEED.filament)})}}
-function makeOrbs(){orbs=[];for(let i=0;i<3;i++){orbs.push({x:W*r(.15,.85),y:H*r(.15,.85),r:r(120,220),h:i%2})}}
-function aurora(t){const r1=180+50*Math.sin(t*.45), r2=240+60*Math.cos(t*.4);
-let g=x.createRadialGradient(W*.22,H*.26,0,W*.22,H*.26,r1); g.addColorStop(0,'rgba(138,92,246,.18)'); g.addColorStop(1,'rgba(138,92,246,0)'); x.fillStyle=g; x.beginPath(); x.arc(W*.22,H*.26,r1,0,7); x.fill();
-g=x.createRadialGradient(W*.82,H*.78,0,W*.82,H*.78,r2); g.addColorStop(0,'rgba(0,212,255,.16)'); g.addColorStop(1,'rgba(0,212,255,0)'); x.fillStyle=g; x.beginPath(); x.arc(W*.82,H*.78,r2,0,7); x.fill();
-const s=(t*SPEED.sweep)%1, dx=W*(s-.25), w=W*.30, grd=x.createLinearGradient(dx,0,dx+w,H);
-grd.addColorStop(0,'rgba(255,255,255,0)'); grd.addColorStop(.5,'rgba(170,210,255,.035)'); grd.addColorStop(1,'rgba(255,255,255,0)'); x.fillStyle=grd; x.fillRect(dx,0,w,H);}
-function drawOrbs(t){x.globalCompositeOperation='lighter'; orbs.forEach(o=>{const rr=o.r+10*Math.sin(t*.3+(o.h?1:-1)); let g=x.createRadialGradient(o.x,o.y,0,o.x,o.y,rr);
-g.addColorStop(0,o.h?'rgba(0,212,255,.06)':'rgba(138,92,246,.06)'); g.addColorStop(1,'rgba(0,0,0,0)'); x.fillStyle=g; x.beginPath(); x.arc(o.x,o.y,rr,0,7); x.fill();}); x.globalCompositeOperation='source-over';}
-function drawFilaments(dt){filaments.forEach(f=>{f.p=(f.p+f.speed*dt*0.04)%1;const len=W*0.55, lead=f.p*W; x.strokeStyle=f.hue; x.lineWidth=1.4; x.beginPath();
-const y=f.y,k=16*Math.sin((T*0.7)+f.y*.01); x.moveTo(lead-len,y+k); x.bezierCurveTo(lead-len*.66,y-7,lead-len*.33,y+7,lead,y-k); x.stroke();
-x.fillStyle=f.hue.replace('.14','.33'); x.beginPath(); x.arc(lead,y-k,2.2,0,7); x.fill();});}
-function drawStars(){for(const s of stars){x.globalAlpha=s.a; x.fillStyle='#fff'; x.fillRect(s.x,s.y,s.z,s.z); s.x+=SPEED.stars*s.z; if(s.x>W) s.x=0} x.globalAlpha=1;}
-function drawComets(){if(Math.random()<SPEED.comet) comets.push({x:-60,y:r(10,H-20),vx:r(...SPEED.cometV),life:1});
-comets.forEach(cm=>{cm.x+=cm.vx; cm.life*=0.996; x.strokeStyle='rgba(0,212,255,.48)'; x.lineWidth=2; x.beginPath(); x.moveTo(cm.x-26,cm.y+6); x.lineTo(cm.x+8,cm.y-2); x.stroke();
-x.strokeStyle='rgba(138,92,246,.46)'; x.beginPath(); x.moveTo(cm.x-44,cm.y+10); x.lineTo(cm.x-6,cm.y+2); x.stroke();}); comets=comets.filter(c=>c.x<W+80 && c.life>.25);}
-function frame(t){const dt=Math.min(2,(t-(frame._t||t))/16); frame._t=t; T+=dt; x.fillStyle='rgb(14,16,25)'; x.fillRect(0,0,W,H);
-drawOrbs(T); aurora(T); drawFilaments(dt); drawStars(); drawComets(); requestAnimationFrame(frame);}
-addEventListener('resize',()=>{size();makeStars();makeFilaments();makeOrbs()},{passive:true});
-size(); makeStars(); makeFilaments(); makeOrbs(); requestAnimationFrame(frame);
-})();
-</script>
+  <script src="three.min.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
