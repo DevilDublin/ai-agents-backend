@@ -1,59 +1,60 @@
-/* Zypher animated background — stars + cyber shooting lines */
-(function(){
-  const id = 'zy-bg';
-  let c = document.getElementById(id);
-  if(!c){
-    c = document.createElement('canvas');
-    c.id = id;
-    document.body.prepend(c); // ensure it’s behind everything
-  }
-  // add soft vignette overlay
-  let vig = document.querySelector('.zy-vignette');
-  if(!vig){ vig = document.createElement('div'); vig.className='zy-vignette'; document.body.appendChild(vig); }
+// bg.js — smooth futuristic circuit background
+import * as THREE from 'three';
 
-  const x = c.getContext('2d');
-  let stars=[], shots=[], ratio=window.devicePixelRatio||1;
+export const initBackground = () => {
+  const canvas = document.getElementById('background');
+  if (!canvas) return;
 
-  function resize(){
-    c.width = innerWidth*ratio; c.height = innerHeight*ratio;
-    x.setTransform(ratio,0,0,ratio,0,0);
-    make();
-  }
-  function make(){
-    stars = [];
-    const n = Math.floor(innerWidth*innerHeight/2200);
-    for(let i=0;i<n;i++){
-      stars.push({x:Math.random()*innerWidth, y:Math.random()*innerHeight,
-                  s:Math.random()*1.3+.2, a:.55*Math.random()+.25});
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  const group = new THREE.Group();
+  const material = new THREE.LineBasicMaterial({
+    color: 0xffffff,
+    transparent: true,
+    opacity: 0.3
+  });
+
+  // Create circuit lines
+  for (let i = 0; i < 70; i++) {
+    const points = [];
+    for (let j = 0; j < 5; j++) {
+      points.push(
+        new THREE.Vector3(
+          (Math.random() - 0.5) * 200,
+          (Math.random() - 0.5) * 120,
+          (Math.random() - 0.5) * 100
+        )
+      );
     }
-  }
-  function spawn(){
-    const y = Math.random()*innerHeight*.8 + 10;
-    shots.push({x:-80, y, vx:6+Math.random()*5, life:1});
-  }
-  setInterval(spawn, 1200);
-
-  function step(){
-    x.clearRect(0,0,innerWidth,innerHeight);
-    for(const s of stars){
-      x.globalAlpha = s.a;
-      x.fillStyle = '#fff';
-      x.fillRect(s.x, s.y, s.s, s.s);
-      s.x += .03;
-      if(s.x>innerWidth) s.x = 0;
-    }
-    x.globalAlpha = 1;
-    for(const sh of shots){
-      x.strokeStyle='rgba(0,212,255,.5)'; x.lineWidth=2; x.beginPath();
-      x.moveTo(sh.x, sh.y); x.lineTo(sh.x+30, sh.y-6); x.stroke();
-      x.strokeStyle='rgba(138,92,246,.45)'; x.beginPath();
-      x.moveTo(sh.x-18, sh.y+4); x.lineTo(sh.x+8, sh.y-1); x.stroke();
-      sh.x += sh.vx; sh.life -= .02;
-    }
-    shots = shots.filter(s=>s.x<innerWidth+70 && s.life>0);
-    requestAnimationFrame(step);
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const line = new THREE.Line(geometry, material);
+    group.add(line);
   }
 
-  addEventListener('resize', resize, {passive:true});
-  resize(); step();
-})();
+  // Add glow pulse
+  const glowMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+  const glowSphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), glowMaterial);
+  scene.add(group, glowSphere);
+  camera.position.z = 80;
+
+  function animate(time) {
+    requestAnimationFrame(animate);
+    const t = time * 0.0002;
+    group.rotation.x = t * 0.3;
+    group.rotation.y = t * 0.2;
+    glowSphere.position.x = Math.sin(t * 4) * 30;
+    glowSphere.position.y = Math.cos(t * 3) * 20;
+    glowSphere.material.opacity = 0.5 + Math.sin(t * 4) * 0.5;
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+};
