@@ -8,14 +8,18 @@
 </head>
 <body class="layout">
   <nav class="nav">
-    <div class="logo">⚡ Zypher</div>
+    <a href="./index.html" class="brand">
+      <span class="brand-glyph">Ƶ</span><span class="brand-text">Zypher</span>
+    </a>
+
     <div class="nav-links">
       <a href="./index.html">Home</a>
       <a class="active" href="./demos.html">Demos</a>
       <a href="./contact.html">Contact</a>
+
       <div class="theme-wrap">
         <span class="theme-label">Theme</span>
-        <button id="colorToggle" class="color-toggle" title="Theme"></button>
+        <button id="colorToggle" class="color-toggle" title="Click for palettes · Right-click auto"></button>
       </div>
     </div>
   </nav>
@@ -23,15 +27,16 @@
   <canvas id="background"></canvas>
 
   <main class="demos-shell">
-    <!-- Stage 0: diamond with glow -->
+    <!-- Stage 0: diamond intro (text is bright & centered) -->
     <button id="selectDemoBtn" class="diamond-button">
       <span class="diamond-glow"></span>
       <span class="diamond-label">Select Your Demo</span>
-      <span class="diamond-hint">Click to begin</span>
+      <span class="diamond-hint">Click or press <b>Enter</b> to begin</span>
     </button>
 
     <!-- HUD / instructions -->
     <div id="demoHUD" class="demo-hud hidden">
+      <span class="hud-dot"></span>
       <span>Use <b>← →</b> or <b>A / D</b> to switch · <b>Enter</b> to open · <b>Esc</b> to reset</span>
     </div>
 
@@ -51,15 +56,27 @@
       </aside>
 
       <div class="chat-panel" id="chatPane">
-        <div id="chatContainer" class="chat-container hidden">
+        <div id="chatContainer" class="chat-container chat-bright hidden">
           <div id="chatMessages" class="chat-messages"></div>
           <div class="chat-input">
             <button id="micBtn" class="mic" aria-label="Start voice input">🎤</button>
-            <input id="userInput" type="text" placeholder="Speak or type…" autocomplete="off" />
+            <input id="userInput" type="text" placeholder="Type a message or press the mic…" autocomplete="off" />
             <button id="sendBtn" class="send" aria-label="Send">➤</button>
           </div>
         </div>
-        <div id="chatPlaceholder" class="chat-placeholder">Select a bot to open the chat.</div>
+
+        <!-- floating helper -->
+        <div id="chatTip" class="tip-floating hidden">
+          <span class="tip-dot"></span>
+          <span>Tip: Press <b>Enter</b> to open this bot now, or speak via the mic.</span>
+        </div>
+
+        <div id="chatPlaceholder" class="chat-placeholder">
+          <div class="cp-wrap">
+            <div class="cp-title">Select a bot to open the chat</div>
+            <div class="cp-sub">Press <b>Enter</b> at any time</div>
+          </div>
+        </div>
       </div>
     </section>
   </main>
