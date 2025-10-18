@@ -20,17 +20,15 @@
   <canvas id="background"></canvas>
 
   <main class="demos-shell">
-    <!-- Stage 0: just a diamond button with clear instruction -->
     <button id="selectDemoBtn" class="diamond-button">
       <span class="diamond-glow"></span>
       <span class="diamond-label">Select Your Demo</span>
       <span class="diamond-hint">Click to begin</span>
     </button>
 
-    <!-- Stage 1: split layout appears after click -->
     <section id="demoSplit" class="demo-split hidden">
-      <!-- Left: typewriter panel -->
-      <aside class="typewriter">
+      <!-- Left: cryptic message typewriter -->
+      <aside class="typewriter neon-green">
         <div class="tw-header">
           <span class="tw-led"></span>
           <span class="tw-title" id="twTitle">_</span>
@@ -43,7 +41,7 @@
         </div>
       </aside>
 
-      <!-- Right: your existing chat (hidden until a bot is selected) -->
+      <!-- Right: chat opens once a bot is chosen -->
       <div class="chat-panel">
         <div id="chatContainer" class="chat-container hidden">
           <div id="chatMessages" class="chat-messages"></div>
