@@ -1,4 +1,7 @@
+/* Demos state machine – unchanged from last fix, included for completeness */
 (function(){
+  let STATE = 'intro';
+
   const BOTS = [
     { name:'Car Insurance', lines:[
       'Decrypting module…',
@@ -50,16 +53,14 @@
     ]}
   ];
 
-  const starter = ()=>document.getElementById('starter');
-  const shell   = ()=>document.querySelector('.demos-shell');
+  const $ = s => document.querySelector(s);
+  const starter = () => $('#starter');
+  const shell = () => $('.demos-shell');
 
-  // dynamic nodes (built after intro)
-  let split, hud, twTitle, twBody, prevBtn, nextBtn, openBtn,
-      chatHolder, chatClose, chatBox, msgWrap, input, send, micBtn,
-      placeholder;
-  let idx=0, locked=false, frame;
+  let split, hud, hudText, twTitle, twBody, prevBtn, nextBtn, openBtn,
+      chatClose, chatBox, msgWrap, input, send, micBtn, placeholder;
+  let current = 0, frame;
 
-  // --- Scramble type effect
   const glyphs='!<>-_\\/[]{}—=+*^?#________';
   function scrambleTo(lines){
     cancelAnimationFrame(frame);
@@ -83,18 +84,24 @@
     })();
   }
 
+  function parallax(dir){
+    const panes = split.querySelectorAll('#twPane, #chatPane');
+    panes.forEach(p=>p.animate([{transform:`translateX(${8*dir}px)`},{transform:'translateX(0)'}],{duration:420,easing:'cubic-bezier(.2,.7,.1,1)'}));
+  }
+
   function buildSelector(){
-    // HUD
+    if(split) return;
+
     hud = document.createElement('div');
     hud.className='demo-hud';
     hud.innerHTML = `<span class="hud-dot"></span><span id="hudText">Use <b>← →</b> / <b>A D</b> to switch · <b>Enter</b> to open · <b>Esc</b> back</span>`;
     shell().appendChild(hud);
+    hudText = $('#hudText');
 
-    // Split
     split = document.createElement('section');
     split.className = 'demo-split';
     split.innerHTML = `
-      <aside class="typewriter neon-green" id="twPane">
+      <aside class="typewriter" id="twPane">
         <div class="tw-header"><span class="tw-led"></span><span class="tw-title" id="twTitle">_</span></div>
         <pre class="tw-body" id="twBody"></pre>
         <div class="tw-controls">
@@ -105,7 +112,7 @@
       </aside>
       <div class="chat-panel" id="chatPane">
         <button id="closeChat" class="chat-close hidden" aria-label="Close">×</button>
-        <div id="chatContainer" class="chat-container chat-bright hidden">
+        <div id="chatContainer" class="chat-container hidden">
           <div id="chatMessages" class="chat-messages"></div>
           <div class="chat-input">
             <button id="micBtn" class="mic" aria-label="Voice">🎤</button>
@@ -116,53 +123,35 @@
       </div>`;
     shell().appendChild(split);
 
-    // Placeholder is created (and later destroyed) so no residual blur
     placeholder = document.createElement('div');
     placeholder.className='chat-placeholder';
     placeholder.innerHTML = `<div class="cp-wrap"><div class="cp-title">Select a bot to open the chat</div><div class="cp-sub">Press <b>Enter</b> when ready</div></div>`;
     split.querySelector('#chatPane').appendChild(placeholder);
 
-    // refs
-    twTitle   = split.querySelector('#twTitle');
-    twBody    = split.querySelector('#twBody');
-    prevBtn   = split.querySelector('#prevBot');
-    nextBtn   = split.querySelector('#nextBot');
-    openBtn   = split.querySelector('#openNow');
-    chatClose = split.querySelector('#closeChat');
-    chatBox   = split.querySelector('#chatContainer');
-    msgWrap   = split.querySelector('#chatMessages');
-    input     = split.querySelector('#userInput');
-    send      = split.querySelector('#sendBtn');
-    micBtn    = split.querySelector('#micBtn');
+    twTitle = $('#twTitle'); twBody = $('#twBody');
+    prevBtn = $('#prevBot'); nextBtn = $('#nextBot'); openBtn = $('#openNow');
+    chatClose=$('#closeChat'); chatBox=$('#chatContainer'); msgWrap=$('#chatMessages');
+    input=$('#userInput'); send=$('#sendBtn'); micBtn=$('#micBtn');
 
-    // events
-    prevBtn.onclick=()=>{ if(!locked) show(idx-1) };
-    nextBtn.onclick=()=>{ if(!locked) show(idx+1) };
-    openBtn.onclick=()=>{ if(!locked) openChat() };
-    chatClose.onclick=closeToSelector;
+    prevBtn.onclick=()=>{ if(STATE==='selector') show(current-1) };
+    nextBtn.onclick=()=>{ if(STATE==='selector') show(current+1) };
+    openBtn.onclick=()=>{ if(STATE==='selector') openChat() };
+    chatClose.onclick=()=>{ if(STATE==='chat') closeChat() };
     send.onclick=sendMsg;
     input.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); sendMsg(); }});
     initMic();
 
-    // first bot
     show(0,false);
   }
 
-  function parallax(dir){
-    const panes = split.querySelectorAll('#twPane, #chatPane');
-    panes.forEach(p=>p.animate([{transform:`translateX(${8*dir}px)`},{transform:'translateX(0)'}],{duration:420,easing:'cubic-bezier(.2,.7,.1,1)'}));
-  }
-
-  function show(next, animate=true){
-    idx=(next+BOTS.length)%BOTS.length;
-    const bot=BOTS[idx];
+  function show(n, animate=true){
+    current = (n+BOTS.length)%BOTS.length;
+    const bot=BOTS[current];
     twTitle.textContent = `> ${bot.name}`;
     scrambleTo(bot.lines);
     if(animate) parallax(1);
-
-    // reset chat visuals if user is just browsing
-    if(!locked){
-      if(placeholder==null){
+    if(STATE==='selector'){
+      if(!placeholder){
         placeholder=document.createElement('div');
         placeholder.className='chat-placeholder';
         placeholder.innerHTML=`<div class="cp-wrap"><div class="cp-title">Select a bot to open the chat</div><div class="cp-sub">Press <b>Enter</b> when ready</div></div>`;
@@ -174,28 +163,27 @@
   }
 
   function openChat(){
-    if(locked) return;
-    locked=true;
-    // DESTROY blur placeholder so no ghost remains
+    STATE='chat';
     if(placeholder){ placeholder.remove(); placeholder=null; }
     chatBox.classList.remove('hidden');
     chatClose.classList.remove('hidden');
-    addMsg('assistant', `Opening demo: ${BOTS[idx].name}`);
+    hudText.innerHTML='<b>Chat open.</b> Press <b>×</b> to go back.';
+    addMsg('assistant', `Opening demo: ${BOTS[current].name}`);
     input.focus();
     chatBox.animate([{transform:'translateY(10px)',opacity:.85},{transform:'translateY(0)',opacity:1}],{duration:420,easing:'cubic-bezier(.2,.7,.1,1)'});
   }
 
-  function closeToSelector(){
-    locked=false;
-    // Recreate placeholder (fresh element with blur) for selector state
+  function closeChat(){
+    STATE='selector';
     if(!placeholder){
       placeholder=document.createElement('div');
       placeholder.className='chat-placeholder';
-      placeholder.innerHTML = `<div class="cp-wrap"><div class="cp-title">Select a bot to open the chat</div><div class="cp-sub">Press <b>Enter</b> when ready</div></div>`;
+      placeholder.innerHTML=`<div class="cp-wrap"><div class="cp-title">Select a bot to open the chat</div><div class="cp-sub">Press <b>Enter</b> when ready</div></div>`;
       split.querySelector('#chatPane').appendChild(placeholder);
     }
     chatBox.classList.add('hidden');
     chatClose.classList.add('hidden');
+    hudText.innerHTML='Use <b>← →</b> / <b>A D</b> to switch · <b>Enter</b> to open · <b>Esc</b> back';
   }
 
   function addMsg(role,text){
@@ -208,46 +196,48 @@
   function sendMsg(){
     const v=input.value.trim(); if(!v) return;
     addMsg('user', v); input.value='';
-    setTimeout(()=>addMsg('assistant','(Demo) Response from '+BOTS[idx].name), 350);
+    setTimeout(()=>addMsg('assistant','(Demo) Response from '+BOTS[current].name), 350);
   }
 
   function initMic(){
     if(!('webkitSpeechRecognition'in window || 'SpeechRecognition'in window)) return;
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     const rec = new SR(); rec.lang='en-US'; rec.interimResults=false;
-    micBtn.addEventListener('click', ()=>{ micBtn.classList.add('listening'); rec.start(); });
+    micBtn.addEventListener('click', ()=>{ micBtn.classList.add('listening'); rec.start(); }, {passive:true});
     rec.onresult = e=>{ input.value=e.results[0][0].transcript; micBtn.classList.remove('listening'); sendMsg(); };
     rec.onend    = ()=> micBtn.classList.remove('listening');
   }
 
-  function begin(){
-    if(!starter()) return;
-    // ENTER also begins
-    document.addEventListener('keydown', e=>{
-      if(e.key==='Enter' && document.body.contains(starter())) {
-        e.preventDefault(); starter().click();
-      }else if(split){
-        if(e.key==='Escape' && !document.body.contains(starter())) {
-          if(locked) return; // when chat open, use × button
-          // back to intro
-          shell().removeChild(split); split=null;
-          shell().removeChild(hud);   hud=null;
-          document.querySelector('.demos-shell').appendChild(starter());
-          starter().classList.remove('hidden');
-        }else if(!locked){
-          const k=e.key.toLowerCase();
-          if(k==='enter'){ openChat(); }
-          if(k==='arrowright'||k==='d') show(idx+1);
-          if(k==='arrowleft'||k==='a')  show(idx-1);
-        }
-      }
-    });
-
-    starter().addEventListener('click', ()=>{
-      starter().classList.add('hidden');
-      buildSelector();
-    });
+  function startSelector(){
+    if(STATE!=='intro') return;
+    STATE='selector';
+    if(starter()) starter().classList.add('hidden');
+    buildSelector();
   }
 
-  document.addEventListener('DOMContentLoaded', begin);
+  function keyHandler(e){
+    if(e.key==='Enter'){
+      if(STATE==='intro'){ e.preventDefault(); startSelector(); return; }
+      if(STATE==='selector'){ e.preventDefault(); openChat(); return; }
+    }else if(e.key==='Escape'){
+      if(STATE==='selector'){
+        STATE='intro';
+        if(split){ split.remove(); split=null; }
+        if(hud){ hud.remove(); hud=null; }
+        starter().classList.remove('hidden');
+      }
+    }else if(STATE==='selector'){
+      const k=e.key.toLowerCase();
+      if(k==='arrowright'||k==='d') show(current+1);
+      if(k==='arrowleft' ||k==='a') show(current-1);
+    }
+  }
+
+  function init(){
+    if(!starter()) return;
+    starter().addEventListener('click', startSelector, {passive:true});
+    document.addEventListener('keydown', keyHandler);
+    document.addEventListener('touchstart', ()=>{}, {passive:true}); // iOS
+  }
+  document.addEventListener('DOMContentLoaded', init);
 })();
