@@ -1,38 +1,40 @@
-/* Minimal voice glue so STT typewriter works.
-   If you already had a fuller engine, this is compatible:
-   - call initVoice({ input, micBtn, sendBtn, onInterim, onFinal })
+/* ===== ZYPHER — voice + green capture typing =====
+   Adds optional mic capture that "types" recorded text in the input
 */
-export function initVoice({ input, micBtn, sendBtn, onInterim, onFinal }){
-  // Send button
-  if (sendBtn) sendBtn.addEventListener('click', () => {
-    const v = input.value.trim(); if (!v) return;
-    onInterim?.(''); onFinal?.(v); input.value = '';
-  });
+(function(){
+  const input = document.querySelector('#chat-input');
+  const micBtn = document.querySelector('#chat-mic');
+  if (!input || !micBtn) return;
 
-  // Basic Web Speech API (if available)
-  let rec;
-  if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    rec = new SR(); rec.interimResults = true; rec.continuous = false; rec.lang = 'en-US';
-
-    rec.onresult = (e) => {
-      let interim = '';
-      let final = '';
-      for (const r of e.results[0]) {
-        if (e.results[0].isFinal) final += r.transcript;
-        else interim += r.transcript;
-      }
-      if (interim) onInterim?.(interim);
-      if (final)  onFinal?.(final);
-    };
+  let rec=null, chunks=[];
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)){
+    // graceful: hide mic if not supported
+    micBtn.style.display='none';
+    return;
   }
 
-  if (micBtn && rec) {
-    micBtn.addEventListener('click', () => {
-      try { onInterim?.(''); rec.start(); } catch(_e){}
-    });
-  }
-}
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const sr = new SpeechRec();
+  sr.continuous = false; sr.interimResults = true; sr.lang = 'en-US';
 
-export function onInterimTranscript(text, cb){ cb?.(text); }
-export function onFinalTranscript(text, cb){ cb?.(); }
+  micBtn.addEventListener('click', ()=> sr.start());
+
+  sr.onresult = (e)=>{
+    let interim = '', final = '';
+    for (let i = e.resultIndex; i < e.results.length; i++){
+      const trans = e.results[i][0].transcript;
+      if (e.results[i].isFinal) final += trans;
+      else interim += trans;
+    }
+    greenType(input, (final || interim).trim());
+  };
+
+  function greenType(target, text){
+    target.value=''; let i=0;
+    const id = setInterval(()=>{
+      target.value = text.slice(0, ++i);
+      target.style.caretColor = '#9cff9c';
+      if(i>=text.length){ clearInterval(id); target.style.caretColor = '#fff'; }
+    }, 14);
+  }
+})();
