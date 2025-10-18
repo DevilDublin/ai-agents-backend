@@ -1,93 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Contact — Zypher</title>
-<style>
-:root{--panel:#0f111a;--elev:#11131d;--ink:#e8ebf5;--muted:#a6adc8;--edge:rgba(255,255,255,.10);--a:#8a5cf6;--b:#00d4ff}
-*{box-sizing:border-box} html{-webkit-text-size-adjust:100%}
-html,body{margin:0;height:100%;background:transparent;color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
-#bg{position:fixed;inset:0;z-index:0;pointer-events:none}.vign{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(120% 120% at 50% 15%,transparent 0 60%,rgba(0,0,0,.35) 85%,rgba(0,0,0,.62) 100%)}
-.site{position:relative;z-index:1;min-height:100%} a{color:inherit;text-decoration:none}
-.container{max-width:980px;margin:0 auto;padding:0 24px}
-.nav{position:sticky;top:0;z-index:5;background:rgba(11,12,18,.58);backdrop-filter:blur(12px);border-bottom:1px solid var(--edge);display:flex;align-items:center;justify-content:space-between;padding:10px 18px}
-.brand{display:flex;gap:12px;align-items:center}.brand svg{width:28px;height:28px}
-.links{display:flex;gap:10px}.links a{padding:8px 12px;border-radius:12px;color:var(--muted)}.links a.active,.links a:hover{color:#fff;background:rgba(255,255,255,.08)}
-.section{padding:56px 0}.muted{color:var(--muted)}
-
-.glass{position:relative;border:1px solid var(--edge);border-radius:18px;padding:20px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));backdrop-filter:blur(8px);overflow:hidden;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.02), 0 12px 36px rgba(0,0,0,.35)}
-.glass::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.16;background-image:
-  linear-gradient(0deg, rgba(255,255,255,.18) 1px, transparent 1px),
-  linear-gradient(90deg, rgba(255,255,255,.18) 1px, transparent 1px);
-  background-size:28px 28px}
-
-.form{display:grid;gap:14px}
-input,textarea{width:100%;background:rgba(255,255,255,.04);color:var(--ink);border:1px solid var(--edge);border-radius:12px;padding:12px}
-textarea{resize:vertical}
-.btn{padding:12px 14px;border-radius:12px;border:1px solid var(--edge);color:#fff;background:linear-gradient(90deg,var(--a),var(--b));background-size:200% auto;animation:pulse 7s linear infinite}
-@keyframes pulse{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-footer{padding:30px 24px;color:var(--muted);border-top:1px solid var(--edge)}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — Zypher</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<canvas id="bg"></canvas><div class="vign" aria-hidden="true"></div>
-<div class="site">
+  <nav>
+    <div class="logo">⚡ Zypher</div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="demos.html">Demos</a>
+      <a href="contact.html" class="active">Contact</a>
+      <div class="color-toggle" id="colorToggle"></div>
+    </div>
+  </nav>
 
-<nav class="nav">
-  <div class="brand">
-    <svg viewBox="0 0 256 256" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8A5CF6"/><stop offset="100%" stop-color="#00D4FF"/></linearGradient></defs><rect width="256" height="256" rx="40" fill="#0A0B10"/><path d="M176 32L96 144h56l-48 80 80-112h-56l48-80z" fill="url(#g)"/></svg>
-    <strong>Zypher</strong>
-  </div>
-  <div class="links"><a href="index.html">Home</a><a href="demos.html">Demos</a><a class="active" href="contact.html">Contact</a></div>
-  <div style="color:#a6adc8">Support</div>
-</nav>
+  <canvas id="background"></canvas>
 
-<main class="container section">
-  <h2 style="margin:0 0 10px">Let’s Talk</h2>
-  <p class="muted" style="margin:0 0 8px">Tell us about your use-case. We’ll reply within 1 business day.</p>
-  <p class="muted" style="margin:0 0 16px">Email: <a href="mailto:Zypheragent25@gmail.com">Zypheragent25@gmail.com</a></p>
+  <main class="contact-section">
+    <h2>Let’s Talk</h2>
+    <p>Tell us about your project. We’ll reply within 1 business day.</p>
+    <p>Email: <a href="mailto:zypheragent25@gmail.com">zypheragent25@gmail.com</a></p>
 
-  <form class="glass form" onsubmit="event.preventDefault();alert('Thanks — we’ll be in touch by email shortly.');">
-    <input placeholder="Full Name" required />
-    <input placeholder="Work Email" type="email" required />
-    <input placeholder="Company" />
-    <textarea rows="5" placeholder="What would you like to build?"></textarea>
-    <button class="btn" type="submit">Send</button>
-  </form>
-</main>
+    <form class="contact-form">
+      <input type="text" placeholder="Full Name" required />
+      <input type="email" placeholder="Work Email" required />
+      <input type="text" placeholder="Company" />
+      <textarea placeholder="What would you like to build?" rows="4"></textarea>
+      <button type="submit" class="btn">Send</button>
+    </form>
+  </main>
 
-<footer class="container">© 2025 Zypher — All rights reserved. • Built for speed · Privacy-first · UK/EU ready</footer>
-</div>
+  <footer>© 2025 Zypher — Built for speed · Privacy-first · UK/EU ready</footer>
 
-<!-- BACKDROP v3 (slower) -->
-<script>
-(()=>{const SPEED={stars:0.02, sweep:0.03, comet:0.004, cometV:[4,7], filament:[.06,.14]};
-const c=document.getElementById('bg'), x=c.getContext('2d'); let DPR=Math.min(2,devicePixelRatio||1),W=0,H=0,T=0;
-let stars=[], comets=[], filaments=[], orbs=[];
-function size(){W=innerWidth;H=innerHeight;c.width=W*DPR;c.height=H*DPR;x.setTransform(DPR,0,0,DPR,0,0);}
-function r(a,b){return a+Math.random()*(b-a)}
-function makeStars(){const n=Math.floor(W*H/1900);stars=Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,z:r(.3,1.2),a:r(.35,.85)}))}
-function makeFilaments(){filaments=[];for(let i=0;i<5;i++){filaments.push({y:H*(.18+.14*i)+r(-18,18), hue:i%2?'rgba(0,212,255,.14)':'rgba(138,92,246,.14)', p:Math.random(), speed:r(...SPEED.filament)})}}
-function makeOrbs(){orbs=[];for(let i=0;i<3;i++){orbs.push({x:W*r(.15,.85),y:H*r(.15,.85),r:r(120,220),h:i%2})}}
-function aurora(t){const r1=180+50*Math.sin(t*.45), r2=240+60*Math.cos(t*.4);
-let g=x.createRadialGradient(W*.22,H*.26,0,W*.22,H*.26,r1); g.addColorStop(0,'rgba(138,92,246,.18)'); g.addColorStop(1,'rgba(138,92,246,0)'); x.fillStyle=g; x.beginPath(); x.arc(W*.22,H*.26,r1,0,7); x.fill();
-g=x.createRadialGradient(W*.82,H*.78,0,W*.82,H*.78,r2); g.addColorStop(0,'rgba(0,212,255,.16)'); g.addColorStop(1,'rgba(0,212,255,0)'); x.fillStyle=g; x.beginPath(); x.arc(W*.82,H*.78,r2,0,7); x.fill();
-const s=(t*SPEED.sweep)%1, dx=W*(s-.25), w=W*.30, grd=x.createLinearGradient(dx,0,dx+w,H);
-grd.addColorStop(0,'rgba(255,255,255,0)'); grd.addColorStop(.5,'rgba(170,210,255,.035)'); grd.addColorStop(1,'rgba(255,255,255,0)'); x.fillStyle=grd; x.fillRect(dx,0,w,H);}
-function drawOrbs(t){x.globalCompositeOperation='lighter'; orbs.forEach(o=>{const rr=o.r+10*Math.sin(t*.3+(o.h?1:-1)); let g=x.createRadialGradient(o.x,o.y,0,o.x,o.y,rr);
-g.addColorStop(0,o.h?'rgba(0,212,255,.06)':'rgba(138,92,246,.06)'); g.addColorStop(1,'rgba(0,0,0,0)'); x.fillStyle=g; x.beginPath(); x.arc(o.x,o.y,rr,0,7); x.fill();}); x.globalCompositeOperation='source-over';}
-function drawFilaments(dt){filaments.forEach(f=>{f.p=(f.p+f.speed*dt*0.04)%1;const len=W*0.55, lead=f.p*W; x.strokeStyle=f.hue; x.lineWidth=1.4; x.beginPath();
-const y=f.y,k=16*Math.sin((T*0.7)+f.y*.01); x.moveTo(lead-len,y+k); x.bezierCurveTo(lead-len*.66,y-7,lead-len*.33,y+7,lead,y-k); x.stroke(); x.beginPath(); x.fillStyle=f.hue.replace('.14','.33'); x.arc(lead,y-k,2.2,0,7); x.fill();});}
-function drawStars(){for(const s of stars){x.globalAlpha=s.a; x.fillStyle='#fff'; x.fillRect(s.x,s.y,s.z,s.z); s.x+=SPEED.stars*s.z; if(s.x>W) s.x=0} x.globalAlpha=1;}
-function drawComets(){if(Math.random()<SPEED.comet) comets.push({x:-60,y:r(10,H-20),vx:r(...SPEED.cometV),life:1});
-comets.forEach(cm=>{cm.x+=cm.vx; cm.life*=0.996; x.strokeStyle='rgba(0,212,255,.48)'; x.lineWidth=2; x.beginPath(); x.moveTo(cm.x-26,cm.y+6); x.lineTo(cm.x+8,cm.y-2); x.stroke();
-x.strokeStyle='rgba(138,92,246,.46)'; x.beginPath(); x.moveTo(cm.x-44,cm.y+10); x.lineTo(cm.x-6,cm.y+2); x.stroke();}); comets=comets.filter(c=>c.x<W+80 && c.life>.25);}
-function frame(t){const dt=Math.min(2,(t-(frame._t||t))/16); frame._t=t; T+=dt; x.fillStyle='rgb(14,16,25)'; x.fillRect(0,0,W,H);
-drawOrbs(T); aurora(T); drawFilaments(dt); drawStars(); drawComets(); requestAnimationFrame(frame);}
-addEventListener('resize',()=>{size();makeStars();makeFilaments();makeOrbs()},{passive:true});
-size(); makeStars(); makeFilaments(); makeOrbs(); requestAnimationFrame(frame);
-})();
-</script>
+  <script src="three.min.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
