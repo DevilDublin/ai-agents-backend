@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Demos — Zypher</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="./js/assets/style.css" />
 </head>
 <body>
-  <nav>
+  <nav class="nav">
     <div class="logo">⚡ Zypher</div>
     <div class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="demos.html" class="active">Demos</a>
-      <a href="contact.html">Contact</a>
-      <div class="color-toggle" id="colorToggle"></div>
+      <a href="./index.html">Home</a>
+      <a class="active" href="./demos.html">Demos</a>
+      <a href="./contact.html">Contact</a>
+      <div id="colorToggle" class="color-toggle" aria-label="Change accent colour"></div>
     </div>
   </nav>
 
@@ -21,23 +21,26 @@
 
   <main class="demos-section">
     <h2>Live Demos</h2>
-    <p class="subtitle">Hover or click the glowing button below to explore AI bots in a 3D orbit.</p>
+    <p class="subtitle">Hover or click the button to reveal hidden bots. Scroll or use ← → to pan. Tap a tile to open that bot.</p>
 
-    <button id="selectDemoBtn" class="glow-button">Select Your Demo</button>
+    <!-- demos.js will inject the glowing Select button + orbit here -->
+    <div id="orbitMount"></div>
 
-    <div id="orbitContainer"></div>
-
+    <!-- Your existing chat UI (IDs preserved for voice.js) -->
     <div id="chatContainer" class="chat-container">
       <div id="chatMessages" class="chat-messages"></div>
       <div class="chat-input">
-        <button id="micBtn">🎤</button>
-        <input id="userInput" type="text" placeholder="Speak or type..." />
-        <button id="sendBtn">➤</button>
+        <button id="micBtn" class="mic" aria-label="Start voice input">🎤</button>
+        <input id="userInput" type="text" placeholder="Speak or type…" autocomplete="off" />
+        <button id="sendBtn" class="send" aria-label="Send">➤</button>
       </div>
     </div>
   </main>
 
-  <script src="three.min.js"></script>
-  <script src="main.js"></script>
+  <script src="./js/config.js"></script>
+  <script src="./js/bg.js"></script>
+  <script src="./js/demos.js"></script>
+  <script src="./js/voice.js"></script>
+  <script src="./js/site.js"></script>
 </body>
 </html>
