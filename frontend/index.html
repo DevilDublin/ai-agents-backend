@@ -22,67 +22,39 @@
   </header>
 
   <main>
-    <section class="hero hero-full">
-      <h1 class="hero-title">Welcome to <span class="accent">Zypher</span></h1>
-      <p class="hero-tag">Intelligent automation for modern businesses.</p>
-      <div class="hero-cta">
-        <a class="btn primary transition-link" href="contact.html#demo">Book a Demo</a>
-        <button class="btn flat" id="scrollExplore">Explore ↓</button>
+    <section class="chip-hero">
+      <div class="chip-core-hero">
+        <div class="chip-light"></div>
+        <div class="chip-grid"></div>
+      </div>
+      <h1 class="hero-title centre">Welcome to <span class="accent">Zypher</span></h1>
+      <p class="hero-tag centre">Intelligent automation for modern businesses.</p>
+      <div class="cta-row centre">
+        <a class="slider-cta transition-link" href="contact.html#demo">
+          <span>Book a Demo</span><i></i>
+        </a>
       </div>
     </section>
 
-    <section class="metrics reveal" id="analytics">
-      <article class="metric card">
-        <div class="metric-num" data-count="12480">0</div>
-        <div class="metric-label">Automated conversations</div>
-      </article>
-      <article class="metric card">
-        <div class="metric-num" data-count="230">0</div>
-        <div class="metric-label">Voice demos booked</div>
-      </article>
-      <article class="metric card">
-        <div class="metric-num" data-count="1.8" data-decimal="1">0.0</div>
-        <div class="metric-label">Average response time (s)</div>
-      </article>
-      <article class="metric card">
-        <div class="metric-num" data-count="37">0</div>
-        <div class="metric-label">Integrations delivered</div>
-      </article>
-    </section>
-
-    <section class="panels reveal">
-      <a class="panel card transition-link" href="demos.html">
-        <div class="icon">⚙️</div>
-        <h3>Automation & Bots</h3>
-        <p>Explore our intelligent chat solutions.</p>
-      </a>
-      <a class="panel card transition-link" href="demos.html#studio">
-        <div class="icon">🧩</div>
-        <h3>Zypher Studio</h3>
-        <p>Analyse, design and automate in one workspace.</p>
-      </a>
-      <a class="panel card transition-link" href="contact.html#demo">
-        <div class="icon">🤝</div>
-        <h3>Partner with Zypher</h3>
-        <p>Tell us your goals and timelines.</p>
-      </a>
+    <section class="mini-panels">
+      <a class="mini card transition-link" href="demos.html#automation"><h3>Automation & Bots</h3><p>Chat, forms and flows.</p></a>
+      <a class="mini card transition-link" href="demos.html#voice"><h3>Voice Agent</h3><p>Conversations that convert.</p></a>
+      <a class="mini card transition-link" href="demos.html#studio"><h3>Zypher Studio</h3><p>Analyse, design and ship.</p></a>
     </section>
   </main>
 
-  <aside class="voice-chip" id="voiceChip">
-    <button class="chip-btn" id="chipBtn" aria-label="Open Voice Agent">
-      <span class="chip-core"></span>
+  <aside class="voice-float" id="voiceFloat">
+    <button class="vf-btn" id="vfBtn" aria-label="Open Voice Agent">
+      <span class="vf-core"></span>
     </button>
-    <div class="chip-drawer" id="chipDrawer" aria-live="polite">
-      <div class="chip-phone">
-        <div class="chip-screen"></div>
-        <div class="chip-notch"></div>
+    <div class="vf-drawer" id="vfDrawer">
+      <div class="vf-phone">
+        <div class="vf-notch"></div>
+        <div class="vf-screen">
+          <div class="vf-text" id="vfText">Book a demo and hear it live.</div>
+        </div>
       </div>
-      <div class="chip-copy">
-        <strong>Voice Agent</strong>
-        <p>Book a demo and hear it live.</p>
-        <a class="btn primary transition-link" href="contact.html#voice">Book a Demo</a>
-      </div>
+      <a class="btn primary" href="contact.html#voice">Book a Demo</a>
     </div>
   </aside>
 
