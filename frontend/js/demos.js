@@ -2,18 +2,29 @@
   const $ = (s, r=document) => r.querySelector(s);
   const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 
-  $$(".grid .card .btn.flat").forEach(btn => {
-    btn.addEventListener("click", async () => {
-      const key = btn.dataset.demo;
-      const out = $("#out-" + key);
-      out.textContent = "Loading preview…";
-      await new Promise(r => setTimeout(r, 500));
-      const replies = {
-        appointly: "Hi. I can book Thursday 2pm or Friday 10am. What suits you?",
-        realestate: "This 2-bed has south-facing windows and is available from 12 December.",
-        insurance: "Please share your policy number and a brief description of the incident."
-      };
-      out.textContent = "Preview:\n" + (replies[key] || "Coming soon.");
+  const copy = {
+    flow: "Drag-and-drop flows that connect forms, calendars, email and CRMs.",
+    insight: "Upload a CSV and get narrative insights with clear next steps.",
+    voice: "A natural voice concierge that books and qualifies in real time.",
+    docs: "Extract clauses, dates and risks from contracts and PDFs.",
+    persona: "Consistent chat tone tuned to your brand’s personality.",
+    research: "Fast briefs with sources and summaries you can trust.",
+    designer: "Logo, palette and micro-assets generated to fit your niche.",
+    audit: "Instant UX/SEO checks with accessible, actionable fixes.",
+    secure: "Content checks for GDPR and compliance concerns.",
+    draft: "Proposals, job specs and reports ready to send."
+  };
+
+  const modal = $("#modal"), title = $("#modalTitle"), text = $("#modalText");
+  $("#modalClose")?.addEventListener("click", () => modal.classList.remove("show"));
+  modal?.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("show"); });
+
+  $$(".suite .tile").forEach(card => {
+    card.addEventListener("click", () => {
+      const k = card.dataset.key;
+      title.textContent = card.querySelector("h3").textContent;
+      text.textContent = copy[k] || "Preview coming soon.";
+      modal.classList.add("show");
     });
   });
 })();
