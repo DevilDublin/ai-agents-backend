@@ -26,17 +26,27 @@
       <p class="hero-tag centre">A quick taste of what we deliver.</p>
     </section>
 
-    <section class="suite">
-      <article class="tile card" id="automation" data-mode="live" data-key="flow"><span class="badge live">Live preview</span><h3>Zypher Flow</h3><p>Automate with visual chains.</p></article>
-      <article class="tile card" data-mode="live" data-key="insight"><span class="badge live">Live preview</span><h3>Zypher Insight</h3><p>Data with clear actions.</p></article>
-      <article class="tile card" id="voice" data-mode="book" data-key="voice"><span class="badge book">Book only</span><h3>Zypher Voice</h3><p>Conversations that convert.</p></article>
-      <article class="tile card" data-mode="live" data-key="docs"><span class="badge live">Live preview</span><h3>Zypher Docs</h3><p>Read, reason and reveal.</p></article>
-      <article class="tile card" id="studio" data-mode="live" data-key="persona"><span class="badge live">Live preview</span><h3>Zypher Persona</h3><p>Your brand, every tone.</p></article>
-      <article class="tile card" data-mode="live" data-key="research"><span class="badge live">Live preview</span><h3>Zypher Research</h3><p>Answers, not noise.</p></article>
-      <article class="tile card" data-mode="live" data-key="designer"><span class="badge live">Live preview</span><h3>Zypher Designer</h3><p>Visuals with vision.</p></article>
-      <article class="tile card" data-mode="book" data-key="audit"><span class="badge book">Book only</span><h3>Zypher Audit</h3><p>Fix what matters.</p></article>
-      <article class="tile card" data-mode="book" data-key="secure"><span class="badge book">Book only</span><h3>Zypher Secure</h3><p>Trust through tech.</p></article>
-      <article class="tile card" data-mode="live" data-key="draft"><span class="badge live">Live preview</span><h3>Zypher Draft</h3><p>Documents on demand.</p></article>
+    <section class="demo-columns" id="live">
+      <div class="col">
+        <h2 class="subhead">Live previews</h2>
+        <div class="suite">
+          <article class="tile card live" data-key="flow"><span class="badge live">Live</span><h3>Zypher Flow</h3><p>Automate with visual chains.</p></article>
+          <article class="tile card live" data-key="insight"><span class="badge live">Live</span><h3>Zypher Insight</h3><p>Data with clear actions.</p></article>
+          <article class="tile card live" data-key="docs"><span class="badge live">Live</span><h3>Zypher Docs</h3><p>Read, reason and reveal.</p></article>
+          <article class="tile card live" data-key="persona" id="studio"><span class="badge live">Live</span><h3>Zypher Persona</h3><p>Your brand, every tone.</p></article>
+          <article class="tile card live" data-key="research"><span class="badge live">Live</span><h3>Zypher Research</h3><p>Answers, not noise.</p></article>
+          <article class="tile card live" data-key="designer"><span class="badge live">Live</span><h3>Zypher Designer</h3><p>Visuals with vision.</p></article>
+          <article class="tile card live" data-key="draft"><span class="badge live">Live</span><h3>Zypher Draft</h3><p>Documents on demand.</p></article>
+        </div>
+      </div>
+      <div class="col" id="book">
+        <h2 class="subhead">Book a demo</h2>
+        <div class="suite">
+          <article class="tile card book" data-key="voice" id="voice"><span class="badge book">Book only</span><h3>Zypher Voice</h3><p>Conversations that convert.</p></article>
+          <article class="tile card book" data-key="audit"><span class="badge book">Book only</span><h3>Zypher Audit</h3><p>Fix what matters.</p></article>
+          <article class="tile card book" data-key="secure"><span class="badge book">Book only</span><h3>Zypher Secure</h3><p>Trust through tech.</p></article>
+        </div>
+      </div>
     </section>
   </main>
 
@@ -44,7 +54,7 @@
     <div class="modal-inner card">
       <button class="modal-close" id="modalClose" aria-label="Close">×</button>
       <h3 id="modalTitle">Preview</h3>
-      <p id="modalText"></p>
+      <div id="modalBody"></div>
       <div class="modal-actions">
         <button class="btn flat" id="modalCycle">Next sample</button>
         <a class="btn primary transition-link" href="contact.html#demo">Book a Demo</a>
