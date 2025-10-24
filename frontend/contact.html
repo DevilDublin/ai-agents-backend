@@ -1,73 +1,62 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Zypher — Contact</title>
-  <link rel="stylesheet" href="styles/main.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css">
 </head>
-<body>
-<div class="bg-wrap"><canvas id="net-canvas"></canvas></div>
+<body class="theme-neo page-enter">
+  <div class="page-fx" aria-hidden="true"></div>
+  <canvas id="bg" aria-hidden="true"></canvas>
 
-<div class="wrapper">
-  <header class="header">
-    <nav class="nav">
-      <div class="brand"><div class="brand-badge">Z</div><span>Zypher</span></div>
-      <div class="menu">
-        <a href="index.html">Home</a>
-        <a href="demos.html">Demos</a>
-        <a class="active" href="contact.html">Contact</a>
-        <div class="theme-pill"><span>Theme</span><div class="theme-swatch" title="Click to change"></div></div>
-      </div>
+  <header class="site-header">
+    <a class="brand transition-link" href="index.html"><span class="logo-type">Zypher&nbsp;AI</span></a>
+    <nav class="site-nav">
+      <a class="transition-link" href="demos.html">Demos</a>
+      <a class="btn ghost transition-link" href="contact.html">Contact</a>
+      <button class="theme-pill" id="themePill" aria-label="Toggle theme">●</button>
     </nav>
   </header>
 
-  <main class="main">
-    <section class="section">
-      <div class="contact-grid">
-        <div class="contact-card">
-          <h2 style="margin:0 0 8px">Let’s Talk</h2>
-          <p>Tell us about your use-case. We’ll reply within 1 business day.</p>
+  <main>
+    <section class="hero hero-compact" id="demo">
+      <h1 class="hero-title">Let’s Talk</h1>
+      <p class="hero-tag">Tell us your use-case. We’ll reply within one business day.</p>
+    </section>
 
-          <div class="badges">
-            <span class="badge">UK/EU ready</span>
-            <span class="badge">Privacy-first</span>
-            <span class="badge">Fast deploys</span>
-          </div>
-
-          <div class="kv">
-            <div class="row"><strong style="opacity:.9">Email</strong>&nbsp;&nbsp;zypheragent25@gmail.com</div>
-            <div class="row"><strong style="opacity:.9">Typical reply</strong>&nbsp;&nbsp;under 24 hours</div>
-          </div>
+    <section class="contact-grid reveal">
+      <form class="contact card" id="contactForm">
+        <label><span>Full name</span><input required name="name" autocomplete="name"></label>
+        <label><span>Work email</span><input required type="email" name="email" autocomplete="email"></label>
+        <label><span>Company</span><input name="company"></label>
+        <label><span>Website (optional)</span><input type="url" name="website" placeholder="https://…"></label>
+        <label id="voice"><span>What would you like to build?</span><textarea name="message" rows="4" placeholder="e.g. Voice Agent for bookings"></textarea></label>
+        <div class="row">
+          <button class="btn primary" type="submit">Send</button>
+          <span class="muted" id="formStatus" role="status"></span>
         </div>
+      </form>
 
-        <form class="form" onsubmit="event.preventDefault(); alert('Thanks — we will be in touch!');">
-          <div class="row">
-            <input placeholder="Full Name" required/>
-            <input placeholder="Work Email" type="email" required/>
-          </div>
-          <div class="row">
-            <input placeholder="Company"/>
-            <input placeholder="Website (optional)"/>
-          </div>
-          <textarea placeholder="What would you like to build?"></textarea>
-          <button class="btn send" type="submit">Send</button>
-        </form>
-      </div>
-
-      <div class="grid" style="margin-top:26px">
-        <div class="card"><h3>Security</h3><p>Data encrypted in transit · Signed webhooks · Access scoped.</p></div>
-        <div class="card"><h3>SLA</h3><p>99.9% target uptime · Priority support for launches.</p></div>
-        <div class="card"><h3>Integration</h3><p>Calendars, CRMs, email, payments — we connect to your stack.</p></div>
-      </div>
+      <aside class="card contact-aside">
+        <h3>Why Zypher</h3>
+        <ul>
+          <li>Privacy-first, UK/EU ready</li>
+          <li>Signed webhooks, scoped access</li>
+          <li>99.9% target uptime</li>
+          <li>Fast deploys, clear SLAs</li>
+        </ul>
+      </aside>
     </section>
   </main>
 
-  <footer class="footer"><div class="section">
-    © 2025 Zypher — Built for speed · Privacy-first · UK/EU ready
-  </div></footer>
-</div>
+  <footer class="site-footer">
+    <p>© 2025 Zypher AI • Built in London</p>
+  </footer>
 
-<script src="js/site.js"></script>
+  <script src="js/bg.js" defer></script>
+  <script src="js/site.js" defer></script>
+  <script src="js/voice.js" defer></script>
 </body>
 </html>
