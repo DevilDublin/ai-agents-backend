@@ -1,67 +1,105 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Zypher — Home</title>
-  <link rel="stylesheet" href="styles/main.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Zypher AI — Welcome</title>
+  <meta name="description" content="Zypher AI builds intelligent automation for modern businesses." />
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
 </head>
-<body>
-<div class="bg-wrap"><canvas id="net-canvas"></canvas></div>
 
-<div class="wrapper">
-  <header class="header">
-    <nav class="nav">
-      <div class="brand">
-        <div class="brand-badge"><!-- subtle Z glyph via mask -->Z</div>
-        <span>Zypher</span>
-      </div>
-      <div class="menu">
-        <a class="active" href="index.html">Home</a>
-        <a href="demos.html">Demos</a>
-        <a href="contact.html">Contact</a>
-        <div class="theme-pill">
-          <span>Theme</span>
-          <div class="theme-swatch" title="Click to change"></div>
-        </div>
-      </div>
+<body class="theme-green page-enter">
+  <!-- Page transition overlay -->
+  <div class="page-fx" aria-hidden="true"></div>
+
+  <!-- Header (keeps Base nav; minimal links) -->
+  <header class="site-header glass">
+    <a class="brand transition-link" href="index.html" aria-label="Zypher AI home">
+      <span class="logo-type" id="logoType">Zypher&nbsp;AI</span>
+    </a>
+    <nav class="site-nav">
+      <a class="transition-link" href="demos.html">Demos</a>
+      <a class="transition-link" href="studio.html">Studio</a>
+      <a class="btn ghost transition-link" href="contact.html">Contact</a>
+      <button class="theme-pill" id="themePill" aria-label="Toggle colour mode">●</button>
     </nav>
   </header>
 
-  <main class="main">
-    <section class="section hero">
-      <h1>Power Your Brand with <span class="zypher">Zypher</span></h1>
-      <p>AI agents that qualify, book, and support — fast, secure, and beautifully on-brand.</p>
-      <a class="btn" href="demos.html">Explore Demos</a>
+  <!-- Animated background (uses your Base canvas if present) -->
+  <div class="bg-arc" aria-hidden="true"></div>
 
-      <div class="metrics">
-        <div class="pill"><strong>24/7</strong><div style="opacity:.8">Availability</div></div>
-        <div class="pill"><strong>60s</strong><div style="opacity:.8">To First Lead</div></div>
-        <div class="pill"><strong>GDPR</strong><div style="opacity:.8">UK/EU Ready</div></div>
+  <main>
+    <!-- HERO -->
+    <section class="hero glass">
+      <h1 class="hero-title" aria-label="Welcome to Zypher">Welcome to <span class="accent">Zypher</span></h1>
+      <p class="hero-tag">Intelligent automation for modern businesses.</p>
+      <div class="hero-cta">
+        <a class="btn primary transition-link" href="contact.html#demo">Book a Demo</a>
+        <button class="btn flat" id="scrollExplore">Explore ↓</button>
       </div>
+    </section>
 
-      <div class="grid">
-        <div class="card">
-          <h3>Convert More</h3>
-          <p class="muted">Voice + chat flows tuned to your offer. Capture details, qualify quickly, hand off with context.</p>
+    <!-- ANALYTICS -->
+    <section class="metrics" id="analytics">
+      <article class="metric glass">
+        <div class="metric-num" data-count="12480">0</div>
+        <div class="metric-label">Automated conversations</div>
+      </article>
+      <article class="metric glass">
+        <div class="metric-num" data-count="230">0</div>
+        <div class="metric-label">Voice demos booked</div>
+      </article>
+      <article class="metric glass">
+        <div class="metric-num" data-count="1.8" data-decimal="1">0.0</div>
+        <div class="metric-label">Avg response time (s)</div>
+      </article>
+      <article class="metric glass">
+        <div class="metric-num" data-count="37">0</div>
+        <div class="metric-label">Integrations delivered</div>
+      </article>
+    </section>
+
+    <!-- NAV PANELS -->
+    <section class="panels">
+      <a class="panel glass transition-link" href="demos.html">
+        <div class="icon">⚙️</div>
+        <h3>Automation & Bots</h3>
+        <p>Explore our intelligent chat solutions.</p>
+      </a>
+      <a class="panel glass" id="voicePanel" role="button" tabindex="0" aria-controls="voiceStage">
+        <div class="icon">🎙️</div>
+        <h3>Voice Agent</h3>
+        <p>See how it works — then book a demo.</p>
+      </a>
+      <a class="panel glass transition-link" href="studio.html">
+        <div class="icon">🧩</div>
+        <h3>Zypher Studio</h3>
+        <p>Analyse, design, and automate in one workspace.</p>
+      </a>
+    </section>
+
+    <!-- VOICE AGENT SHOWCASE -->
+    <section class="voice-stage glass" id="voiceStage" aria-labelledby="voiceTitle">
+      <div class="phone-wrap">
+        <div class="phone" id="phoneObj" aria-hidden="true">
+          <div class="screen"></div>
+          <div class="ear"></div>
         </div>
-        <div class="card">
-          <h3>Integrate Fast</h3>
-          <p class="muted">Calendar, CRM, email, webhooks. Privacy-first. Built to plug into your stack.</p>
-        </div>
-        <div class="card">
-          <h3>Look Premium</h3>
-          <p class="muted">Dual-neon theming drives glows, accents, and motion — consistently on brand.</p>
-        </div>
+      </div>
+      <div class="voice-copy">
+        <h2 id="voiceTitle">Wanna try the <span class="accent">Voice Agent</span>?</h2>
+        <p>Our AI books appointments, qualifies leads and syncs with your CRM. Experience it live.</p>
+        <a class="btn primary transition-link" href="contact.html#voice">Book a Voice Demo</a>
       </div>
     </section>
   </main>
 
-  <footer class="footer"><div class="section">
-    © 2025 Zypher — Built for speed · Privacy-first · UK/EU ready
-  </div></footer>
-</div>
+  <footer class="site-footer">
+    <p>© 2025 Zypher AI • Built in London • <a class="transition-link" href="contact.html#demo">Book a Demo</a></p>
+  </footer>
 
-<script src="js/site.js"></script>
+  <script src="js/site.js" defer></script>
 </body>
 </html>
