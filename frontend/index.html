@@ -24,7 +24,17 @@
   <main>
     <section class="chip-hero">
       <div class="chip-core-hero">
-        <img src="assets/zypher-logo.svg" alt="Zypher logo" />
+        <img src="assets/zypher-logo.svg" alt="Zypher logo" onerror="this.style.display='none';document.getElementById('ZInline').style.display='block';" />
+        <svg id="ZInline" viewBox="0 0 100 100" style="display:none">
+          <defs>
+            <linearGradient id="g" x1="0" x2="1">
+              <stop offset="0" stop-color="#67ead4"/>
+              <stop offset="1" stop-color="#7ea7ff"/>
+            </linearGradient>
+          </defs>
+          <rect x="10" y="10" width="80" height="80" rx="16" fill="#0c1217" />
+          <path d="M28 72 L68 28 H34 L28 36 H58 L32 72 Z" fill="url(#g)"/>
+        </svg>
       </div>
       <h1 class="hero-title centre">Welcome to <span class="accent">Zypher</span></h1>
       <p class="hero-tag centre">Intelligent automation for modern businesses.</p>
@@ -34,7 +44,7 @@
     </section>
 
     <section class="mini-panels">
-      <a class="mini card transition-link" href="demos.html#automation"><h3>Automation & Bots</h3><p>Chat, forms and flows.</p></a>
+      <a class="mini card transition-link" href="demos.html#live"><h3>Automation & Bots</h3><p>Chat, forms and flows.</p></a>
       <a class="mini card transition-link" href="demos.html#voice"><h3>Voice Agent</h3><p>Conversations that convert.</p></a>
       <a class="mini card transition-link" href="demos.html#studio"><h3>Zypher Studio</h3><p>Analyse, design and ship.</p></a>
     </section>
@@ -45,7 +55,9 @@
     <div class="vf-drawer" id="vfDrawer">
       <div class="vf-phone">
         <div class="vf-notch"></div>
-        <div class="vf-screen"><div class="vf-text" id="vfText">Book a demo and hear it live.</div></div>
+        <div class="vf-screen">
+          <div class="vf-text" id="vfText">Book a demo and hear it live.</div>
+        </div>
       </div>
       <a class="btn primary transition-link" href="contact.html#voice">Book a Demo</a>
     </div>
