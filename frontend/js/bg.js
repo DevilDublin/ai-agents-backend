@@ -4,13 +4,8 @@
   const x = c.getContext("2d");
   let d = Math.min(2, devicePixelRatio || 1);
 
-  function size() {
-    c.width = innerWidth * d;
-    c.height = innerHeight * d;
-    x.setTransform(d, 0, 0, d, 0, 0);
-  }
-  size();
-  addEventListener("resize", size);
+  function size(){ c.width=innerWidth*d; c.height=innerHeight*d; x.setTransform(d,0,0,d,0,0) }
+  size(); addEventListener("resize", size);
 
   let t = 0;
   function beam(cx, cy, w, h, hue) {
@@ -30,17 +25,15 @@
   }
 
   function loop() {
-    const w = innerWidth;
-    const h = innerHeight;
-    const grad = x.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w * 0.8);
-    grad.addColorStop(0, "#05080b");
-    grad.addColorStop(1, "#000");
-    x.fillStyle = grad;
-    x.fillRect(0, 0, w, h);
+    const w = innerWidth, h = innerHeight;
+    const base = x.createRadialGradient(w/2, h/2, 0, w/2, h/2, Math.max(w,h)*.8);
+    base.addColorStop(0, "#05080b");
+    base.addColorStop(1, "#000");
+    x.fillStyle = base; x.fillRect(0,0,w,h);
 
-    beam(w * 0.5, h * 0.4, w * 0.4, 140, 155);
-    beam(w * 0.5, h * 0.6, w * 0.45, 120, 170);
-    beam(w * 0.5, h * 0.5, w * 0.42, 100, 140);
+    beam(w*.5, h*.45, w*.42, 140, 155);
+    beam(w*.5, h*.6,  w*.48, 120, 170);
+    beam(w*.5, h*.52, w*.44, 100, 140);
 
     t += 0.01;
     requestAnimationFrame(loop);
