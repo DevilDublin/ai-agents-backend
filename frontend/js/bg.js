@@ -3,17 +3,47 @@
   if (!c) return;
   const x = c.getContext("2d");
   let d = Math.min(2, devicePixelRatio || 1);
-  function size(){ c.width=innerWidth*d; c.height=innerHeight*d; x.setTransform(d,0,0,d,0,0) }
-  size(); addEventListener("resize", size);
-  let t=0, h=195;
-  function blob(cx,cy,r,hh,a){ const g=x.createRadialGradient(cx,cy,r*.1,cx,cy,r); g.addColorStop(0,`hsla(${hh},85%,65%,${a*.55})`); g.addColorStop(1,`hsla(${hh},85%,55%,0)`); x.fillStyle=g; x.beginPath(); x.arc(cx,cy,r,0,Math.PI*2); x.fill() }
-  function frame(){
-    const w=innerWidth, hgt=innerHeight;
-    const base=x.createRadialGradient(w*.5,hgt*.5,0,w*.5,hgt*.5,Math.max(w,hgt)*.78);
-    base.addColorStop(0,"rgba(6,10,14,.97)"); base.addColorStop(1,"rgba(4,6,10,1)");
-    x.fillStyle=base; x.fillRect(0,0,w,hgt);
-    for(let i=0;i<4;i++){ const r=260+i*120+Math.sin(t*.6+i)*46; const cx=w*(.5+Math.sin(t*.25+i*.7)*.34); const cy=hgt*(.55+Math.cos(t*.22+i*.6)*.28); blob(cx,cy,r,(h+i*48)%360,.9) }
-    h+=.06; t+=.006; requestAnimationFrame(frame)
+
+  function size() {
+    c.width = innerWidth * d;
+    c.height = innerHeight * d;
+    x.setTransform(d, 0, 0, d, 0, 0);
   }
-  frame();
+  size();
+  addEventListener("resize", size);
+
+  let t = 0;
+  function beam(cx, cy, w, h, hue) {
+    const grad = x.createLinearGradient(cx - w, cy - h, cx + w, cy + h);
+    grad.addColorStop(0, `hsla(${hue}, 100%, 60%, 0)`);
+    grad.addColorStop(0.5, `hsla(${hue}, 90%, 65%, 0.25)`);
+    grad.addColorStop(1, `hsla(${hue}, 100%, 60%, 0)`);
+    x.strokeStyle = grad;
+    x.lineWidth = 2;
+    x.beginPath();
+    for (let i = -3; i <= 3; i++) {
+      const y = cy + Math.sin(t * 2 + i) * 20;
+      x.moveTo(cx - w, y);
+      x.bezierCurveTo(cx - w / 2, y - 80, cx + w / 2, y + 80, cx + w, y);
+    }
+    x.stroke();
+  }
+
+  function loop() {
+    const w = innerWidth;
+    const h = innerHeight;
+    const grad = x.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w * 0.8);
+    grad.addColorStop(0, "#05080b");
+    grad.addColorStop(1, "#000");
+    x.fillStyle = grad;
+    x.fillRect(0, 0, w, h);
+
+    beam(w * 0.5, h * 0.4, w * 0.4, 140, 155);
+    beam(w * 0.5, h * 0.6, w * 0.45, 120, 170);
+    beam(w * 0.5, h * 0.5, w * 0.42, 100, 140);
+
+    t += 0.01;
+    requestAnimationFrame(loop);
+  }
+  loop();
 })();
