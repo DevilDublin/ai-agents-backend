@@ -13,36 +13,6 @@
   });
   addEventListener("load", () => setTimeout(() => document.body.classList.remove("page-enter"), 350));
 
-  const order = ["theme-neo","theme-green","theme-cyan","theme-purple"];
-  const pill = $("#themePill");
-  if (pill) {
-    pill.addEventListener("click", () => {
-      const idx = order.findIndex(c => document.body.classList.contains(c));
-      document.body.classList.remove(...order);
-      const next = order[(idx+1)%order.length];
-      document.body.classList.add(next);
-      try { sessionStorage.setItem("zypherTheme", next); } catch {}
-    });
-    try {
-      const saved = sessionStorage.getItem("zypherTheme");
-      if (saved) { document.body.classList.remove(...order); document.body.classList.add(saved); }
-    } catch {}
-  }
-
-  const logo = $("#logoType");
-  if (logo && !logo.dataset.typed) {
-    logo.dataset.typed = "1";
-    const text = "Zypher AI";
-    logo.textContent = "";
-    let i = 0;
-    const type = () => {
-      logo.textContent += text[i++];
-      if (i < text.length) setTimeout(type, 60);
-      else logo.style.textShadow = "0 0 24px rgba(98,212,255,.35)";
-    };
-    setTimeout(type, 120);
-  }
-
   $("#scrollExplore")?.addEventListener("click", () => {
     $("#analytics")?.scrollIntoView({ behavior: "smooth", block: "start" });
   });
@@ -81,25 +51,8 @@
     reveals.forEach(el => io.observe(el));
   }
 
-  const voicePeek = $("#voicePeek");
-  const phone = $("#phoneObj");
-  if (voicePeek && phone) {
-    const open = () => {
-      $("#voiceStage")?.scrollIntoView({ behavior: "smooth", block: "center" });
-      phone.classList.add("pop"); setTimeout(()=>phone.classList.remove("pop"), 900);
-    };
-    voicePeek.addEventListener("click", open);
-    voicePeek.addEventListener("keydown", e => { if (e.key==="Enter"||e.key===" ") { e.preventDefault(); open(); } });
-  }
-
-  const widget = $("#voiceWidget"), btn = $("#widgetBtn");
-  if (widget && btn) {
-    const toggle = () => widget.classList.toggle("open");
-    btn.addEventListener("click", toggle);
-    $("#widgetSee")?.addEventListener("click", () => {
-      widget.classList.remove("open");
-      $("#voiceStage")?.scrollIntoView({ behavior: "smooth", block: "center" });
-      phone?.classList.add("pop"); setTimeout(()=>phone?.classList.remove("pop"), 900);
-    });
+  const chip = $("#voiceChip"), btn = $("#chipBtn");
+  if (chip && btn) {
+    btn.addEventListener("click", () => chip.classList.toggle("open"));
   }
 })();
