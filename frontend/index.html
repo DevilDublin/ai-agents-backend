@@ -5,19 +5,19 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Zypher AI — Welcome</title>
   <meta name="description" content="Zypher AI delivers intelligent automation for modern businesses.">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles/main.css">
 </head>
-<body class="theme-neo page-enter">
+<body class="page-enter">
   <div class="page-fx" aria-hidden="true"></div>
   <canvas id="bg" aria-hidden="true"></canvas>
 
   <header class="site-header">
-    <a class="brand transition-link" href="index.html"><span class="logo-type" id="logoType">Zypher&nbsp;AI</span></a>
+    <a class="brand transition-link" href="index.html"><span class="logo-type">Zypher&nbsp;AI</span></a>
     <nav class="site-nav">
-      <a class="transition-link" href="demos.html">Demos</a>
-      <a class="btn ghost transition-link" href="contact.html">Contact</a>
-      <button class="theme-pill" id="themePill" aria-label="Toggle theme">●</button>
+      <a class="pill transition-link" href="index.html">Home</a>
+      <a class="pill transition-link" href="demos.html">Demos</a>
+      <a class="pill transition-link" href="contact.html">Contact</a>
     </nav>
   </header>
 
@@ -56,49 +56,38 @@
         <h3>Automation & Bots</h3>
         <p>Explore our intelligent chat solutions.</p>
       </a>
-      <button class="panel card" id="voicePeek" type="button">
-        <div class="icon">🎙️</div>
-        <h3>Voice Agent</h3>
-        <p>See a quick preview, then book a demo.</p>
-      </button>
+      <a class="panel card transition-link" href="demos.html#studio">
+        <div class="icon">🧩</div>
+        <h3>Zypher Studio</h3>
+        <p>Analyse, design and automate in one workspace.</p>
+      </a>
       <a class="panel card transition-link" href="contact.html#demo">
         <div class="icon">🤝</div>
         <h3>Partner with Zypher</h3>
         <p>Tell us your goals and timelines.</p>
       </a>
     </section>
-
-    <section class="voice-stage card reveal" id="voiceStage" aria-labelledby="voiceTitle">
-      <div class="phone-wrap">
-        <div class="phone" id="phoneObj" aria-hidden="true">
-          <div class="screen"></div>
-          <div class="ear"></div>
-        </div>
-      </div>
-      <div class="voice-copy">
-        <h2 id="voiceTitle">Wanna try the <span class="accent">Voice Agent</span>?</h2>
-        <p>It books appointments, qualifies leads and syncs with your tools. Experience it live.</p>
-        <a class="btn primary transition-link" href="contact.html#voice">Book a Voice Demo</a>
-      </div>
-    </section>
   </main>
 
-  <aside class="voice-widget" id="voiceWidget">
-    <button class="widget-btn" id="widgetBtn" aria-label="Open Voice Agent">
-      <span class="wave"></span><span class="dot"></span>
+  <aside class="voice-chip" id="voiceChip">
+    <button class="chip-btn" id="chipBtn" aria-label="Open Voice Agent">
+      <span class="chip-core"></span>
     </button>
-    <div class="widget-card card" id="widgetCard">
-      <h4>Voice Agent</h4>
-      <p>A discreet preview with a quick path to book.</p>
-      <div class="widget-actions">
-        <button class="btn flat" id="widgetSee">Preview</button>
-        <a class="btn primary transition-link" href="contact.html#voice">Book</a>
+    <div class="chip-drawer" id="chipDrawer" aria-live="polite">
+      <div class="chip-phone">
+        <div class="chip-screen"></div>
+        <div class="chip-notch"></div>
+      </div>
+      <div class="chip-copy">
+        <strong>Voice Agent</strong>
+        <p>Book a demo and hear it live.</p>
+        <a class="btn primary transition-link" href="contact.html#voice">Book a Demo</a>
       </div>
     </div>
   </aside>
 
   <footer class="site-footer">
-    <p>© 2025 Zypher AI • Built in London • <a class="transition-link" href="contact.html#demo">Book a Demo</a></p>
+    <p>© 2025 Zypher AI • Built in London</p>
   </footer>
 
   <script src="js/bg.js" defer></script>
