@@ -1,37 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Zypher AI — Welcome</title>
-  <meta name="description" content="Zypher AI builds intelligent automation for modern businesses." />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <meta name="description" content="Zypher AI delivers intelligent automation for modern businesses.">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/main.css">
 </head>
 <body class="theme-neo page-enter">
-  <!-- Page fade overlay (for smooth transitions) -->
   <div class="page-fx" aria-hidden="true"></div>
-
-  <!-- Animated background -->
   <canvas id="bg" aria-hidden="true"></canvas>
 
-  <!-- Header -->
-  <header class="site-header glass">
-    <a class="brand transition-link" href="index.html" aria-label="Zypher AI home">
-      <span class="logo-type" id="logoType">Zypher&nbsp;AI</span>
-    </a>
+  <header class="site-header">
+    <a class="brand transition-link" href="index.html"><span class="logo-type" id="logoType">Zypher&nbsp;AI</span></a>
     <nav class="site-nav">
       <a class="transition-link" href="demos.html">Demos</a>
-      <a class="transition-link" href="studio.html" style="display:none">Studio</a>
       <a class="btn ghost transition-link" href="contact.html">Contact</a>
-      <button class="theme-pill" id="themePill" aria-label="Toggle colour theme">●</button>
+      <button class="theme-pill" id="themePill" aria-label="Toggle theme">●</button>
     </nav>
   </header>
 
   <main>
-    <!-- Fullscreen hero: only this on first view -->
-    <section class="hero hero-full glass">
+    <section class="hero hero-full">
       <h1 class="hero-title">Welcome to <span class="accent">Zypher</span></h1>
       <p class="hero-tag">Intelligent automation for modern businesses.</p>
       <div class="hero-cta">
@@ -40,46 +31,44 @@
       </div>
     </section>
 
-    <!-- Everything else fades in as you scroll -->
     <section class="metrics reveal" id="analytics">
-      <article class="metric glass">
+      <article class="metric card">
         <div class="metric-num" data-count="12480">0</div>
         <div class="metric-label">Automated conversations</div>
       </article>
-      <article class="metric glass">
+      <article class="metric card">
         <div class="metric-num" data-count="230">0</div>
         <div class="metric-label">Voice demos booked</div>
       </article>
-      <article class="metric glass">
+      <article class="metric card">
         <div class="metric-num" data-count="1.8" data-decimal="1">0.0</div>
-        <div class="metric-label">Avg response time (s)</div>
+        <div class="metric-label">Average response time (s)</div>
       </article>
-      <article class="metric glass">
+      <article class="metric card">
         <div class="metric-num" data-count="37">0</div>
         <div class="metric-label">Integrations delivered</div>
       </article>
     </section>
 
     <section class="panels reveal">
-      <a class="panel glass transition-link" href="demos.html">
+      <a class="panel card transition-link" href="demos.html">
         <div class="icon">⚙️</div>
         <h3>Automation & Bots</h3>
         <p>Explore our intelligent chat solutions.</p>
       </a>
-      <button class="panel glass" id="voicePeek" type="button">
+      <button class="panel card" id="voicePeek" type="button">
         <div class="icon">🎙️</div>
         <h3>Voice Agent</h3>
-        <p>A discreet preview — then book a demo.</p>
+        <p>See a quick preview, then book a demo.</p>
       </button>
-      <a class="panel glass transition-link" href="contact.html#demo">
+      <a class="panel card transition-link" href="contact.html#demo">
         <div class="icon">🤝</div>
         <h3>Partner with Zypher</h3>
-        <p>Tell us your use-case and goals.</p>
+        <p>Tell us your goals and timelines.</p>
       </a>
     </section>
 
-    <!-- Voice Agent stage (scroll reveal) -->
-    <section class="voice-stage glass reveal" id="voiceStage" aria-labelledby="voiceTitle">
+    <section class="voice-stage card reveal" id="voiceStage" aria-labelledby="voiceTitle">
       <div class="phone-wrap">
         <div class="phone" id="phoneObj" aria-hidden="true">
           <div class="screen"></div>
@@ -88,21 +77,19 @@
       </div>
       <div class="voice-copy">
         <h2 id="voiceTitle">Wanna try the <span class="accent">Voice Agent</span>?</h2>
-        <p>Our AI books appointments, qualifies leads, and syncs with your CRM. Experience it live.</p>
+        <p>It books appointments, qualifies leads and syncs with your tools. Experience it live.</p>
         <a class="btn primary transition-link" href="contact.html#voice">Book a Voice Demo</a>
       </div>
     </section>
   </main>
 
-  <!-- Floating phone widget (discreet, slides out on click) -->
-  <aside class="voice-widget" id="voiceWidget" aria-live="polite">
-    <button class="widget-btn" id="widgetBtn" aria-label="Open Voice Agent info">
-      <span class="wave"></span>
-      <span class="dot"></span>
+  <aside class="voice-widget" id="voiceWidget">
+    <button class="widget-btn" id="widgetBtn" aria-label="Open Voice Agent">
+      <span class="wave"></span><span class="dot"></span>
     </button>
-    <div class="widget-card glass" id="widgetCard">
+    <div class="widget-card card" id="widgetCard">
       <h4>Voice Agent</h4>
-      <p>See how it works — then book a demo.</p>
+      <p>A discreet preview with a quick path to book.</p>
       <div class="widget-actions">
         <button class="btn flat" id="widgetSee">Preview</button>
         <a class="btn primary transition-link" href="contact.html#voice">Book</a>
