@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Zypher — Demos</title>
+  <title>Zypher — Contact</title>
   <link rel="stylesheet" href="styles/main.css" />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
 </head>
@@ -21,41 +21,57 @@
   </header>
 
   <main>
-    <section class="hero hero-compact glass">
-      <h1 class="hero-title">Demos</h1>
-      <p class="hero-tag">A quick taste of what we deliver.</p>
+    <section class="hero hero-compact glass" id="demo">
+      <h1 class="hero-title">Let’s Talk</h1>
+      <p class="hero-tag">Tell us your use-case. We’ll reply within one business day.</p>
     </section>
 
-    <section class="grid reveal">
-      <article class="card glass">
-        <h3>Appointment Setter</h3>
-        <p>Books meetings from your website or campaigns.</p>
-        <button class="btn flat" data-demo="appointly">Open preview</button>
-        <pre class="output" id="out-appointly"></pre>
-      </article>
+    <section class="contact-grid reveal">
+      <form class="contact glass" id="contactForm">
+        <label>
+          <span>Full name</span>
+          <input required name="name" autocomplete="name" />
+        </label>
+        <label>
+          <span>Work email</span>
+          <input required type="email" name="email" autocomplete="email" />
+        </label>
+        <label>
+          <span>Company</span>
+          <input name="company" />
+        </label>
+        <label>
+          <span>Website (optional)</span>
+          <input type="url" name="website" placeholder="https://…" />
+        </label>
+        <label id="voice">
+          <span>What would you like to build?</span>
+          <textarea name="message" rows="4" placeholder="e.g. Voice Agent for bookings"></textarea>
+        </label>
+        <div class="row">
+          <button class="btn primary" type="submit">Send</button>
+          <span class="muted" id="formStatus" role="status"></span>
+        </div>
+      </form>
 
-      <article class="card glass">
-        <h3>Real-Estate Assistant</h3>
-        <p>Answers property queries and books viewings.</p>
-        <button class="btn flat" data-demo="realestate">Open preview</button>
-        <pre class="output" id="out-realestate"></pre>
-      </article>
-
-      <article class="card glass">
-        <h3>Insurance Helper</h3>
-        <p>Guides customers and collects claim details.</p>
-        <button class="btn flat" data-demo="insurance">Open preview</button>
-        <pre class="output" id="out-insurance"></pre>
-      </article>
+      <aside class="glass contact-aside">
+        <h3>Why Zypher</h3>
+        <ul>
+          <li>Privacy-first, UK/EU ready</li>
+          <li>Signed webhooks, scoped access</li>
+          <li>99.9% target uptime</li>
+          <li>Fast deploys, clear SLAs</li>
+        </ul>
+      </aside>
     </section>
   </main>
 
   <footer class="site-footer">
-    <p>© 2025 Zypher AI • Built in London • <a class="transition-link" href="contact.html#demo">Book a Demo</a></p>
+    <p>© 2025 Zypher AI • Built in London</p>
   </footer>
 
   <script src="js/bg.js" defer></script>
   <script src="js/site.js" defer></script>
-  <script src="js/demos.js" defer></script>
+  <script src="js/voice.js" defer></script>
 </body>
 </html>
