@@ -1,12 +1,59 @@
-<section class="chip-hero">
-  <div class="chip-core-hero">
-    <img src="assets/zypher-logo.svg" alt="Zypher logo">
-  </div>
-  <h1 class="hero-title centre">Welcome to <span class="accent">Zypher</span></h1>
-  <p class="hero-tag centre">Intelligent automation for modern businesses.</p>
-  <div class="cta-row centre">
-    <a class="slider-cta transition-link" href="contact.html#demo">
-      <span>Book a Demo</span><i></i>
-    </a>
-  </div>
-</section>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Zypher AI — Welcome</title>
+  <meta name="description" content="Zypher AI delivers intelligent automation for modern businesses." />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Poppins:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body class="page-enter">
+  <div class="page-fx" aria-hidden="true"></div>
+  <canvas id="bg" aria-hidden="true"></canvas>
+
+  <header class="site-header">
+    <a class="brand transition-link" href="index.html"><span class="logo-type">Zypher&nbsp;AI</span></a>
+    <nav class="site-nav">
+      <a class="pill transition-link" href="index.html">Home</a>
+      <a class="pill transition-link" href="demos.html">Demos</a>
+      <a class="pill transition-link" href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="chip-hero">
+      <div class="chip-core-hero">
+        <img src="assets/zypher-logo.svg" alt="Zypher logo" />
+      </div>
+      <h1 class="hero-title centre">Welcome to <span class="accent">Zypher</span></h1>
+      <p class="hero-tag centre">Intelligent automation for modern businesses.</p>
+      <div class="cta-row centre">
+        <a class="slider-cta transition-link" href="contact.html#demo"><span>Book a Demo</span><i></i></a>
+      </div>
+    </section>
+
+    <section class="mini-panels">
+      <a class="mini card transition-link" href="demos.html#automation"><h3>Automation & Bots</h3><p>Chat, forms and flows.</p></a>
+      <a class="mini card transition-link" href="demos.html#voice"><h3>Voice Agent</h3><p>Conversations that convert.</p></a>
+      <a class="mini card transition-link" href="demos.html#studio"><h3>Zypher Studio</h3><p>Analyse, design and ship.</p></a>
+    </section>
+  </main>
+
+  <aside class="voice-float" id="voiceFloat">
+    <button class="vf-btn" id="vfBtn" aria-label="Open Voice Agent"><span class="vf-core"></span></button>
+    <div class="vf-drawer" id="vfDrawer">
+      <div class="vf-phone">
+        <div class="vf-notch"></div>
+        <div class="vf-screen"><div class="vf-text" id="vfText">Book a demo and hear it live.</div></div>
+      </div>
+      <a class="btn primary transition-link" href="contact.html#voice">Book a Demo</a>
+    </div>
+  </aside>
+
+  <footer class="site-footer"><p>© 2025 Zypher AI • Built in London</p></footer>
+
+  <script src="js/bg.js" defer></script>
+  <script src="js/site.js" defer></script>
+</body>
+</html>
