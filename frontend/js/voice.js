@@ -1,4 +1,3 @@
-// Contact form handler (fake submit) – replace with real endpoint if needed.
 (() => {
   const form = document.getElementById("contactForm");
   if (!form) return;
@@ -6,8 +5,9 @@
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     status.textContent = "Sending…";
-    await new Promise(r => setTimeout(r, 700)); // simulate a send
-    status.textContent = "Thanks — we’ll be in touch within one business day.";
+    await new Promise(r => setTimeout(r, 700));
+    status.textContent = "Thanks. We’ll be in touch within one business day.";
     form.reset();
   });
 })();
+
