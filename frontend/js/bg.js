@@ -1,4 +1,3 @@
-// Lightweight animated background (GPU-friendly). Replaces older bg.js safely.
 (() => {
   const c = document.getElementById("bg");
   if (!c) return;
@@ -15,23 +14,21 @@
   let t = 0, hue = 190;
   function frame() {
     const w = innerWidth, h = innerHeight;
-    // Deep vignette base
-    const g = ctx.createRadialGradient(w*0.5, h*0.5, 0, w*0.5, h*0.5, Math.max(w,h)*0.7);
-    g.addColorStop(0, "rgba(7,12,16,0.95)");
-    g.addColorStop(1, "rgba(5,7,9,1)");
+    const g = ctx.createRadialGradient(w*.5, h*.5, 0, w*.5, h*.5, Math.max(w,h)*.75);
+    g.addColorStop(0, "rgba(8,12,16,0.95)");
+    g.addColorStop(1, "rgba(5,7,10,1)");
     ctx.fillStyle = g; ctx.fillRect(0,0,w,h);
 
-    // Moving light arcs
     for (let i=0;i<3;i++){
-      const r = 200 + i*120 + Math.sin(t*0.6 + i)*40;
-      const x = w*(0.5 + Math.sin(t*0.4 + i)*0.25);
-      const y = h*(0.5 + Math.cos(t*0.3 + i)*0.25);
+      const r = 220 + i*140 + Math.sin(t*.6 + i)*50;
+      const x = w*(.5 + Math.sin(t*.35 + i)*.26);
+      const y = h*(.5 + Math.cos(t*.28 + i)*.22);
       ctx.beginPath();
       ctx.arc(x, y, r, 0, Math.PI*2);
-      ctx.fillStyle = `hsla(${(hue+i*40)%360}, 90%, 60%, 0.06)`;
+      ctx.fillStyle = `hsla(${(hue+i*60)%360}, 90%, 60%, 0.055)`;
       ctx.fill();
     }
-    hue += 0.08; t += 0.006;
+    hue += .08; t += .006;
     requestAnimationFrame(frame);
   }
   frame();
