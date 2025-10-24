@@ -1,103 +1,111 @@
-/* ===== Theme, background, and shared helpers ===== */
-(() => {
-  const PALETTES = {
-    neonPurple: ['#7a5cff', '#ff4fd8'],
-    neonGreen:  ['#00ffa3', '#36f3ff'],
-    neonBlue:   ['#5cc2ff', '#7a5cff'],
-    neonOrange: ['#ff7a34', '#ff4fd8'],
-    neonLime:   ['#41ff8a', '#d3ff3a']
-  };
+/* Zypher AI — Site interactions (British English, human-readable) */
 
-  // Apply palette to CSS variables
-  function applyTheme(name){
-    const [a,b] = PALETTES[name] || PALETTES.neonPurple;
-    document.documentElement.style.setProperty('--neonA', a);
-    document.documentElement.style.setProperty('--neonB', b);
-    localStorage.setItem('zypher_theme', name);
-  }
+(function () {
+  const $ = (s, root=document) => root.querySelector(s);
+  const $$ = (s, root=document) => [...root.querySelectorAll(s)];
 
-  // Theme pill
-  function initThemePill(){
-    const pill = document.querySelector('.theme-pill');
-    if(!pill) return;
-    const menu = document.querySelector('#themeMenu');
-    const saved = localStorage.getItem('zypher_theme') || 'neonPurple';
-    applyTheme(saved);
+  // ---- Page transition (applies to all pages)
+  $$(".transition-link").forEach(a => {
+    a.addEventListener("click", (e) => {
+      // Allow anchor-only scroll within the same page
+      const href = a.getAttribute("href") || "";
+      const isSamePageAnchor = href.startsWith("#");
+      if (isSamePageAnchor) return;
 
-    pill.addEventListener('click', () => {
-      menu?.classList.toggle('open');
+      e.preventDefault();
+      document.body.classList.add("leaving");
+      setTimeout(() => { window.location.href = href; }, 280);
     });
-
-    menu?.addEventListener('click', (e) => {
-      const li = e.target.closest('button[data-theme]');
-      if(!li) return;
-      applyTheme(li.dataset.theme);
-      menu.classList.remove('open');
-    });
-  }
-
-  // Animated network background
-  function initBackground(){
-    const canvas = document.getElementById('bg-net');
-    if(!canvas) return;
-    const ctx = canvas.getContext('2d', { alpha:true });
-    const DPR = Math.min(2, window.devicePixelRatio || 1);
-
-    function resize(){
-      canvas.width = Math.floor(canvas.clientWidth * DPR);
-      canvas.height = Math.floor(canvas.clientHeight * DPR);
-      ctx.setTransform(DPR,0,0,DPR,0,0);
-    }
-    resize();
-    window.addEventListener('resize', resize, { passive:true });
-
-    const dots = Array.from({length: 68}, () => ({
-      x: Math.random()*canvas.clientWidth,
-      y: Math.random()*canvas.clientHeight,
-      vx:(Math.random()-.5)*0.6,
-      vy:(Math.random()-.5)*0.6
-    }));
-
-    function step(){
-      ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
-
-      // Lines
-      ctx.strokeStyle = 'rgba(255,255,255,.08)';
-      ctx.lineWidth = 1;
-      for(let i=0;i<dots.length;i++){
-        for(let j=i+1;j<dots.length;j++){
-          const dx = dots[i].x - dots[j].x;
-          const dy = dots[i].y - dots[j].y;
-          const d2 = dx*dx + dy*dy;
-          if(d2 < 170*170){
-            ctx.globalAlpha = 1 - (Math.sqrt(d2)/170);
-            ctx.beginPath();
-            ctx.moveTo(dots[i].x, dots[i].y);
-            ctx.lineTo(dots[j].x, dots[j].y);
-            ctx.stroke();
-          }
-        }
-      }
-      ctx.globalAlpha = 1;
-
-      // Nodes
-      for(const p of dots){
-        p.x += p.vx; p.y += p.vy;
-        if(p.x<0||p.x>canvas.clientWidth) p.vx*=-1;
-        if(p.y<0||p.y>canvas.clientHeight) p.vy*=-1;
-        ctx.fillStyle='rgba(255,255,255,.5)';
-        ctx.fillRect(p.x, p.y, 1, 1);
-      }
-      requestAnimationFrame(step);
-    }
-    step();
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    initThemePill();
-    initBackground();
   });
 
-  // Expose a small API used by demos/voice
-  window.ZypherTheme = { applyTheme };
+  // Remove enter class after load
+  window.addEventListener("load", () => {
+    setTimeout(() => document.body.classList.remove("page-enter"), 350);
+  });
+
+  // ---- Smooth scroll for "Explore" button
+  const explore = $("#scrollExplore");
+  if (explore) {
+    explore.addEventListener("click", () => {
+      $("#analytics")?.scrollIntoView({ behaviour: "smooth", block: "start" });
+    });
+  }
+
+  // ---- Metrics count-up when visible
+  const nums = $$(".metric-num");
+  if (nums.length) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const el = e.target;
+        io.unobserve(el);
+        const target = parseFloat(el.dataset.count || "0");
+        const decimals = parseInt(el.dataset.decimal || "0", 10);
+        const start = performance.now(), dur = 1200 + Math.random()*600;
+        function tick(t) {
+          const k = Math.min(1, (t - start) / dur);
+          const eased = k<.5 ? 2*k*k : -1+(4-2*k)*k;
+          const val = target * eased;
+          el.textContent = val.toFixed(decimals);
+          if (k < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    }, { threshold: .3 });
+    nums.forEach(n => io.observe(n));
+  }
+
+  // ---- Theme pill (cycles accent sets)
+  const theme = $("#themePill");
+  if (theme) {
+    theme.addEventListener("click", () => {
+      const order = ["theme-green", "theme-cyan", "theme-purple"];
+      const cur = order.findIndex(cls => document.body.classList.contains(cls));
+      document.body.classList.remove(...order);
+      const next = order[(cur + 1) % order.length];
+      document.body.classList.add(next);
+      // Persist per tab
+      try { sessionStorage.setItem("zypherTheme", next); } catch {}
+    });
+    // Load persisted theme
+    try {
+      const saved = sessionStorage.getItem("zypherTheme");
+      if (saved) document.body.classList.add(saved);
+      else document.body.classList.add("theme-green");
+    } catch {
+      document.body.classList.add("theme-green");
+    }
+  }
+
+  // ---- Phone object interaction
+  const voicePanel = $("#voicePanel");
+  const phone = $("#phoneObj");
+  if (voicePanel && phone) {
+    const openStage = () => {
+      phone.classList.add("pop");
+      $("#voiceStage")?.scrollIntoView({ behaviour: "smooth", block: "center" });
+      // brief pop effect
+      setTimeout(() => phone.classList.remove("pop"), 900);
+    };
+    voicePanel.addEventListener("click", openStage);
+    voicePanel.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openStage(); }
+    });
+  }
+
+  // ---- Animated text logo (lightweight type-on)
+  const logo = $("#logoType");
+  if (logo && !logo.dataset.typed) {
+    logo.dataset.typed = "1";
+    const text = "Zypher AI";
+    let i = 0;
+    const base = logo.textContent;
+    logo.textContent = "";
+    function type() {
+      logo.textContent += text[i++];
+      if (i < text.length) setTimeout(type, 60);
+      else logo.style.textShadow = `0 0 24px rgba(31,226,154,.35)`;
+    }
+    setTimeout(type, 150);
+  }
 })();
