@@ -1,90 +1,61 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Zypher — Demos</title>
-  <link rel="stylesheet" href="./styles/main.css"/>
+  <link rel="stylesheet" href="styles/main.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
 </head>
-<body>
-<div class="page">
+<body class="theme-neo page-enter">
+  <div class="page-fx" aria-hidden="true"></div>
+  <canvas id="bg" aria-hidden="true"></canvas>
 
-  <!-- Animated background -->
-  <div class="bg-wrap">
-    <div class="bg-grid"></div>
-    <canvas id="bg-net"></canvas>
-  </div>
+  <header class="site-header glass">
+    <a class="brand transition-link" href="index.html"><span class="logo-type">Zypher&nbsp;AI</span></a>
+    <nav class="site-nav">
+      <a class="transition-link" href="demos.html">Demos</a>
+      <a class="btn ghost transition-link" href="contact.html">Contact</a>
+      <button class="theme-pill" id="themePill" aria-label="Toggle colour theme">●</button>
+    </nav>
+  </header>
 
-  <!-- NAV -->
-  <nav class="nav">
-    <div class="nav-inner">
-      <div class="brand">
-        <div class="brand-badge">Z</div>
-        Zypher
-      </div>
-      <div class="nav-links">
-        <a href="./index.html">Home</a>
-        <a href="./demos.html" style="text-shadow:0 0 12px var(--neonB);">Demos</a>
-        <a href="./contact.html">Contact</a>
-        <div class="theme-pill" title="Theme">
-          <div class="theme-dot"></div>
-        </div>
-        <!-- menu -->
-        <div id="themeMenu" style="position:absolute; right:20px; top:58px; display:none" class="panel">
-          <div style="display:flex; gap:8px; flex-wrap:wrap; max-width:260px">
-            <button data-theme="neonPurple" class="badge">Purple</button>
-            <button data-theme="neonGreen"  class="badge">Green</button>
-            <button data-theme="neonBlue"   class="badge">Blue</button>
-            <button data-theme="neonOrange" class="badge">Orange</button>
-            <button data-theme="neonLime"   class="badge">Lime</button>
-          </div>
-        </div>
-        <script>
-          // tiny show/hide
-          const menu = document.getElementById('themeMenu');
-          const pill = document.querySelector('.theme-pill');
-          ['click','touchend'].forEach(ev=>{
-            pill?.addEventListener(ev, e=>{ e.stopPropagation(); menu.style.display = (menu.style.display==='block'?'none':'block'); });
-            document.addEventListener(ev, e=>{ if(!menu.contains(e.target)) menu.style.display='none'; });
-          });
-        </script>
-      </div>
-    </div>
-  </nav>
+  <main>
+    <section class="hero hero-compact glass">
+      <h1 class="hero-title">Demos</h1>
+      <p class="hero-tag">A quick taste of what we deliver.</p>
+    </section>
 
-  <!-- INTRO SHAPE -->
-  <section id="demoIntro" class="demo-intro">
-    <div class="glyph" id="introGlyph" aria-role="button">
-      <h2>Click me!</h2>
-    </div>
-  </section>
+    <section class="grid reveal">
+      <article class="card glass">
+        <h3>Appointment Setter</h3>
+        <p>Books meetings from your website or campaigns.</p>
+        <button class="btn flat" data-demo="appointly">Open preview</button>
+        <pre class="output" id="out-appointly"></pre>
+      </article>
 
-  <!-- DEMO STAGE (hidden until intro is clicked) -->
-  <main id="demoStage" class="demo-stage">
-    <div class="selector-tip">
-      Use <strong>← / →</strong> or <strong>A / D</strong> to switch • Press <strong>Enter</strong> to preview • Press <strong>Enter</strong> again to open chat • <strong>Esc</strong> to go back.
-    </div>
+      <article class="card glass">
+        <h3>Real-Estate Assistant</h3>
+        <p>Answers property queries and books viewings.</p>
+        <button class="btn flat" data-demo="realestate">Open preview</button>
+        <pre class="output" id="out-realestate"></pre>
+      </article>
 
-    <!-- Left: green “decrypted” panel (populated by demos.js) -->
-    <section id="botBrief" class="panel" style="margin-top:18px"></section>
-
-    <!-- Right: chat mount (opened by demos.js) -->
-    <section id="chatMount" class="panel" style="margin-top:18px"></section>
+      <article class="card glass">
+        <h3>Insurance Helper</h3>
+        <p>Guides customers and collects claim details.</p>
+        <button class="btn flat" data-demo="insurance">Open preview</button>
+        <pre class="output" id="out-insurance"></pre>
+      </article>
+    </section>
   </main>
 
-  <footer class="footer">
-    © 2025 Zypher — Built for speed · Privacy-first · UK/EU ready
+  <footer class="site-footer">
+    <p>© 2025 Zypher AI • Built in London • <a class="transition-link" href="contact.html#demo">Book a Demo</a></p>
   </footer>
-</div>
 
-<script src="./js/site.js"></script>
-<script src="./js/demos.js"></script>
-<script src="./js/voice.js"></script>
-  <body class="theme-green page-enter">
-  <div class="page-fx" aria-hidden="true"></div>
-  <!-- ...your page content... -->
+  <script src="js/bg.js" defer></script>
   <script src="js/site.js" defer></script>
-</body>
-
+  <script src="js/demos.js" defer></script>
 </body>
 </html>
