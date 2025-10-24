@@ -1,4 +1,3 @@
-// Minimal demo previews (no backend required). Swap with your endpoints later.
 (() => {
   const $ = (s, r=document) => r.querySelector(s);
   const $$ = (s, r=document) => [...r.querySelectorAll(s)];
@@ -10,9 +9,9 @@
       out.textContent = "Loading preview…";
       await new Promise(r => setTimeout(r, 500));
       const replies = {
-        appointly: "Hi! I can book a slot this Thursday at 2pm or Friday at 10am. What works best?",
-        realestate: "This 2-bed flat has south-facing windows and is available from 12 December.",
-        insurance: "Please share your policy number and a brief note on the incident to start your claim."
+        appointly: "Hi. I can book Thursday 2pm or Friday 10am. What suits you?",
+        realestate: "This 2-bed has south-facing windows and is available from 12 December.",
+        insurance: "Please share your policy number and a brief description of the incident."
       };
       out.textContent = "Preview:\n" + (replies[key] || "Coming soon.");
     });
