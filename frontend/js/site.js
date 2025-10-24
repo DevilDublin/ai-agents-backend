@@ -1,13 +1,11 @@
-// Zypher site interactions (British English, human readable)
 (() => {
   const $ = (s, r=document) => r.querySelector(s);
   const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 
-  // Smooth page transitions
   $$(".transition-link").forEach(a => {
-    a.addEventListener("click", (e) => {
+    a.addEventListener("click", e => {
       const href = a.getAttribute("href") || "";
-      if (href.startsWith("#")) return; // allow same-page anchors
+      if (href.startsWith("#")) return;
       e.preventDefault();
       document.body.classList.add("leaving");
       setTimeout(() => { window.location.href = href; }, 260);
@@ -15,14 +13,13 @@
   });
   addEventListener("load", () => setTimeout(() => document.body.classList.remove("page-enter"), 350));
 
-  // Theme pill
-  const order = ["theme-neo", "theme-green", "theme-cyan", "theme-purple"];
+  const order = ["theme-neo","theme-green","theme-cyan","theme-purple"];
   const pill = $("#themePill");
   if (pill) {
     pill.addEventListener("click", () => {
-      const cur = order.findIndex(c => document.body.classList.contains(c));
+      const idx = order.findIndex(c => document.body.classList.contains(c));
       document.body.classList.remove(...order);
-      const next = order[(cur+1) % order.length];
+      const next = order[(idx+1)%order.length];
       document.body.classList.add(next);
       try { sessionStorage.setItem("zypherTheme", next); } catch {}
     });
@@ -32,7 +29,6 @@
     } catch {}
   }
 
-  // Animated text logo
   const logo = $("#logoType");
   if (logo && !logo.dataset.typed) {
     logo.dataset.typed = "1";
@@ -47,12 +43,10 @@
     setTimeout(type, 120);
   }
 
-  // Explore scroll
   $("#scrollExplore")?.addEventListener("click", () => {
     $("#analytics")?.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
-  // Count-ups (start when visible)
   const nums = $$(".metric-num");
   if (nums.length) {
     const io = new IntersectionObserver((entries) => {
@@ -74,7 +68,6 @@
     nums.forEach(n => io.observe(n));
   }
 
-  // Scroll reveals
   const reveals = $$(".reveal");
   if (reveals.length) {
     const io = new IntersectionObserver((entries) => {
@@ -88,7 +81,6 @@
     reveals.forEach(el => io.observe(el));
   }
 
-  // Voice panel “peek” scroll
   const voicePeek = $("#voicePeek");
   const phone = $("#phoneObj");
   if (voicePeek && phone) {
@@ -100,9 +92,8 @@
     voicePeek.addEventListener("keydown", e => { if (e.key==="Enter"||e.key===" ") { e.preventDefault(); open(); } });
   }
 
-  // Floating phone widget
-  const widget = $("#voiceWidget"), btn = $("#widgetBtn"), card = $("#widgetCard");
-  if (widget && btn && card) {
+  const widget = $("#voiceWidget"), btn = $("#widgetBtn");
+  if (widget && btn) {
     const toggle = () => widget.classList.toggle("open");
     btn.addEventListener("click", toggle);
     $("#widgetSee")?.addEventListener("click", () => {
