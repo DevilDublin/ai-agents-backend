@@ -4,19 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Zypher — Demos</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles/main.css">
 </head>
-<body class="theme-neo page-enter">
+<body class="page-enter">
   <div class="page-fx" aria-hidden="true"></div>
   <canvas id="bg" aria-hidden="true"></canvas>
 
   <header class="site-header">
     <a class="brand transition-link" href="index.html"><span class="logo-type">Zypher&nbsp;AI</span></a>
     <nav class="site-nav">
-      <a class="transition-link" href="demos.html">Demos</a>
-      <a class="btn ghost transition-link" href="contact.html">Contact</a>
-      <button class="theme-pill" id="themePill" aria-label="Toggle theme">●</button>
+      <a class="pill transition-link" href="index.html">Home</a>
+      <a class="pill transition-link" href="demos.html">Demos</a>
+      <a class="pill transition-link" href="contact.html">Contact</a>
     </nav>
   </header>
 
@@ -26,32 +26,54 @@
       <p class="hero-tag">A quick taste of what we deliver.</p>
     </section>
 
-    <section class="grid reveal">
-      <article class="card">
-        <h3>Appointment Setter</h3>
-        <p>Books meetings from your site or campaigns.</p>
-        <button class="btn flat" data-demo="appointly">Open preview</button>
-        <pre class="output" id="out-appointly"></pre>
+    <section class="suite reveal">
+      <article class="tile card" data-key="flow">
+        <div class="tile-icon">🔗</div><h3>Zypher Flow</h3><p>Automate anything with visual chains.</p>
       </article>
-
-      <article class="card">
-        <h3>Real-Estate Assistant</h3>
-        <p>Answers property questions and books viewings.</p>
-        <button class="btn flat" data-demo="realestate">Open preview</button>
-        <pre class="output" id="out-realestate"></pre>
+      <article class="tile card" data-key="insight">
+        <div class="tile-icon">📊</div><h3>Zypher Insight</h3><p>Data that speaks with clear actions.</p>
       </article>
-
-      <article class="card">
-        <h3>Insurance Helper</h3>
-        <p>Guides customers and collects claim details.</p>
-        <button class="btn flat" data-demo="insurance">Open preview</button>
-        <pre class="output" id="out-insurance"></pre>
+      <article class="tile card" data-key="voice">
+        <div class="tile-icon">🎙️</div><h3>Zypher Voice</h3><p>Conversations that convert.</p>
+      </article>
+      <article class="tile card" data-key="docs">
+        <div class="tile-icon">📑</div><h3>Zypher Docs</h3><p>Read, reason and reveal key info.</p>
+      </article>
+      <article class="tile card" data-key="persona">
+        <div class="tile-icon">🧠</div><h3>Zypher Persona</h3><p>Your brand, every tone.</p>
+      </article>
+      <article class="tile card" data-key="research">
+        <div class="tile-icon">🔎</div><h3>Zypher Research</h3><p>Answers, not noise.</p>
+      </article>
+      <article class="tile card" data-key="designer">
+        <div class="tile-icon">🎨</div><h3>Zypher Designer</h3><p>Visuals with vision.</p>
+      </article>
+      <article class="tile card" data-key="audit">
+        <div class="tile-icon">🧰</div><h3>Zypher Audit</h3><p>Fix what matters on your site.</p>
+      </article>
+      <article class="tile card" data-key="secure">
+        <div class="tile-icon">🔐</div><h3>Zypher Secure</h3><p>Trust through tech.</p>
+      </article>
+      <article class="tile card" data-key="draft">
+        <div class="tile-icon">📝</div><h3>Zypher Draft</h3><p>Documents on demand.</p>
       </article>
     </section>
   </main>
 
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal-inner card">
+      <button class="modal-close" id="modalClose" aria-label="Close">×</button>
+      <h3 id="modalTitle">Preview</h3>
+      <p id="modalText"></p>
+      <div class="modal-actions">
+        <a class="btn flat" href="index.html">Home</a>
+        <a class="btn primary transition-link" href="contact.html#demo">Book a Demo</a>
+      </div>
+    </div>
+  </div>
+
   <footer class="site-footer">
-    <p>© 2025 Zypher AI • Built in London • <a class="transition-link" href="contact.html#demo">Book a Demo</a></p>
+    <p>© 2025 Zypher AI • Built in London</p>
   </footer>
 
   <script src="js/bg.js" defer></script>
