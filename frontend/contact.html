@@ -4,19 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Zypher — Contact</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles/main.css">
 </head>
-<body class="theme-neo page-enter">
+<body class="page-enter">
   <div class="page-fx" aria-hidden="true"></div>
   <canvas id="bg" aria-hidden="true"></canvas>
 
   <header class="site-header">
     <a class="brand transition-link" href="index.html"><span class="logo-type">Zypher&nbsp;AI</span></a>
     <nav class="site-nav">
-      <a class="transition-link" href="demos.html">Demos</a>
-      <a class="btn ghost transition-link" href="contact.html">Contact</a>
-      <button class="theme-pill" id="themePill" aria-label="Toggle theme">●</button>
+      <a class="pill transition-link" href="index.html">Home</a>
+      <a class="pill transition-link" href="demos.html">Demos</a>
+      <a class="pill transition-link" href="contact.html">Contact</a>
     </nav>
   </header>
 
@@ -30,8 +30,10 @@
       <form class="contact card" id="contactForm">
         <label><span>Full name</span><input required name="name" autocomplete="name"></label>
         <label><span>Work email</span><input required type="email" name="email" autocomplete="email"></label>
-        <label><span>Company</span><input name="company"></label>
-        <label><span>Website (optional)</span><input type="url" name="website" placeholder="https://…"></label>
+        <div class="row two">
+          <label><span>Company</span><input name="company"></label>
+          <label><span>Website (optional)</span><input type="url" name="website" placeholder="https://…"></label>
+        </div>
         <label id="voice"><span>What would you like to build?</span><textarea name="message" rows="4" placeholder="e.g. Voice Agent for bookings"></textarea></label>
         <div class="row">
           <button class="btn primary" type="submit">Send</button>
