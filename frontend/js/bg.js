@@ -8,35 +8,45 @@
   size(); addEventListener("resize", size);
 
   let t = 0;
-  function beam(cx, cy, w, h, hue) {
-    const grad = x.createLinearGradient(cx - w, cy - h, cx + w, cy + h);
-    grad.addColorStop(0, `hsla(${hue}, 100%, 60%, 0)`);
-    grad.addColorStop(0.5, `hsla(${hue}, 90%, 65%, 0.25)`);
-    grad.addColorStop(1, `hsla(${hue}, 100%, 60%, 0)`);
-    x.strokeStyle = grad;
-    x.lineWidth = 2;
+  function beam(cx, cy, w, hue){
+    const g = x.createLinearGradient(cx-w, cy, cx+w, cy);
+    g.addColorStop(0, `hsla(${hue},95%,62%,0)`);
+    g.addColorStop(.5, `hsla(${hue},95%,62%,.35)`);
+    g.addColorStop(1, `hsla(${hue},95%,62%,0)`);
+    x.strokeStyle = g; x.lineWidth = 2;
     x.beginPath();
-    for (let i = -3; i <= 3; i++) {
-      const y = cy + Math.sin(t * 2 + i) * 20;
-      x.moveTo(cx - w, y);
-      x.bezierCurveTo(cx - w / 2, y - 80, cx + w / 2, y + 80, cx + w, y);
+    for(let i=-2;i<=2;i++){
+      const y = cy + Math.sin(t*2 + i)*22;
+      x.moveTo(cx-w, y);
+      x.bezierCurveTo(cx-w*.4, y-90, cx+w*.4, y+90, cx+w, y);
     }
     x.stroke();
   }
+  function arcs(y){
+    const w=innerWidth, h=innerHeight, rows=8;
+    for(let i=0;i<rows;i++){
+      const k=i/rows, y0 = y + i*18 + Math.sin(t*1.2+i)*3;
+      const g = x.createLinearGradient(0,y0,w,y0);
+      g.addColorStop(0, "rgba(9, 120, 90, 0)");
+      g.addColorStop(.4, "rgba(10,229,161,.22)");
+      g.addColorStop(.6, "rgba(10,229,161,.22)");
+      g.addColorStop(1, "rgba(9, 120, 90, 0)");
+      x.strokeStyle=g; x.lineWidth=2;
+      x.beginPath(); x.moveTo(-20,y0); x.lineTo(w+20,y0); x.stroke();
+    }
+  }
+  function loop(){
+    const w=innerWidth, h=innerHeight;
+    const base=x.createRadialGradient(w*.5,h*.5,0,w*.5,h*.5,Math.max(w,h)*.85);
+    base.addColorStop(0,"#05090e"); base.addColorStop(1,"#010407");
+    x.fillStyle=base; x.fillRect(0,0,w,h);
 
-  function loop() {
-    const w = innerWidth, h = innerHeight;
-    const base = x.createRadialGradient(w/2, h/2, 0, w/2, h/2, Math.max(w,h)*.8);
-    base.addColorStop(0, "#05080b");
-    base.addColorStop(1, "#000");
-    x.fillStyle = base; x.fillRect(0,0,w,h);
+    beam(w*.5, h*.45, w*.42, 155);
+    beam(w*.5, h*.58, w*.48, 165);
+    beam(w*.5, h*.52, w*.44, 140);
+    arcs(h*.88);
 
-    beam(w*.5, h*.45, w*.42, 140, 155);
-    beam(w*.5, h*.6,  w*.48, 120, 170);
-    beam(w*.5, h*.52, w*.44, 100, 140);
-
-    t += 0.01;
-    requestAnimationFrame(loop);
+    t+=0.01; requestAnimationFrame(loop);
   }
   loop();
 })();
