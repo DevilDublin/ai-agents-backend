@@ -10,38 +10,18 @@
   <link rel="stylesheet" href="./styles/main.css" />
 </head>
 <body class="no-scroll">
-  <!-- Boot/Activation Overlay (plays once) -->
-  <div id="boot" aria-live="polite" aria-label="Zypher system initialization" role="status">
-    <!-- LOGO + TECH BRANCHES (SVG animation) -->
-    <div class="boot-logo-wrap">
-      <!-- Replace inner SVG path with your actual logo if you have it -->
-      <svg class="boot-logo" viewBox="0 0 120 120" aria-hidden="true">
-        <defs>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="2.5" result="blur"/>
-            <feMerge>
-              <feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-          <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#66f7d1"/><stop offset="100%" stop-color="#5ab8ff"/>
-          </linearGradient>
-        </defs>
-        <!-- stylised Z bolt -->
-        <path d="M20 25 L85 25 L50 60 L100 60 L35 105 L60 70 L15 70 Z"
-              fill="none" stroke="url(#grad)" stroke-width="5" filter="url(#glow)"/>
-      </svg>
-
-      <!-- branching tech lines -->
-      <svg class="boot-branches" viewBox="0 0 600 600" aria-hidden="true">
-        <g stroke="#66f7d1" stroke-opacity="0.65" stroke-width="1.5" fill="none" stroke-linecap="round">
-          <!-- 6 animated branches -->
-          <path class="branch" d="M300 300 C320 260, 360 240, 420 230" />
-          <path class="branch" d="M300 300 C280 260, 250 220, 210 190" />
-          <path class="branch" d="M300 300 C310 340, 340 380, 390 410" />
-          <path class="branch" d="M300 300 C270 330, 230 360, 190 370" />
-          <path class="branch" d="M300 300 C330 300, 370 290, 420 270" />
-          <path class="branch" d="M300 300 C285 285, 260 260, 230 240" />
+  <!-- Intro (plays for new users and again after 24h) -->
+  <div id="boot" role="status" aria-live="polite" aria-label="Zypher system initialization">
+    <div class="boot-core">
+      <!-- ZYPHER word -->
+      <h1 class="boot-word" aria-hidden="true">Z Y P H E R</h1>
+      <!-- Branch lines from word to selector positions -->
+      <svg class="boot-branches" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <g stroke="#66f7d1" stroke-opacity="0.75" stroke-width="1.6" fill="none" stroke-linecap="round">
+          <path class="branch b1" d="M600 300 C 640 280, 720 260, 820 250" />
+          <path class="branch b2" d="M600 300 C 560 280, 480 260, 380 250" />
+          <path class="branch b3" d="M600 300 C 650 320, 740 360, 860 380" />
+          <path class="branch b4" d="M600 300 C 550 320, 460 360, 340 380" />
         </g>
       </svg>
     </div>
@@ -57,33 +37,42 @@
     <button id="skipIntro" class="btn-skip" aria-label="Skip intro">Skip</button>
   </div>
 
-  <!-- Global background -->
-  <div class="bg fx-grid" aria-hidden="true">
-    <canvas id="gridCanvas" aria-hidden="true"></canvas>
-    <div class="bg-overlay"></div>
+  <!-- Background -->
+  <div class="bg">
+    <canvas id="bgParticles" aria-hidden="true"></canvas>
+    <div class="bg-aurora" aria-hidden="true"></div>
   </div>
 
-  <!-- HOMEPAGE: HOLOGRAPHIC HUB (no top nav) -->
+  <!-- HOME HUB: Tilted 3D selector (no nav) -->
   <main id="hub" class="hub" aria-live="polite">
     <div class="hub-center">
       <div class="hub-logo" aria-label="Zypher logo"></div>
       <p class="tagline">Automation. Intelligence. Precision.</p>
     </div>
 
-    <div class="hub-orbit">
-      <button class="hex" data-go="demos.html" aria-label="Open AI Demos">
-        <span class="hex-icon">🤖</span><span class="hex-label">Demos</span>
+    <!-- Coverflow / Selector -->
+    <section class="selector" aria-label="Primary modules">
+      <button class="card3d" data-go="demos.html" aria-label="AI Demos">
+        <span class="card-glyph">🤖</span>
+        <span class="card-title">AI Demos</span>
+        <span class="card-sub">Live previews</span>
       </button>
-      <button class="hex" data-go="demos.html#voice" aria-label="Open Voice Agents">
-        <span class="hex-icon">🗣️</span><span class="hex-label">Voice</span>
+      <button class="card3d" data-go="demos.html#voice" aria-label="Voice Agents">
+        <span class="card-glyph">🗣️</span>
+        <span class="card-title">Voice Agents</span>
+        <span class="card-sub">Conversational</span>
       </button>
-      <button class="hex" data-go="demos.html#analytics" aria-label="Open Analytics">
-        <span class="hex-icon">📈</span><span class="hex-label">Analytics</span>
+      <button class="card3d" data-go="demos.html#analytics" aria-label="Analytics">
+        <span class="card-glyph">📈</span>
+        <span class="card-title">Analytics</span>
+        <span class="card-sub">Dashboards</span>
       </button>
-      <button class="hex" data-go="contact.html" aria-label="Contact Zypher">
-        <span class="hex-icon">📞</span><span class="hex-label">Contact</span>
+      <button class="card3d" data-go="contact.html" aria-label="Contact">
+        <span class="card-glyph">📞</span>
+        <span class="card-title">Contact</span>
+        <span class="card-sub">Secure transmission</span>
       </button>
-    </div>
+    </section>
 
     <footer class="site-footer" data-visible="false">
       <p>© <span id="year"></span> Zypher Agents. All rights reserved.</p>
@@ -91,6 +80,5 @@
   </main>
 
   <script src="./js/site.js" defer></script>
-  <script src="./js/voice.js" defer></script>
 </body>
 </html>
