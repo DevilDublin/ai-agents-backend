@@ -6,6 +6,11 @@
   <title>Zypher Agents — Demos Command Deck</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles/main.css" />
+  <style>
+    .home-pill{position:fixed;left:18px;top:18px;z-index:50;padding:8px 12px;border-radius:999px;
+      background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.16);color:var(--text);text-decoration:none}
+    .home-pill:hover{background:rgba(255,255,255,0.1)}
+  </style>
 </head>
 <body>
   <div class="bg fx-grid" aria-hidden="true">
@@ -13,29 +18,13 @@
     <div class="bg-overlay"></div>
   </div>
 
-  <header class="site-header" data-visible="true">
-    <div class="brand">
-      <div class="brand-mark" aria-hidden="true"></div>
-      <span class="brand-name">Zypher Agents</span>
-    </div>
-    <nav class="site-nav" aria-label="Main">
-      <a href="./index.html" class="nav-link" data-route="home">Interface</a>
-      <a href="./demos.html" class="nav-link active" data-route="demos">Demos</a>
-      <a href="./contact.html" class="nav-link" data-route="contact">Contact</a>
-    </nav>
-    <div class="actions">
-      <button id="themeToggle" class="icon-btn" aria-label="Toggle theme" title="Toggle theme">
-        <span class="icon-sun" aria-hidden="true"></span>
-      </button>
-    </div>
-  </header>
+  <a href="./index.html" class="home-pill">← Interface</a>
 
   <main class="deck" aria-live="polite">
     <h1 class="deck-title">Command Deck</h1>
     <p class="deck-sub">Explore industry-ready agents. Live previews open as holographic terminals.</p>
 
     <section class="deck-grid" role="list">
-      <!-- LIVE DEMOS -->
       <article class="card live" role="listitem">
         <div class="card-head">
           <span class="badge">LIVE</span>
@@ -58,7 +47,6 @@
         </div>
       </article>
 
-      <!-- REQUEST ACCESS / BOOK -->
       <article class="card dim" role="listitem">
         <div class="card-head">
           <span class="badge neutral">BETA</span>
@@ -83,7 +71,7 @@
     </section>
   </main>
 
-  <!-- Holographic Terminal Modal -->
+  <!-- Modal -->
   <div id="demoModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="demoTitle" aria-hidden="true">
     <div class="modal-backdrop" data-close></div>
     <div class="modal-card">
@@ -92,7 +80,6 @@
         <button class="icon-btn" data-close aria-label="Close">✕</button>
       </header>
       <div class="modal-body">
-        <!-- Placeholder terminal; swap with your real iframe when ready -->
         <div class="terminal" role="region" aria-label="Chat terminal">
           <div class="term-log" id="termLog" aria-live="polite"></div>
           <form id="termForm" class="term-form" autocomplete="off">
