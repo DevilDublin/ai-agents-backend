@@ -6,12 +6,20 @@
   <title>Zypher Agents — Secure Transmission</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles/main.css" />
+  <style>
+    .home-pill{position:fixed;left:18px;top:18px;z-index:50;padding:8px 12px;border-radius:999px;
+      background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.16);color:var(--text);text-decoration:none}
+    .home-pill:hover{background:rgba(255,255,255,0.1)}
+  </style>
 </head>
 <body>
   <div class="bg">
     <canvas id="bgParticles" aria-hidden="true"></canvas>
     <div class="bg-aurora" aria-hidden="true"></div>
   </div>
+
+  <!-- Added back: quick return to Interface -->
+  <a href="./index.html" class="home-pill">← Interface</a>
 
   <main class="uplink" aria-live="polite">
     <h1 class="uplink-title">INITIATE SECURE TRANSMISSION</h1>
