@@ -1,59 +1,53 @@
-(() => {
-  const $=(s,r=document)=>r.querySelector(s); const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+/* demos page interactions: modal terminal + mock replies */
+(function(){
+  const $ = (s, el=document)=> el.querySelector(s);
+  const $$ = (s, el=document)=> [...el.querySelectorAll(s)];
 
-  const previews = {
-    flow: [
-      `<div class="mock">
-         <div class="bar">Flow • Draft</div>
-         <div class="lane"><span class="node">Form</span><span class="pipe">→</span><span class="node">Calendar</span><span class="pipe">→</span><span class="node">Email</span></div>
-         <button class="btn primary small" id="doRun">Run</button>
-       </div>`,
-      `<div class="mock"><div class="bar">Flow • Nodes</div><div class="lane"><span class="node">Webhook</span><span class="pipe">→</span><span class="node">CRM</span></div></div>`
-    ],
-    insight: [
-      `<div class="mock"><div class="bar">Insight • CSV</div><p>Upload a CSV and we’ll narrate the trends.</p><button class="btn flat small" id="doAnalyse">Analyse sample</button></div>`
-    ],
-    docs: [
-      `<div class="mock"><div class="bar">Docs • Extract</div><p>Clause • Date • Risk</p><button class="btn flat small">Open PDF</button></div>`
-    ],
-    persona: [
-      `<div class="mock"><div class="bar">Persona</div><p>Choose tone: <button class="btn flat small">Warm</button> <button class="btn flat small">Direct</button></p></div>`
-    ],
-    research: [
-      `<div class="mock"><div class="bar">Research</div><p>Summaries with sources.</p><button class="btn flat small">Show brief</button></div>`
-    ],
-    designer: [
-      `<div class="mock"><div class="bar">Designer</div><p>Generate a palette from a keyword.</p><button class="btn flat small">Try “FinTech”</button></div>`
-    ],
-    draft: [
-      `<div class="mock"><div class="bar">Draft</div><p>Create a proposal skeleton.</p><button class="btn flat small">Generate</button></div>`
-    ]
-  };
+  const yearEl = $('#year');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  const modal=$("#modal"), title=$("#modalTitle"), body=$("#modalBody"), close=$("#modalClose"), cycle=$("#modalCycle");
-  let currentKey=null, idx=0;
+  const modal = $('#demoModal');
+  const log = $('#termLog');
+  const form = $('#termForm');
+  const input = $('#termInput');
 
-  function openPreview(key){
-    currentKey=key; idx=0;
-    title.textContent=$(`[data-key="${key}"] h3`).textContent;
-    body.innerHTML=previews[key][idx] || "<div class='mock'><p>Preview</p></div>";
-    modal.classList.add("show");
-  }
-  function next(){
-    if(!currentKey) return;
-    const arr=previews[currentKey]; if(!arr) return;
-    idx=(idx+1)%arr.length;
-    body.innerHTML=arr[idx];
+  function openModal(kind){
+    modal.setAttribute('aria-hidden','false');
+    log.innerHTML = '';
+    input.value = '';
+    input.focus();
+    const hello = kind === 'realestate'
+      ? 'Zypher Real Estate: Hi! Interested in a viewing or valuation?'
+      : 'Zypher SaaS Triage: Hi! Ask a question or describe your issue.';
+    append('system', hello);
   }
 
-  $$(".tile.live").forEach(el=>{
-    el.addEventListener("click",()=>openPreview(el.dataset.key));
-  });
-  $$(".tile.book").forEach(el=>{
-    el.addEventListener("click",()=>{ location.href="contact.html#demo"; });
-  });
+  function closeModal(){ modal.setAttribute('aria-hidden','true'); }
 
-  cycle?.addEventListener("click",next);
-  close?.addEventListener("click",()=>modal.classList.remove("show"));
-  modal?.addEventListener("click",e=>{ if(e.target===modal) modal.classList.remove("show"); });
+  function append(who, text){
+    const row = document.createElement('div');
+    row.style.margin = '6px 0';
+    row.innerHTML = `<strong style="color:${who==='user'?'#66f7d1':'#cfe6ff'}">${who==='user'?'You':'Zypher'}</strong>: ${text}`;
+    log.appendChild(row); log.scrollTop = log.scrollHeight;
+  }
+
+  $$('.open-demo').forEach(btn => {
+    btn.addEventListener('click', () => openModal(btn.dataset.demo));
+  });
+  $$('[data-close]').forEach(el => el.addEventListener('click', closeModal));
+  modal?.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') closeModal(); });
+
+  form?.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const q = input.value.trim(); if (!q) return;
+    append('user', q);
+    input.value = '';
+    // mock response
+    setTimeout(()=>{
+      const reply = (q.toLowerCase().includes('view') || q.toLowerCase().includes('book'))
+        ? 'I can check availability and book a time. What date suits you?'
+        : 'Here’s a quick summary: I can answer FAQs, route complex issues, and book follow-ups.';
+      append('system', reply);
+    }, 500);
+  });
 })();
