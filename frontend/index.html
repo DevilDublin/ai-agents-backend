@@ -10,18 +10,20 @@
   <link rel="stylesheet" href="./styles/main.css" />
 </head>
 <body class="no-scroll">
-  <!-- Intro (plays for new users and again after 24h) -->
+  <!-- Intro (plays for new users, replays after 24h; suppressed within session) -->
   <div id="boot" role="status" aria-live="polite" aria-label="Zypher system initialization">
     <div class="boot-core">
-      <!-- ZYPHER word -->
       <h1 class="boot-word" aria-hidden="true">Z Y P H E R</h1>
-      <!-- Branch lines from word to selector positions -->
-      <svg class="boot-branches" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-        <g stroke="#66f7d1" stroke-opacity="0.75" stroke-width="1.6" fill="none" stroke-linecap="round">
-          <path class="branch b1" d="M600 300 C 640 280, 720 260, 820 250" />
-          <path class="branch b2" d="M600 300 C 560 280, 480 260, 380 250" />
-          <path class="branch b3" d="M600 300 C 650 320, 740 360, 860 380" />
-          <path class="branch b4" d="M600 300 C 550 320, 460 360, 340 380" />
+
+      <!-- Green branching lines (now clearly visible & centered) -->
+      <svg class="boot-branches" viewBox="0 0 1000 600" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+        <g stroke="#66f7d1" stroke-opacity="0.8" stroke-width="1.8" fill="none" stroke-linecap="round">
+          <path class="branch b1" d="M500 300 C 560 270, 650 250, 770 240" />
+          <path class="branch b2" d="M500 300 C 440 270, 350 250, 230 240" />
+          <path class="branch b3" d="M500 300 C 560 330, 650 370, 780 395" />
+          <path class="branch b4" d="M500 300 C 440 330, 350 370, 220 395" />
+          <path class="branch b5" d="M500 300 C 520 300, 600 295, 700 280" />
+          <path class="branch b6" d="M500 300 C 480 300, 400 295, 300 280" />
         </g>
       </svg>
     </div>
@@ -37,41 +39,28 @@
     <button id="skipIntro" class="btn-skip" aria-label="Skip intro">Skip</button>
   </div>
 
-  <!-- Background -->
+  <!-- Background (particles + aurora) -->
   <div class="bg">
     <canvas id="bgParticles" aria-hidden="true"></canvas>
     <div class="bg-aurora" aria-hidden="true"></div>
   </div>
 
-  <!-- HOME HUB: Tilted 3D selector (no nav) -->
+  <!-- HOME HUB -->
   <main id="hub" class="hub" aria-live="polite">
     <div class="hub-center">
-      <div class="hub-logo" aria-label="Zypher logo"></div>
+      <!-- The same ZYPHER word as intro, softly glowing -->
+      <h1 id="hubWord" class="hub-word">Z Y P H E R</h1>
       <p class="tagline">Automation. Intelligence. Precision.</p>
+      <!-- Connector SVG draws animated line from ZYPHER → hovered tile -->
+      <svg id="connector" class="connector" aria-hidden="true"></svg>
     </div>
 
-    <!-- Coverflow / Selector -->
-    <section class="selector" aria-label="Primary modules">
-      <button class="card3d" data-go="demos.html" aria-label="AI Demos">
-        <span class="card-glyph">🤖</span>
-        <span class="card-title">AI Demos</span>
-        <span class="card-sub">Live previews</span>
-      </button>
-      <button class="card3d" data-go="demos.html#voice" aria-label="Voice Agents">
-        <span class="card-glyph">🗣️</span>
-        <span class="card-title">Voice Agents</span>
-        <span class="card-sub">Conversational</span>
-      </button>
-      <button class="card3d" data-go="demos.html#analytics" aria-label="Analytics">
-        <span class="card-glyph">📈</span>
-        <span class="card-title">Analytics</span>
-        <span class="card-sub">Dashboards</span>
-      </button>
-      <button class="card3d" data-go="contact.html" aria-label="Contact">
-        <span class="card-glyph">📞</span>
-        <span class="card-title">Contact</span>
-        <span class="card-sub">Secure transmission</span>
-      </button>
+    <!-- Flat, centered tiles -->
+    <section class="tiles" aria-label="Primary modules">
+      <button class="tile" data-go="demos.html"><span class="tile-title">AI DEMOS</span></button>
+      <button class="tile" data-go="demos.html#voice"><span class="tile-title">VOICE AGENTS</span></button>
+      <button class="tile" data-go="demos.html#analytics"><span class="tile-title">ANALYTICS</span></button>
+      <button class="tile" data-go="contact.html"><span class="tile-title">CONTACT</span></button>
     </section>
 
     <footer class="site-footer" data-visible="false">
