@@ -10,9 +10,42 @@
   <link rel="stylesheet" href="./styles/main.css" />
 </head>
 <body class="no-scroll">
-  <!-- Boot/Activation Overlay (5–8s, business tone) -->
+  <!-- Boot/Activation Overlay (plays once) -->
   <div id="boot" aria-live="polite" aria-label="Zypher system initialization" role="status">
-    <div class="boot-core" aria-hidden="true"></div>
+    <!-- LOGO + TECH BRANCHES (SVG animation) -->
+    <div class="boot-logo-wrap">
+      <!-- Replace inner SVG path with your actual logo if you have it -->
+      <svg class="boot-logo" viewBox="0 0 120 120" aria-hidden="true">
+        <defs>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="2.5" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+          <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#66f7d1"/><stop offset="100%" stop-color="#5ab8ff"/>
+          </linearGradient>
+        </defs>
+        <!-- stylised Z bolt -->
+        <path d="M20 25 L85 25 L50 60 L100 60 L35 105 L60 70 L15 70 Z"
+              fill="none" stroke="url(#grad)" stroke-width="5" filter="url(#glow)"/>
+      </svg>
+
+      <!-- branching tech lines -->
+      <svg class="boot-branches" viewBox="0 0 600 600" aria-hidden="true">
+        <g stroke="#66f7d1" stroke-opacity="0.65" stroke-width="1.5" fill="none" stroke-linecap="round">
+          <!-- 6 animated branches -->
+          <path class="branch" d="M300 300 C320 260, 360 240, 420 230" />
+          <path class="branch" d="M300 300 C280 260, 250 220, 210 190" />
+          <path class="branch" d="M300 300 C310 340, 340 380, 390 410" />
+          <path class="branch" d="M300 300 C270 330, 230 360, 190 370" />
+          <path class="branch" d="M300 300 C330 300, 370 290, 420 270" />
+          <path class="branch" d="M300 300 C285 285, 260 260, 230 240" />
+        </g>
+      </svg>
+    </div>
+
     <div class="boot-lines">
       <div class="boot-line" data-text="INITIALIZING ZYPHER SYSTEM…"></div>
       <div class="boot-line" data-text="OPTIMIZING BUSINESS INTELLIGENCE PROTOCOLS…"></div>
@@ -20,79 +53,42 @@
       <div class="boot-line strong" data-text="ZYPHER SYSTEMS ONLINE."></div>
       <div class="boot-subline" data-text="WELCOME TO THE FUTURE OF AUTOMATION."></div>
     </div>
+
     <button id="skipIntro" class="btn-skip" aria-label="Skip intro">Skip</button>
   </div>
 
-  <!-- Global background + nav -->
+  <!-- Global background -->
   <div class="bg fx-grid" aria-hidden="true">
     <canvas id="gridCanvas" aria-hidden="true"></canvas>
     <div class="bg-overlay"></div>
   </div>
 
-  <header class="site-header" data-visible="false">
-    <div class="brand">
-      <div class="brand-mark" aria-hidden="true"></div>
-      <span class="brand-name">Zypher Agents</span>
+  <!-- HOMEPAGE: HOLOGRAPHIC HUB (no top nav) -->
+  <main id="hub" class="hub" aria-live="polite">
+    <div class="hub-center">
+      <div class="hub-logo" aria-label="Zypher logo"></div>
+      <p class="tagline">Automation. Intelligence. Precision.</p>
     </div>
-    <nav class="site-nav" aria-label="Main">
-      <a href="./index.html" class="nav-link active" data-route="home">Interface</a>
-      <a href="./demos.html" class="nav-link" data-route="demos">Demos</a>
-      <a href="./contact.html" class="nav-link" data-route="contact">Contact</a>
-    </nav>
-    <div class="actions">
-      <button id="themeToggle" class="icon-btn" aria-label="Toggle theme" title="Toggle theme">
-        <span class="icon-sun" aria-hidden="true"></span>
+
+    <div class="hub-orbit">
+      <button class="hex" data-go="demos.html" aria-label="Open AI Demos">
+        <span class="hex-icon">🤖</span><span class="hex-label">Demos</span>
+      </button>
+      <button class="hex" data-go="demos.html#voice" aria-label="Open Voice Agents">
+        <span class="hex-icon">🗣️</span><span class="hex-label">Voice</span>
+      </button>
+      <button class="hex" data-go="demos.html#analytics" aria-label="Open Analytics">
+        <span class="hex-icon">📈</span><span class="hex-label">Analytics</span>
+      </button>
+      <button class="hex" data-go="contact.html" aria-label="Contact Zypher">
+        <span class="hex-icon">📞</span><span class="hex-label">Contact</span>
       </button>
     </div>
-  </header>
 
-  <!-- Main holographic interface (post-boot) -->
-  <main id="interface" class="interface" aria-live="polite">
-    <section class="hero">
-      <h1 class="sr-only">Zypher Interface</h1>
-      <p class="tagline">Automation. Intelligence. Precision.</p>
-      <div class="ring" role="list" aria-label="Primary modules">
-        <button class="ring-item" role="listitem" data-go="demos.html">
-          <span class="ring-glyph">🤖</span>
-          <span class="ring-label">AI Demos</span>
-        </button>
-        <button class="ring-item" role="listitem" data-go="#voice">
-          <span class="ring-glyph">🗣️</span>
-          <span class="ring-label">Voice Agents</span>
-        </button>
-        <button class="ring-item" role="listitem" data-go="#analytics">
-          <span class="ring-glyph">📈</span>
-          <span class="ring-label">Analytics</span>
-        </button>
-        <button class="ring-item" role="listitem" data-go="contact.html">
-          <span class="ring-glyph">📞</span>
-          <span class="ring-label">Contact</span>
-        </button>
-      </div>
-      <div class="microcopy" aria-live="polite">Select a module to continue</div>
-    </section>
-
-    <!-- Optional sections (same page preview anchors) -->
-    <section id="voice" class="panel">
-      <h2 class="panel-title">Voice Agents</h2>
-      <p class="panel-desc">Real-time conversational agents that schedule, qualify and route leads.</p>
-      <div class="panel-cta">
-        <a class="btn-primary" href="./demos.html#voice">Try a voice demo</a>
-      </div>
-    </section>
-
-    <section id="analytics" class="panel">
-      <h2 class="panel-title">Analytics</h2>
-      <p class="panel-desc">Track intent, conversion and resolution across channels with live dashboards.</p>
-      <div class="panel-cta">
-        <a class="btn-secondary" href="./demos.html#analytics">View dashboards</a>
-      </div>
-    </section>
+    <footer class="site-footer" data-visible="false">
+      <p>© <span id="year"></span> Zypher Agents. All rights reserved.</p>
+    </footer>
   </main>
-
-  <footer class="site-footer" data-visible="false">
-    <p>© <span id="year"></span> Zypher Agents. All rights reserved.</p>
-  </footer>
 
   <script src="./js/site.js" defer></script>
   <script src="./js/voice.js" defer></script>
