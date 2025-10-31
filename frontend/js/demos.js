@@ -31,18 +31,14 @@
     log.appendChild(row); log.scrollTop = log.scrollHeight;
   }
 
-  $$('.open-demo').forEach(btn => {
-    btn.addEventListener('click', () => openModal(btn.dataset.demo));
-  });
+  $$('.open-demo').forEach(btn => btn.addEventListener('click', () => openModal(btn.dataset.demo)));
   $$('[data-close]').forEach(el => el.addEventListener('click', closeModal));
   modal?.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') closeModal(); });
 
   form?.addEventListener('submit', (e)=>{
     e.preventDefault();
     const q = input.value.trim(); if (!q) return;
-    append('user', q);
-    input.value = '';
-    // mock response
+    append('user', q); input.value = '';
     setTimeout(()=>{
       const reply = (q.toLowerCase().includes('view') || q.toLowerCase().includes('book'))
         ? 'I can check availability and book a time. What date suits you?'
