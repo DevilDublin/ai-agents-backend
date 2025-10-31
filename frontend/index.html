@@ -10,12 +10,22 @@
   <link rel="stylesheet" href="./styles/main.css" />
 </head>
 <body class="no-scroll">
-  <!-- Intro (24h replay; suppressed within a session) -->
+  <!-- Intro (versioned; plays once for everyone after this update, then every 24h) -->
   <div id="boot" role="status" aria-live="polite" aria-label="Zypher system initialization">
     <div class="boot-core">
-      <h1 class="boot-word" aria-hidden="true">Z Y P H E R</h1>
+      <!-- Stroke-draw “ZYPHER” (sticks into the hub word) -->
+      <svg class="boot-word-svg" viewBox="0 0 1200 220" aria-hidden="true">
+        <defs>
+          <linearGradient id="zygrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#66f7d1"/><stop offset="100%" stop-color="#5ab8ff"/>
+          </linearGradient>
+        </defs>
+        <text x="50%" y="55%" text-anchor="middle" class="boot-word-stroke">Z Y P H E R</text>
+      </svg>
+
+      <!-- Subtle green branching filaments -->
       <svg class="boot-branches" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-        <g stroke="#66f7d1" stroke-opacity="0.8" stroke-width="1.8" fill="none" stroke-linecap="round">
+        <g stroke="#66f7d1" stroke-opacity="0.75" stroke-width="1.8" fill="none" stroke-linecap="round">
           <path class="branch b1" d="M500 300 C 560 270, 650 250, 770 240" />
           <path class="branch b2" d="M500 300 C 440 270, 350 250, 230 240" />
           <path class="branch b3" d="M500 300 C 560 330, 650 370, 780 395" />
@@ -25,6 +35,7 @@
         </g>
       </svg>
     </div>
+
     <div class="boot-lines">
       <div class="boot-line" data-text="INITIALIZING ZYPHER SYSTEM…"></div>
       <div class="boot-line" data-text="OPTIMIZING BUSINESS INTELLIGENCE PROTOCOLS…"></div>
@@ -41,21 +52,20 @@
     <div class="bg-aurora" aria-hidden="true"></div>
   </div>
 
-  <!-- HOME HUB -->
+  <!-- HOME HUB (unchanged layout, stronger accent behaviour) -->
   <main id="hub" class="hub" aria-live="polite">
     <div class="hub-center">
       <h1 id="hubWord" class="hub-word">Z Y P H E R</h1>
       <p class="tagline">Automation. Intelligence. Precision.</p>
 
-      <!-- NEW: mid chips (same style language as tiles) -->
+      <!-- Updated chips -->
       <div class="chips" aria-hidden="true">
-        <div class="chip">Latency &lt; 200ms</div>
-        <div class="chip">24/7 Voice &amp; Chat</div>
-        <div class="chip">GDPR-Ready</div>
+        <div class="chip">Make.com + Vapi Ready</div>
+        <div class="chip">Bookings & Calendars</div>
+        <div class="chip">Audit Logs & Handoffs</div>
       </div>
     </div>
 
-    <!-- Flat tiles (no tilt). Each carries a hidden accent colour -->
     <section class="tiles" aria-label="Primary modules">
       <button class="tile" data-go="demos.html" data-accent="#66f7d1"><span class="tile-title">AI DEMOS</span></button>
       <button class="tile" data-go="demos.html#voice" data-accent="#5ab8ff"><span class="tile-title">VOICE AGENTS</span></button>
