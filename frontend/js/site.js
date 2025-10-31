@@ -1,10 +1,10 @@
-/* Intro (24h replay), neural particle bg, 3D selector interactions */
+/* Intro (24h replay + session suppression), neural background, connector line + tiles */
 (function(){
   const $ = (s, el=document)=> el.querySelector(s);
   const $$ = (s, el=document)=> [...el.querySelectorAll(s)];
   const yearEl = $('#year'); if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  /* ===== Neural particle background (no grid) ===== */
+  /* ===== Neural particle background ===== */
   const cnv = $('#bgParticles');
   if (cnv){
     const ctx = cnv.getContext('2d');
@@ -51,14 +51,15 @@
     requestAnimationFrame(frame);
   }
 
-  /* ===== Intro control (play once per 24h) ===== */
+  /* ===== Intro control ===== */
   const boot = $('#boot');
   if (boot){
     const last = Number(localStorage.getItem('zypher_intro_last')||0);
     const now = Date.now();
     const DAY = 24*60*60*1000;
-    const shouldPlay = (now - last) > DAY;
+    const sessionSeen = sessionStorage.getItem('zypher_intro_session') === '1';
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const shouldPlay = !sessionSeen && (now - last) > DAY && !prefersReduced;
 
     const lines = $$('.boot-line, .boot-subline', boot);
     const skip = $('#skipIntro');
@@ -85,11 +86,12 @@
         document.body.classList.remove('no-scroll');
         footer?.setAttribute('data-visible','true');
         localStorage.setItem('zypher_intro_last', String(Date.now()));
+        sessionStorage.setItem('zypher_intro_session','1'); // suppress flicker for this session
       },820);
     }
     skip?.addEventListener('click', end);
 
-    if (!shouldPlay || prefersReduced){ end(); }
+    if (!shouldPlay){ end(); }
     else {
       (async()=>{
         for(const el of lines){
@@ -103,49 +105,77 @@
     $('.site-footer')?.setAttribute('data-visible','true');
   }
 
-  /* ===== 3D selector interactions (center card focus) ===== */
-  const selector = $('.selector');
-  if (selector){
-    const cards = $$('.card3d', selector);
-    let center = Math.floor(cards.length/2);
+  /* ===== Tiles: connector line + dimming + navigation ===== */
+  const hubWord = $('#hubWord');
+  const connector = $('#connector');
+  const tiles = $$('.tile');
+  if (hubWord && connector && tiles.length){
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const path = document.createElementNS(svgNS, 'path');
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke','#66f7d1');
+    path.setAttribute('stroke-opacity','0.9');
+    path.setAttribute('stroke-width','2');
+    path.setAttribute('stroke-linecap','round');
+    path.setAttribute('stroke-linejoin','round');
+    path.style.transition = 'opacity .2s ease';
+    path.style.opacity = '0';
+    connector.appendChild(path);
 
-    function layout(){
-      cards.forEach((c, i)=>{
-        const offset = i - center;
-        const depth = -Math.abs(offset)*80; // z translation
-        const rotate = offset * -12;        // y rotation
-        const shift = offset * 42;          // x shift
-        c.style.setProperty('--ry', rotate+'deg');
-        c.style.transform = `translateX(${shift}px) translateZ(${depth}px) rotateY(${rotate}deg) scale(${i===center?1.08:0.94})`;
-        c.classList.toggle('is-center', i===center);
-      });
+    function updateLine(toEl){
+      const src = hubWord.getBoundingClientRect();
+      const dst = toEl.getBoundingClientRect();
+      const svg = connector.getBoundingClientRect();
+
+      // source = center bottom of "ZYPHER" word
+      const sx = (src.left + src.width/2) - svg.left;
+      const sy = (src.bottom) - svg.top + 6;
+
+      // target = top center of tile
+      const tx = (dst.left + dst.width/2) - svg.left;
+      const ty = (dst.top) - svg.top - 8;
+
+      const cx1 = sx, cy1 = sy + (ty - sy)*0.25;
+      const cx2 = tx, cy2 = sy + (ty - sy)*0.70;
+
+      connector.setAttribute('viewBox', `0 0 ${svg.width} ${svg.height}`);
+      connector.setAttribute('width', svg.width);
+      connector.setAttribute('height', svg.height);
+
+      const d = `M ${sx} ${sy} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${tx} ${ty}`;
+      path.setAttribute('d', d);
+      path.style.opacity = '1';
+
+      // animate dash
+      const len = path.getTotalLength();
+      path.style.strokeDasharray = String(len);
+      path.style.strokeDashoffset = String(len);
+      path.getBoundingClientRect(); // reflow
+      path.style.transition = 'stroke-dashoffset .45s ease';
+      path.style.strokeDashoffset = '0';
     }
-    layout();
 
-    // click to center / navigate
-    cards.forEach((c, i)=>{
-      c.addEventListener('click', ()=>{
-        if (i === center){
-          const go = c.getAttribute('data-go'); if (go) window.location.href = go;
-        } else {
-          center = i; layout();
-        }
+    function clearLine(){
+      path.style.opacity = '0';
+      path.style.transition = 'opacity .25s ease';
+      tiles.forEach(t => t.classList.remove('dim'));
+    }
+
+    tiles.forEach(t=>{
+      t.addEventListener('mouseenter', ()=>{
+        tiles.forEach(o => { if (o!==t) o.classList.add('dim'); });
+        updateLine(t);
+      });
+      t.addEventListener('mouseleave', clearLine);
+      t.addEventListener('click', ()=>{
+        const go = t.getAttribute('data-go'); if (go) window.location.href = go;
       });
     });
 
-    // wheel/trackpad
-    selector.addEventListener('wheel', (e)=>{
-      e.preventDefault();
-      if (e.deltaY > 0 || e.deltaX > 0) center = Math.min(center+1, cards.length-1);
-      else center = Math.max(center-1, 0);
-      layout();
-    }, {passive:false});
-
-    // keyboard arrows
-    window.addEventListener('keydown',(e)=>{
-      if (e.key === 'ArrowRight') { center = Math.min(center+1, cards.length-1); layout(); }
-      if (e.key === 'ArrowLeft') { center = Math.max(center-1, 0); layout(); }
-      if (e.key === 'Enter') { cards[center]?.click(); }
-    });
+    // handle resize to keep line accurate while hovering
+    window.addEventListener('resize', ()=>{
+      const hovered = tiles.find(el => el.matches(':hover'));
+      if (hovered) updateLine(hovered);
+    }, {passive:true});
   }
 })();
