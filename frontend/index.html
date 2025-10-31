@@ -1,71 +1,100 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Zypher AI — Welcome</title>
-  <meta name="description" content="Zypher AI delivers intelligent automation for modern businesses." />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Poppins:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles/main.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Zypher Agents — System Activation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/main.css" />
 </head>
-<body class="page-enter">
-  <div class="page-fx" aria-hidden="true"></div>
-  <canvas id="bg" aria-hidden="true"></canvas>
+<body class="no-scroll">
+  <!-- Boot/Activation Overlay (5–8s, business tone) -->
+  <div id="boot" aria-live="polite" aria-label="Zypher system initialization" role="status">
+    <div class="boot-core" aria-hidden="true"></div>
+    <div class="boot-lines">
+      <div class="boot-line" data-text="INITIALIZING ZYPHER SYSTEM…"></div>
+      <div class="boot-line" data-text="OPTIMIZING BUSINESS INTELLIGENCE PROTOCOLS…"></div>
+      <div class="boot-line" data-text="CONNECTING TO CORE NETWORK…"></div>
+      <div class="boot-line strong" data-text="ZYPHER SYSTEMS ONLINE."></div>
+      <div class="boot-subline" data-text="WELCOME TO THE FUTURE OF AUTOMATION."></div>
+    </div>
+    <button id="skipIntro" class="btn-skip" aria-label="Skip intro">Skip</button>
+  </div>
 
-  <header class="site-header">
-    <a class="brand transition-link" href="index.html"><span class="logo-type">Zypher&nbsp;AI</span></a>
-    <nav class="site-nav">
-      <a class="pill transition-link" href="index.html">Home</a>
-      <a class="pill transition-link" href="demos.html">Demos</a>
-      <a class="pill transition-link" href="contact.html">Contact</a>
+  <!-- Global background + nav -->
+  <div class="bg fx-grid" aria-hidden="true">
+    <canvas id="gridCanvas" aria-hidden="true"></canvas>
+    <div class="bg-overlay"></div>
+  </div>
+
+  <header class="site-header" data-visible="false">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"></div>
+      <span class="brand-name">Zypher Agents</span>
+    </div>
+    <nav class="site-nav" aria-label="Main">
+      <a href="./index.html" class="nav-link active" data-route="home">Interface</a>
+      <a href="./demos.html" class="nav-link" data-route="demos">Demos</a>
+      <a href="./contact.html" class="nav-link" data-route="contact">Contact</a>
     </nav>
+    <div class="actions">
+      <button id="themeToggle" class="icon-btn" aria-label="Toggle theme" title="Toggle theme">
+        <span class="icon-sun" aria-hidden="true"></span>
+      </button>
+    </div>
   </header>
 
-  <main>
-    <section class="chip-hero">
-      <div class="chip-core-hero">
-        <img src="assets/zypher-logo.svg" alt="Zypher logo" onerror="this.style.display='none';document.getElementById('ZInline').style.display='block';" />
-        <svg id="ZInline" viewBox="0 0 100 100" style="display:none">
-          <defs>
-            <linearGradient id="g" x1="0" x2="1">
-              <stop offset="0" stop-color="#67ead4"/>
-              <stop offset="1" stop-color="#7ea7ff"/>
-            </linearGradient>
-          </defs>
-          <rect x="10" y="10" width="80" height="80" rx="16" fill="#0c1217" />
-          <path d="M28 72 L68 28 H34 L28 36 H58 L32 72 Z" fill="url(#g)"/>
-        </svg>
+  <!-- Main holographic interface (post-boot) -->
+  <main id="interface" class="interface" aria-live="polite">
+    <section class="hero">
+      <h1 class="sr-only">Zypher Interface</h1>
+      <p class="tagline">Automation. Intelligence. Precision.</p>
+      <div class="ring" role="list" aria-label="Primary modules">
+        <button class="ring-item" role="listitem" data-go="demos.html">
+          <span class="ring-glyph">🤖</span>
+          <span class="ring-label">AI Demos</span>
+        </button>
+        <button class="ring-item" role="listitem" data-go="#voice">
+          <span class="ring-glyph">🗣️</span>
+          <span class="ring-label">Voice Agents</span>
+        </button>
+        <button class="ring-item" role="listitem" data-go="#analytics">
+          <span class="ring-glyph">📈</span>
+          <span class="ring-label">Analytics</span>
+        </button>
+        <button class="ring-item" role="listitem" data-go="contact.html">
+          <span class="ring-glyph">📞</span>
+          <span class="ring-label">Contact</span>
+        </button>
       </div>
-      <h1 class="hero-title centre">Welcome to <span class="accent">Zypher</span></h1>
-      <p class="hero-tag centre">Intelligent automation for modern businesses.</p>
-      <div class="cta-row centre">
-        <a class="slider-cta transition-link" href="contact.html#demo"><span>Book a Demo</span><i></i></a>
+      <div class="microcopy" aria-live="polite">Select a module to continue</div>
+    </section>
+
+    <!-- Optional sections (same page preview anchors) -->
+    <section id="voice" class="panel">
+      <h2 class="panel-title">Voice Agents</h2>
+      <p class="panel-desc">Real-time conversational agents that schedule, qualify and route leads.</p>
+      <div class="panel-cta">
+        <a class="btn-primary" href="./demos.html#voice">Try a voice demo</a>
       </div>
     </section>
 
-    <section class="mini-panels">
-      <a class="mini card transition-link" href="demos.html#live"><h3>Automation & Bots</h3><p>Chat, forms and flows.</p></a>
-      <a class="mini card transition-link" href="demos.html#voice"><h3>Voice Agent</h3><p>Conversations that convert.</p></a>
-      <a class="mini card transition-link" href="demos.html#studio"><h3>Zypher Studio</h3><p>Analyse, design and ship.</p></a>
+    <section id="analytics" class="panel">
+      <h2 class="panel-title">Analytics</h2>
+      <p class="panel-desc">Track intent, conversion and resolution across channels with live dashboards.</p>
+      <div class="panel-cta">
+        <a class="btn-secondary" href="./demos.html#analytics">View dashboards</a>
+      </div>
     </section>
   </main>
 
-  <aside class="voice-float" id="voiceFloat">
-    <button class="vf-btn" id="vfBtn" aria-label="Open Voice Agent"><span class="vf-core"></span></button>
-    <div class="vf-drawer" id="vfDrawer">
-      <div class="vf-phone">
-        <div class="vf-notch"></div>
-        <div class="vf-screen">
-          <div class="vf-text" id="vfText">Book a demo and hear it live.</div>
-        </div>
-      </div>
-      <a class="btn primary transition-link" href="contact.html#voice">Book a Demo</a>
-    </div>
-  </aside>
+  <footer class="site-footer" data-visible="false">
+    <p>© <span id="year"></span> Zypher Agents. All rights reserved.</p>
+  </footer>
 
-  <footer class="site-footer"><p>© 2025 Zypher AI • Built in London</p></footer>
-
-  <script src="js/bg.js" defer></script>
-  <script src="js/site.js" defer></script>
+  <script src="./js/site.js" defer></script>
+  <script src="./js/voice.js" defer></script>
 </body>
 </html>
