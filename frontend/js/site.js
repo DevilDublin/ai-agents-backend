@@ -1,10 +1,10 @@
-/* Intro (24h replay + session suppression), neural background, tile accent hover */
+/* Intro V2 (guaranteed first-run), neural background, stronger hover accent */
 (function(){
   const $ = (s, el=document)=> el.querySelector(s);
   const $$ = (s, el=document)=> [...el.querySelectorAll(s)];
   const yearEl = $('#year'); if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  /* Background particles */
+  /* ===== Neural particles ===== */
   const cnv = $('#bgParticles');
   if (cnv){
     const ctx = cnv.getContext('2d');
@@ -47,20 +47,21 @@
     requestAnimationFrame(frame);
   }
 
-  /* Intro control */
+  /* ===== Intro control (versioned) ===== */
+  const INTRO_VERSION = '2'; // bump to force one guaranteed play after update
   const boot = $('#boot');
   if (boot){
-    const last = Number(localStorage.getItem('zypher_intro_last')||0);
-    const now = Date.now();
-    const DAY = 24*60*60*1000;
-    const sessionSeen = sessionStorage.getItem('zypher_intro_session') === '1';
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const force = new URLSearchParams(location.search).get('intro') === '1'; // optional manual test
-    const shouldPlay = (force || (!sessionSeen && (now - last) > DAY)) && !prefersReduced;
+    const last = Number(localStorage.getItem('zypher_intro_v'+INTRO_VERSION) || 0);
+    const now  = Date.now();
+    const DAY  = 24*60*60*1000;
+    const seenThisSession = sessionStorage.getItem('zypher_intro_session') === '1';
+    const prefersReduced   = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const force = new URLSearchParams(location.search).get('intro') === '1';
+    const shouldPlay = (force || (!seenThisSession && (now - last) > DAY)) && !prefersReduced;
 
     const lines = $$('.boot-line, .boot-subline', boot);
-    const skip = $('#skipIntro');
-    const footer = $('.site-footer');
+    const skip  = $('#skipIntro');
+    const footer= $('.site-footer');
     let cancelled=false;
 
     function typeLine(el, text){
@@ -74,13 +75,13 @@
       });
     }
     function end(){
-      cancelled=true; boot.style.opacity='0'; boot.style.transition='opacity .8s ease';
+      cancelled=true; boot.style.opacity='0'; boot.style.transition='opacity .9s ease';
       setTimeout(()=>{
         boot.remove(); document.body.classList.remove('no-scroll');
         footer?.setAttribute('data-visible','true');
-        localStorage.setItem('zypher_intro_last', String(Date.now()));
+        localStorage.setItem('zypher_intro_v'+INTRO_VERSION, String(Date.now()));
         sessionStorage.setItem('zypher_intro_session','1');
-      },820);
+      },900);
     }
     skip?.addEventListener('click', end);
 
@@ -90,16 +91,14 @@
     $('.site-footer')?.setAttribute('data-visible','true');
   }
 
-  /* Accent hover: tile controls site accent + dimming; click navigates */
+  /* ===== Accent hover (more vivid) ===== */
   const tiles = $$('.tile'); const root = document.documentElement;
   tiles.forEach(t=>{
     const accent = t.getAttribute('data-accent') || '#66f7d1';
     t.addEventListener('mouseenter', ()=>{
       root.style.setProperty('--accent', accent);
-      tiles.forEach(o=>{ if(o!==t) o.classList.add('dim'); });
     });
     t.addEventListener('mouseleave', ()=>{
-      tiles.forEach(o=>o.classList.remove('dim'));
       root.style.removeProperty('--accent');
     });
     t.addEventListener('click', ()=>{
