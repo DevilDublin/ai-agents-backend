@@ -9,24 +9,30 @@
 <body>
   <header class="site-bg" aria-hidden="true"></header>
 
-  <!-- ===== INTRO (plays once; site.js hides afterward) ===== -->
+  <!-- ===== INTRO (plays once; add ?intro=1 to preview again) ===== -->
   <div id="zypher-intro" aria-label="Zypher system activation">
     <div class="intro-wrap">
       <div class="logo-box no-select">
-        <!-- inline SVG so strokes animate; same geometry as hero asset -->
+        <!-- inline so strokes animate; geometry matches hero asset -->
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 220" aria-hidden="true">
+          <!-- Z -->
           <path class="stroke" pathLength="1" d="M40 40 H180 L40 180 H180" />
+          <!-- Y -->
           <path class="stroke" pathLength="1" d="M240 40 L310 110" />
           <path class="stroke" pathLength="1" d="M380 40 L310 110 V180" />
+          <!-- P -->
           <path class="stroke" pathLength="1" d="M440 40 V180" />
           <path class="stroke" pathLength="1" d="M440 40 H560 A40 40 0 0 1 560 120 H440" />
+          <!-- H -->
           <path class="stroke" pathLength="1" d="M640 40 V180" />
           <path class="stroke" pathLength="1" d="M760 40 V180" />
           <path class="stroke" pathLength="1" d="M640 110 H760" />
+          <!-- E -->
           <path class="stroke" pathLength="1" d="M840 40 H960" />
           <path class="stroke" pathLength="1" d="M840 110 H930" />
           <path class="stroke" pathLength="1" d="M840 180 H960" />
           <path class="stroke" pathLength="1" d="M840 40 V180" />
+          <!-- R -->
           <path class="stroke" pathLength="1" d="M1040 40 V180" />
           <path class="stroke" pathLength="1" d="M1040 40 H1160 A40 40 0 0 1 1160 120 H1040" />
           <path class="stroke" pathLength="1" d="M1100 120 L1170 180" />
@@ -49,7 +55,7 @@
 
       <!-- same asset + width as intro for perfect imprint -->
       <div class="logo-box no-select">
-        <img src="./js/assets/zypher-logo.svg" alt="ZYPHER" draggable="false" aria-hidden="true"/>
+        <img src="./js/assets/zypher-logo.svg" alt="ZYPHER" draggable="false" aria-hidden="true" />
       </div>
 
       <p class="tagline">Automation. Intelligence. Precision.</p>
@@ -60,7 +66,7 @@
         <span class="pill">Audit Logs &amp; Handoffs</span>
       </nav>
 
-      <!-- Hidden-color cards; hovering sets the accent and tints the logo + card -->
+      <!-- Hidden-colour cards: hover tints logo/halo/background via --accent -->
       <section class="cta-grid" aria-label="Primary sections">
         <a class="card" href="./demos.html"
            data-accent="#8b5cf6" data-accent-name="violet">
@@ -76,11 +82,11 @@
           <p>Vapi-powered phone agents.</p>
         </a>
 
-        <a class="card" href="#spells"
+        <a class="card" href="#workflows"
            data-accent="#8fff58" data-accent-name="neon">
           <span class="chip" aria-hidden="true"></span>
-          <h3>Automation Spells</h3>
-          <p>Hands-free workflows that “do the job”.</p>
+          <h3>Automation Workflows</h3>
+          <p>Prebuilt, outcome-driven automations.</p>
         </a>
 
         <a class="card" href="./contact.html"
@@ -119,14 +125,14 @@
     </div>
   </section>
 
-  <section id="spells" class="modal" aria-labelledby="spells-title" aria-modal="true" role="dialog">
+  <section id="workflows" class="modal" aria-labelledby="workflows-title" aria-modal="true" role="dialog">
     <div class="modal-panel">
       <a class="modal-close" href="#" aria-label="Close">✕</a>
-      <h2 id="spells-title">Automation Spells</h2>
-      <p class="lead">Opinionated, prebuilt workflows that trigger from chat/voice and complete tasks end-to-end.</p>
+      <h2 id="workflows-title">Automation Workflows</h2>
+      <p class="lead">Professional, prebuilt workflows that trigger from chat/voice and complete tasks end-to-end.</p>
       <div class="grid-2">
         <div class="panel">
-          <h3>Popular Spells</h3>
+          <h3>Popular Workflows</h3>
           <ul>
             <li>Lead Capture → CRM → Auto-Follow-Up</li>
             <li>Appointment Setter → Calendar + Reminders</li>
@@ -136,7 +142,7 @@
         </div>
         <div class="panel">
           <h3>Integrations</h3>
-          <p>Make.com, Google Workspace, HubSpot, Notion, Slack, Webhooks, and more.</p>
+          <p>Make.com, Google Workspace, HubSpot, Notion, Slack, Webhooks, sheets &amp; databases.</p>
         </div>
       </div>
     </div>
