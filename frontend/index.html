@@ -4,51 +4,65 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Zypher Agents — System Activation</title>
-
-  <!-- Your existing site CSS -->
   <link rel="stylesheet" href="./styles/main.css" />
-
-  <!-- Intro CSS -->
-  <link rel="stylesheet" href="./styles/intro.css" />
-  <style>
-    :root{ --logo-max:860px; }
-    .hero{ min-height:88svh; display:grid; place-items:center; position:relative; }
-    .hero .logo-box{ width:min(var(--logo-max), 90vw); }
-    .hero .logo-box img{ width:100%; height:auto; display:block; }
-  </style>
 </head>
 <body>
 
-  <!-- ===== HERO (unchanged layout; just uses shared SVG) ===== -->
+  <!-- ===== HERO (unchanged content, just ensure this logo path) ===== -->
   <main class="hero">
     <div class="logo-box">
       <img src="./js/assets/zypher-logo.svg" alt="ZYPHER" />
     </div>
-    <!-- keep your existing subtitle, buttons, etc. here -->
+    <!-- your existing subtitle/buttons/sections remain here -->
   </main>
 
-  <!-- ===== INTRO OVERLAY ===== -->
-  <div id="zypher-intro" role="dialog" aria-label="Zypher system activation">
+  <!-- ===== INTRO OVERLAY (CSS-only animation, no JS) ===== -->
+  <div id="zypher-intro" aria-label="Zypher system activation">
     <div class="intro-wrap">
       <div class="logo-box">
-        <!-- same asset path as hero -->
-        <img src="./js/assets/zypher-logo.svg" alt="ZYPHER (intro)" />
+        <!-- INLINE SVG: same geometry as /frontend/js/assets/zypher-logo.svg -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 220" aria-hidden="true">
+          <g>
+            <!-- Each path uses pathLength=1 so CSS can animate with dashoffset 1->0 -->
+            <!-- Z -->
+            <path class="stroke" pathLength="1" d="M40 40 H180 L40 180 H180" />
+            <!-- Y -->
+            <path class="stroke" pathLength="1" d="M240 40 L310 110" />
+            <path class="stroke" pathLength="1" d="M380 40 L310 110 V180" />
+            <!-- P -->
+            <path class="stroke" pathLength="1" d="M440 40 V180" />
+            <path class="stroke" pathLength="1" d="M440 40 H560 A40 40 0 0 1 560 120 H440" />
+            <!-- H -->
+            <path class="stroke" pathLength="1" d="M640 40 V180" />
+            <path class="stroke" pathLength="1" d="M760 40 V180" />
+            <path class="stroke" pathLength="1" d="M640 110 H760" />
+            <!-- E -->
+            <path class="stroke" pathLength="1" d="M840 40 H960" />
+            <path class="stroke" pathLength="1" d="M840 110 H930" />
+            <path class="stroke" pathLength="1" d="M840 180 H960" />
+            <path class="stroke" pathLength="1" d="M840 40 V180" />
+            <!-- R -->
+            <path class="stroke" pathLength="1" d="M1040 40 V180" />
+            <path class="stroke" pathLength="1" d="M1040 40 H1160 A40 40 0 0 1 1160 120 H1040" />
+            <path class="stroke" pathLength="1" d="M1100 120 L1170 180" />
+          </g>
+        </svg>
       </div>
+
       <div class="status" aria-live="polite">
-        <div class="line">INITIALIZING TERMINAL RUNTIME…</div>
-        <div class="line">MOUNTING INTELLIGENCE CORES…</div>
-        <div class="line">HANDSHAKE: CORE NETWORK…</div>
-        <div class="line"><b>ZYPHER ONLINE.</b></div>
-        <div class="line">WELCOME.</div>
+        <div class="line show-1">INITIALIZING TERMINAL RUNTIME…</div>
+        <div class="line show-2">MOUNTING INTELLIGENCE CORES…</div>
+        <div class="line show-3">HANDSHAKE: CORE NETWORK…</div>
+        <div class="line show-4"><b>ZYPHER ONLINE.</b></div>
+        <div class="line show-5">WELCOME.</div>
       </div>
-      <button id="intro-skip" type="button" aria-label="Skip intro">Skip</button>
+
+      <!-- Optional: this link just jumps focus; overlay will auto-fade anyway -->
+      <a id="intro-skip" href="#skip">Skip</a>
     </div>
   </div>
 
-  <!-- Your existing scripts -->
+  <!-- your existing scripts only (no intro.js) -->
   <script src="./js/site.js" defer></script>
-
-  <!-- Intro animation -->
-  <script src="./js/intro.js" defer></script>
 </body>
 </html>
