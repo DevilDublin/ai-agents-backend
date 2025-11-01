@@ -1,0 +1,37 @@
+/* /frontend/styles/intro.css */
+:root{
+  --zypher-mint:#79F6DA;
+  --intro-bg:#000;
+  --logo-max:860px;   /* shared width for identical centering on intro + hero */
+}
+
+#zypher-intro{
+  position:fixed; inset:0; background:var(--intro-bg); z-index:9999;
+  display:grid; place-items:center; overflow:hidden;
+  opacity:1; visibility:visible; transition:opacity .8s ease, visibility .8s ease;
+}
+#zypher-intro.hidden{ opacity:0; visibility:hidden; }
+
+.intro-wrap{ width:min(var(--logo-max), 90vw); display:grid; gap:28px; }
+.logo-box{ width:100%; display:grid; place-items:center; }
+.logo-box img, .logo-box svg{ width:100%; height:auto; display:block; }
+
+.status{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  color:#cfe6ff; letter-spacing:.02em; line-height:1.45;
+  font-size:clamp(14px,1.6vw,18px);
+}
+.status .line{ opacity:0; transform:translateY(6px);
+  transition:opacity .35s ease, transform .35s ease; }
+.status .line.show{ opacity:1; transform:translateY(0) }
+.status b{ color:#fff; }
+
+#intro-skip{
+  position:absolute; right:16px; bottom:16px;
+  background:#0f1111; color:#dffef6; border:1px solid #2b3a3a;
+  border-radius:999px; padding:10px 14px; font-size:13px; cursor:pointer; opacity:.85;
+}
+#intro-skip:hover{ opacity:1; }
+
+/* stroke draw look (dash values set via JS) */
+.draw path{ filter: drop-shadow(0 0 12px rgba(121,246,218,.38)); }
