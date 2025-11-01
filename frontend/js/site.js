@@ -1,27 +1,33 @@
-// Intro: play once; Hidden-color hover: tint logo + background; Modal niceties
+// Intro control (first visit + dev override), hidden-colour hover accent, modal niceties
 (function(){
-  // 1) First-visit-only intro
+  // ---- 1) Intro logic ----
+  const params = new URLSearchParams(location.search);
+  const forceIntro = params.get('intro') === '1';   // dev: add ?intro=1 to see intro again once
   try{
     const seen = localStorage.getItem('zypherIntroSeen') === '1';
-    if(seen) document.body.classList.add('no-intro');
-
     const intro = document.getElementById('zypher-intro');
-    if(!seen && intro){
+
+    if(forceIntro){
+      localStorage.removeItem('zypherIntroSeen');   // clear flag so you can preview the intro
+    }
+
+    const shouldHide = !forceIntro && seen;
+    if(shouldHide){
+      document.body.classList.add('no-intro');
+      if(intro) intro.remove();
+    }else if(intro){
       intro.addEventListener('animationend', (e)=>{
         if(e.animationName === 'intro-fade'){
           localStorage.setItem('zypherIntroSeen','1');
           intro.remove();
         }
       });
-    } else if(intro){
-      intro.remove();
     }
-  }catch(e){ /* ignore storage issues */ }
+  }catch(e){ /* ignore storage errors */ }
 
-  // 2) Hidden color codes — on hover set CSS variable --accent
+  // ---- 2) Hidden colour codes: hover tints --accent (logo glow + bg + cards) ----
   const root = document.documentElement;
   const defaultAccent = getComputedStyle(root).getPropertyValue('--mint').trim();
-
   function setAccent(hex){ root.style.setProperty('--accent', hex); }
   function resetAccent(){ root.style.setProperty('--accent', defaultAccent); }
 
@@ -33,7 +39,21 @@
     card.addEventListener('focusout', resetAccent);
   });
 
-  // 3) Close modals on ESC or backdrop click
+  // When opening a modal via hash, tint to that card colour; reset on close
+  if(location.hash){
+    const trigger = document.querySelector(`a[href="${location.hash}"]`);
+    const col = trigger?.getAttribute('data-accent');
+    if(col) setAccent(col);
+  }
+  window.addEventListener('hashchange', ()=>{
+    if(!location.hash) resetAccent();
+    else{
+      const t = document.querySelector(`a[href="${location.hash}"]`);
+      setAccent(t?.getAttribute('data-accent') || defaultAccent);
+    }
+  });
+
+  // ---- 3) Modal close on ESC and backdrop click ----
   document.addEventListener('keydown', (e)=>{
     if(e.key === 'Escape' && location.hash){
       history.pushState("", document.title, location.pathname + location.search);
@@ -46,23 +66,6 @@
       e.preventDefault();
       history.pushState("", document.title, location.pathname + location.search);
       resetAccent();
-    }
-  });
-
-  // 4) When opening a modal via hash, tint accent to the card color
-  if(location.hash){
-    const trigger = document.querySelector(`a[href="${location.hash}"]`);
-    if(trigger){
-      const col = trigger.getAttribute('data-accent');
-      if(col) setAccent(col);
-    }
-  }
-  window.addEventListener('hashchange', ()=>{
-    if(!location.hash) resetAccent();
-    else{
-      const trigger = document.querySelector(`a[href="${location.hash}"]`);
-      const col = trigger?.getAttribute('data-accent') || defaultAccent;
-      setAccent(col);
     }
   });
 })();
