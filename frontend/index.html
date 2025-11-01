@@ -7,37 +7,31 @@
   <link rel="stylesheet" href="./styles/main.css" />
 </head>
 <body>
+  <header class="site-bg" aria-hidden="true"></header>
 
-  <!-- ===== INTRO OVERLAY (unchanged: CSS-only, matches hero geometry) ===== -->
+  <!-- ===== INTRO (first visit only; site.js hides it afterwards) ===== -->
   <div id="zypher-intro" aria-label="Zypher system activation">
     <div class="intro-wrap">
       <div class="logo-box no-select">
-        <!-- Inline SVG so CSS can animate strokes; same geometry as hero asset -->
+        <!-- inline SVG so strokes animate; geometry matches hero asset -->
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 220" aria-hidden="true">
-          <!-- Z -->
           <path class="stroke" pathLength="1" d="M40 40 H180 L40 180 H180" />
-          <!-- Y -->
           <path class="stroke" pathLength="1" d="M240 40 L310 110" />
           <path class="stroke" pathLength="1" d="M380 40 L310 110 V180" />
-          <!-- P -->
           <path class="stroke" pathLength="1" d="M440 40 V180" />
           <path class="stroke" pathLength="1" d="M440 40 H560 A40 40 0 0 1 560 120 H440" />
-          <!-- H -->
           <path class="stroke" pathLength="1" d="M640 40 V180" />
           <path class="stroke" pathLength="1" d="M760 40 V180" />
           <path class="stroke" pathLength="1" d="M640 110 H760" />
-          <!-- E -->
           <path class="stroke" pathLength="1" d="M840 40 H960" />
           <path class="stroke" pathLength="1" d="M840 110 H930" />
           <path class="stroke" pathLength="1" d="M840 180 H960" />
           <path class="stroke" pathLength="1" d="M840 40 V180" />
-          <!-- R -->
           <path class="stroke" pathLength="1" d="M1040 40 V180" />
           <path class="stroke" pathLength="1" d="M1040 40 H1160 A40 40 0 0 1 1160 120 H1040" />
           <path class="stroke" pathLength="1" d="M1100 120 L1170 180" />
         </svg>
       </div>
-
       <div class="status" aria-live="polite">
         <div class="line show-1">INITIALIZING TERMINAL RUNTIME…</div>
         <div class="line show-2">MOUNTING INTELLIGENCE CORES…</div>
@@ -45,64 +39,38 @@
         <div class="line show-4"><b>ZYPHER ONLINE.</b></div>
         <div class="line show-5">WELCOME.</div>
       </div>
-
-      <!-- Optional skip; overlay will auto-fade anyway -->
-      <a id="intro-skip" href="#main">Skip</a>
     </div>
   </div>
 
   <!-- ===== HOME ===== -->
-  <header class="site-bg" aria-hidden="true"></header>
-
   <main id="main" class="hero">
     <div class="hero-inner">
-      <!-- Logo (same geometry + width as intro; not clickable/selectable) -->
+      <div class="logo-halo" aria-hidden="true"></div>
+
+      <!-- same asset + width as intro for perfect imprint -->
       <div class="logo-box no-select">
-        <img
-          src="./js/assets/zypher-logo.svg"
-          alt="ZYPHER"
-          draggable="false"
-          aria-hidden="true"
-        />
+        <img src="./js/assets/zypher-logo.svg" alt="ZYPHER" draggable="false" aria-hidden="true"/>
       </div>
 
-      <!-- Subheadline -->
       <p class="tagline">Automation. Intelligence. Precision.</p>
 
-      <!-- Feature pills -->
       <nav class="pills" aria-label="Capabilities">
         <span class="pill">Make.com + Vapi Ready</span>
         <span class="pill">Bookings &amp; Calendars</span>
         <span class="pill">Audit Logs &amp; Handoffs</span>
       </nav>
 
-      <!-- Primary actions -->
       <section class="cta-grid" aria-label="Primary sections">
-        <a class="card" href="./demos.html">
-          <h3>AI Demos</h3>
-          <p>Try live assistants and flows.</p>
-        </a>
-        <a class="card" href="./voice.html">
-          <h3>Voice Agents</h3>
-          <p>Vapi-powered phone agents.</p>
-        </a>
-        <a class="card" href="./analytics.html">
-          <h3>Analytics</h3>
-          <p>Conversations, SLAs, outcomes.</p>
-        </a>
-        <a class="card" href="./contact.html">
-          <h3>Contact</h3>
-          <p>Book a demo or message us.</p>
-        </a>
+        <a class="card" href="./demos.html"><h3>AI Demos</h3><p>Try live assistants and flows.</p></a>
+        <a class="card" href="./voice.html"><h3>Voice Agents</h3><p>Vapi-powered phone agents.</p></a>
+        <a class="card" href="./analytics.html"><h3>Analytics</h3><p>Conversations, SLAs, outcomes.</p></a>
+        <a class="card" href="./contact.html"><h3>Contact</h3><p>Book a demo or message us.</p></a>
       </section>
     </div>
   </main>
 
-  <footer class="site-footer">
-    <p>© 2025 Zypher Agents. All rights reserved.</p>
-  </footer>
+  <footer class="site-footer"><p>© 2025 Zypher Agents. All rights reserved.</p></footer>
 
-  <!-- Your existing JS (keep it light) -->
   <script src="./js/site.js" defer></script>
 </body>
 </html>
