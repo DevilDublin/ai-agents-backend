@@ -9,7 +9,7 @@
 <body>
   <header class="site-bg" aria-hidden="true"></header>
 
-  <!-- ===== INTRO (plays once; hidden on return visits by site.js) ===== -->
+  <!-- ===== INTRO (plays once; site.js hides afterward) ===== -->
   <div id="zypher-intro" aria-label="Zypher system activation">
     <div class="intro-wrap">
       <div class="logo-box no-select">
@@ -60,18 +60,42 @@
         <span class="pill">Audit Logs &amp; Handoffs</span>
       </nav>
 
+      <!-- Hidden-color cards; hovering sets the accent and tints the logo + card -->
       <section class="cta-grid" aria-label="Primary sections">
-        <a class="card" href="./demos.html"><h3>AI Demos</h3><p>Try live assistants and flows.</p></a>
-        <a class="card" href="#voice"><h3>Voice Agents</h3><p>Vapi-powered phone agents.</p></a>
-        <a class="card" href="#analytics"><h3>Analytics</h3><p>Conversations, SLAs, outcomes.</p></a>
-        <a class="card" href="./contact.html"><h3>Contact</h3><p>Book a demo or message us.</p></a>
+        <a class="card" href="./demos.html"
+           data-accent="#8b5cf6" data-accent-name="violet">
+          <span class="chip" aria-hidden="true"></span>
+          <h3>AI Demos</h3>
+          <p>Try live assistants and flows.</p>
+        </a>
+
+        <a class="card" href="#voice"
+           data-accent="#7ad3f2" data-accent-name="cyan">
+          <span class="chip" aria-hidden="true"></span>
+          <h3>Voice Agents</h3>
+          <p>Vapi-powered phone agents.</p>
+        </a>
+
+        <a class="card" href="#spells"
+           data-accent="#8fff58" data-accent-name="neon">
+          <span class="chip" aria-hidden="true"></span>
+          <h3>Automation Spells</h3>
+          <p>Hands-free workflows that “do the job”.</p>
+        </a>
+
+        <a class="card" href="./contact.html"
+           data-accent="#ffd166" data-accent-name="amber">
+          <span class="chip" aria-hidden="true"></span>
+          <h3>Contact</h3>
+          <p>Book a demo or message us.</p>
+        </a>
       </section>
     </div>
   </main>
 
   <footer class="site-footer"><p>© 2025 Zypher Agents. All rights reserved.</p></footer>
 
-  <!-- ===== IN-PAGE MODALS (no new HTML files) ===== -->
+  <!-- ===== IN-PAGE MODALS (no extra HTML files) ===== -->
   <section id="voice" class="modal" aria-labelledby="voice-title" aria-modal="true" role="dialog">
     <div class="modal-panel">
       <a class="modal-close" href="#" aria-label="Close">✕</a>
@@ -95,14 +119,25 @@
     </div>
   </section>
 
-  <section id="analytics" class="modal" aria-labelledby="analytics-title" aria-modal="true" role="dialog">
+  <section id="spells" class="modal" aria-labelledby="spells-title" aria-modal="true" role="dialog">
     <div class="modal-panel">
       <a class="modal-close" href="#" aria-label="Close">✕</a>
-      <h2 id="analytics-title">Analytics</h2>
-      <p class="lead">Conversation metrics, SLAs, routing outcomes, and agent performance.</p>
-      <div class="panel">
-        <h3>Status</h3>
-        <p>Hook up charts here (Mixpanel, PostHog, custom dashboards). Using an in-page modal prevents any 404s.</p>
+      <h2 id="spells-title">Automation Spells</h2>
+      <p class="lead">Opinionated, prebuilt workflows that trigger from chat/voice and complete tasks end-to-end.</p>
+      <div class="grid-2">
+        <div class="panel">
+          <h3>Popular Spells</h3>
+          <ul>
+            <li>Lead Capture → CRM → Auto-Follow-Up</li>
+            <li>Appointment Setter → Calendar + Reminders</li>
+            <li>Order Status → Live System Lookup</li>
+            <li>Ticket Triage → Slack / Email Handoff</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>Integrations</h3>
+          <p>Make.com, Google Workspace, HubSpot, Notion, Slack, Webhooks, and more.</p>
+        </div>
       </div>
     </div>
   </section>
