@@ -2,82 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Zypher Agents — System Activation</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+  <!-- Your existing site CSS -->
   <link rel="stylesheet" href="./styles/main.css" />
+
+  <!-- Intro CSS -->
+  <link rel="stylesheet" href="./styles/intro.css" />
+  <style>
+    :root{ --logo-max:860px; }
+    .hero{ min-height:88svh; display:grid; place-items:center; position:relative; }
+    .hero .logo-box{ width:min(var(--logo-max), 90vw); }
+    .hero .logo-box img{ width:100%; height:auto; display:block; }
+  </style>
 </head>
-<body class="no-scroll">
-  <!-- Intro (versioned; plays once for everyone after this update, then every 24h) -->
-  <div id="boot" role="status" aria-live="polite" aria-label="Zypher system initialization">
-    <div class="boot-core">
-      <!-- Stroke-draw “ZYPHER” (sticks into the hub word) -->
-      <svg class="boot-word-svg" viewBox="0 0 1200 220" aria-hidden="true">
-        <defs>
-          <linearGradient id="zygrad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#66f7d1"/><stop offset="100%" stop-color="#5ab8ff"/>
-          </linearGradient>
-        </defs>
-        <text x="50%" y="55%" text-anchor="middle" class="boot-word-stroke">Z Y P H E R</text>
-      </svg>
+<body>
 
-      <!-- Subtle green branching filaments -->
-      <svg class="boot-branches" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-        <g stroke="#66f7d1" stroke-opacity="0.75" stroke-width="1.8" fill="none" stroke-linecap="round">
-          <path class="branch b1" d="M500 300 C 560 270, 650 250, 770 240" />
-          <path class="branch b2" d="M500 300 C 440 270, 350 250, 230 240" />
-          <path class="branch b3" d="M500 300 C 560 330, 650 370, 780 395" />
-          <path class="branch b4" d="M500 300 C 440 330, 350 370, 220 395" />
-          <path class="branch b5" d="M500 300 C 520 300, 600 295, 700 280" />
-          <path class="branch b6" d="M500 300 C 480 300, 400 295, 300 280" />
-        </g>
-      </svg>
+  <!-- ===== HERO (unchanged layout; just uses shared SVG) ===== -->
+  <main class="hero">
+    <div class="logo-box">
+      <img src="./js/assets/zypher-logo.svg" alt="ZYPHER" />
     </div>
-
-    <div class="boot-lines">
-      <div class="boot-line" data-text="INITIALIZING ZYPHER SYSTEM…"></div>
-      <div class="boot-line" data-text="OPTIMIZING BUSINESS INTELLIGENCE PROTOCOLS…"></div>
-      <div class="boot-line" data-text="CONNECTING TO CORE NETWORK…"></div>
-      <div class="boot-line strong" data-text="ZYPHER SYSTEMS ONLINE."></div>
-      <div class="boot-subline" data-text="WELCOME TO THE FUTURE OF AUTOMATION."></div>
-    </div>
-    <button id="skipIntro" class="btn-skip" aria-label="Skip intro">Skip</button>
-  </div>
-
-  <!-- Background -->
-  <div class="bg">
-    <canvas id="bgParticles" aria-hidden="true"></canvas>
-    <div class="bg-aurora" aria-hidden="true"></div>
-  </div>
-
-  <!-- HOME HUB (unchanged layout, stronger accent behaviour) -->
-  <main id="hub" class="hub" aria-live="polite">
-    <div class="hub-center">
-      <h1 id="hubWord" class="hub-word">Z Y P H E R</h1>
-      <p class="tagline">Automation. Intelligence. Precision.</p>
-
-      <!-- Updated chips -->
-      <div class="chips" aria-hidden="true">
-        <div class="chip">Make.com + Vapi Ready</div>
-        <div class="chip">Bookings & Calendars</div>
-        <div class="chip">Audit Logs & Handoffs</div>
-      </div>
-    </div>
-
-    <section class="tiles" aria-label="Primary modules">
-      <button class="tile" data-go="demos.html" data-accent="#66f7d1"><span class="tile-title">AI DEMOS</span></button>
-      <button class="tile" data-go="demos.html#voice" data-accent="#5ab8ff"><span class="tile-title">VOICE AGENTS</span></button>
-      <button class="tile" data-go="demos.html#analytics" data-accent="#a383ff"><span class="tile-title">ANALYTICS</span></button>
-      <button class="tile" data-go="contact.html" data-accent="#ffa85a"><span class="tile-title">CONTACT</span></button>
-    </section>
-
-    <footer class="site-footer" data-visible="false">
-      <p>© <span id="year"></span> Zypher Agents. All rights reserved.</p>
-    </footer>
+    <!-- keep your existing subtitle, buttons, etc. here -->
   </main>
 
+  <!-- ===== INTRO OVERLAY ===== -->
+  <div id="zypher-intro" role="dialog" aria-label="Zypher system activation">
+    <div class="intro-wrap">
+      <div class="logo-box">
+        <!-- same asset path as hero -->
+        <img src="./js/assets/zypher-logo.svg" alt="ZYPHER (intro)" />
+      </div>
+      <div class="status" aria-live="polite">
+        <div class="line">INITIALIZING TERMINAL RUNTIME…</div>
+        <div class="line">MOUNTING INTELLIGENCE CORES…</div>
+        <div class="line">HANDSHAKE: CORE NETWORK…</div>
+        <div class="line"><b>ZYPHER ONLINE.</b></div>
+        <div class="line">WELCOME.</div>
+      </div>
+      <button id="intro-skip" type="button" aria-label="Skip intro">Skip</button>
+    </div>
+  </div>
+
+  <!-- Your existing scripts -->
   <script src="./js/site.js" defer></script>
+
+  <!-- Intro animation -->
+  <script src="./js/intro.js" defer></script>
 </body>
 </html>
